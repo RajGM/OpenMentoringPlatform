@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mainFeed {
+  min-height: calc(100vh - 410px);
+  display: block;
+  width: 90%;
+  height: 100%;
+  background-color: #fffbf4;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.eventTile {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  box-shadow: 5px 5px;
+}
+
+.eventCard {
+  display: block;
+  width: 24%;
+  float: left;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.fullHeightMain {
+  min-height: calc(100vh - 410px);
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 20px;
+}
