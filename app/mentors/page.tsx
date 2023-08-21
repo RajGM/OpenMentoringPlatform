@@ -7,6 +7,9 @@ export default function Mentors() {
   const [oppData, setOppData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState(false);
+
+ 
 
   async function queryTest(category, searchValue) {
     console.log("Grabbing data from firestore");
@@ -30,7 +33,11 @@ export default function Mentors() {
     setOppData(queryData);
     console.log("queryData:", queryData);
     setLoading(false);
-  
+  }
+
+  function setFilter() {
+    console.log("filterValue:", filterValue);
+    setFilterValue(!filterValue);
   }
 
   return (
@@ -49,6 +56,17 @@ export default function Mentors() {
             />
           </div>
           <div>
+            University
+            <input
+              type="checkbox"
+              className="toggle toggle-info"
+              onChange={(e) => {
+                setFilter();
+              }}
+            />
+            Mentors
+          </div>
+          <div>
             <button
               type="submit"
               className="btn"
@@ -61,11 +79,9 @@ export default function Mentors() {
           </div>
         </div>
       </div>
+      <div>BELOW</div>
       <div>
-        BELOW
-      </div>
-      <div>
-        <MentorFeed oppData={oppData}/>
+        <MentorFeed oppData={oppData} />
       </div>
     </>
   );
