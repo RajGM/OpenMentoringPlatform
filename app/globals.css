@@ -4,10 +4,10 @@
 
 .mainFeed {
   min-height: calc(100vh - 410px);
+  min-width: 1800px;
   display: block;
   width: 90%;
   height: 100%;
-  background-color: #fffbf4;
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 20px;

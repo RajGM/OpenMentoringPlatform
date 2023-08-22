@@ -1,5 +1,5 @@
 "use client";
-import { firestore } from "@lib/firebase";
+import { auth, firestore } from "@lib/firebase";
 import { useEffect, useState } from "react";
 import MentorFeed from "@components/MentorFeed/MentorFeed";
 
@@ -8,8 +8,6 @@ export default function Mentors() {
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState(false);
-
- 
 
   async function queryTest(category, searchValue) {
     console.log("Grabbing data from firestore");
@@ -42,46 +40,45 @@ export default function Mentors() {
 
   return (
     <>
-      <h1>Dashboard</h1>
-      <div>MENTORS BOARD</div>
-      <div className="navbar bg-primary text-primary-content">
-        <div className="flex-none gap-2">
-          <div className="form-control">
-            <input
-              type="text"
-              placeholder="Search by mentor or uni"
-              className="input input-bordered w-24 md:w-auto"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </div>
-          <div>
-            University
-            <input
-              type="checkbox"
-              className="toggle toggle-info"
-              onChange={(e) => {
-                setFilter();
-              }}
-            />
-            Mentors
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="btn"
-              onClick={() => {
-                queryTest("Hackathon", searchValue);
-              }}
-            >
-              Button
-            </button>
+      <div style={{display:"flex", flexDirection:'column',  justifyContent:'center', alignItems:'center', gap:'10px'}}>
+        <div className="navbar bg-primary text-primary-content">
+          <div className="flex-none gap-2">
+            <div className="form-control">
+              <input
+                type="text"
+                placeholder="Search by mentor or uni"
+                className="input input-bordered w-24 md:w-auto"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+            <div>
+              University
+              <input
+                type="checkbox"
+                className="toggle toggle-info"
+                onChange={(e) => {
+                  setFilter();
+                }}
+              />
+              Mentors
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="btn"
+                onClick={() => {
+                  queryTest("Hackathon", searchValue);
+                }}
+              >
+                Button
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div>BELOW</div>
-      <div>
-        <MentorFeed oppData={oppData} />
+        <div>
+          <MentorFeed oppData={oppData} />
+        </div>
       </div>
     </>
   );
