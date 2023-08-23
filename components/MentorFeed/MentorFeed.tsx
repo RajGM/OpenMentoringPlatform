@@ -33,7 +33,6 @@ export default function MentorFeed({ oppData }) {
     return (
       <div
         className="fullHeightMain middle"
-        style={{ backgroundColor: "pink" }}
       >
         <h1>Cleaning Data and testing multiple features integrations</h1>
         <h1>It will be completed by tomorrow, soon</h1>

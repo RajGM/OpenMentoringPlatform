@@ -1,6 +1,6 @@
 export default async function Header() {
   return (
-    <div className="navbar bg-primary text-primary-content">
+    <div className="navbar bg-info text-primary-content">
       <div className="flex-1">
         <a className="btn btn-ghost normal-case text-xl">CRM for VCs</a>
       </div>
@@ -8,7 +8,7 @@ export default async function Header() {
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img src="/vercel.svg" />
+              <img src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80" />
             </div>
           </label>
           <ul
@@ -23,7 +23,7 @@ export default async function Header() {
             </li>
             <li>
               <a className="justify-between" href="/mentors">
-                Mentors
+                Listing
                 <span className="badge">New</span>
               </a>
             </li>

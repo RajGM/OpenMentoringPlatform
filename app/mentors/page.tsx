@@ -9,6 +9,10 @@ export default function Mentors() {
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState(false);
 
+  useEffect(() => {
+    queryTest("Hackathon", "all");
+  }, []);
+
   async function queryTest(category, searchValue) {
     console.log("Grabbing data from firestore");
     console.log("searchValue:", searchValue);
@@ -40,28 +44,47 @@ export default function Mentors() {
 
   return (
     <>
-      <div style={{display:"flex", flexDirection:'column',  justifyContent:'center', alignItems:'center', gap:'10px'}}>
-        <div className="navbar bg-primary text-primary-content">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "10px",
+        }}
+      >
+        <div
+          className="navbar text-primary-content"
+          style={{
+            marginTop: "10px",
+            border: "1px solid black",
+            boxShadow: "5px 5px",
+            width: "95%",
+          }}
+        >
           <div className="flex-none gap-2">
             <div className="form-control">
               <input
                 type="text"
-                placeholder="Search by mentor or uni"
-                className="input input-bordered w-24 md:w-auto"
+                placeholder="Search by organization or person"
+                className="input input-bordered w-32 md:w-full"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
+                style={{ minWidth: "320px" }}
               />
             </div>
-            <div>
-              University
-              <input
-                type="checkbox"
-                className="toggle toggle-info"
-                onChange={(e) => {
-                  setFilter();
-                }}
-              />
-              Mentors
+            <div style={{display:'flex',flexDirection:'row', gap:'10px', justifyContent:'center', alignContent:'center', alignItems:'center'}}>
+              <div>Organization</div>
+              <div>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-info"
+                  onChange={(e) => {
+                    setFilter();
+                  }}
+                />
+              </div>
+              <div>Investor</div>
             </div>
             <div>
               <button
@@ -71,7 +94,7 @@ export default function Mentors() {
                   queryTest("Hackathon", searchValue);
                 }}
               >
-                Button
+                Search
               </button>
             </div>
           </div>

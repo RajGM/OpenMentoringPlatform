@@ -21,6 +21,7 @@
       }
     ],
     "paths": {
+      "@data/*":["data/*"],
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
       "@lib/*": ["lib/*"],
