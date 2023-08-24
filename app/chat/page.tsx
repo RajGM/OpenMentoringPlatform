@@ -16,7 +16,7 @@ const data = [
 ];
 
 export default function Chat() {
-  const [oppData, setOppData] = useState([{}]);
+  const [oppData, setOppData] = useState(data);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState(false);
@@ -25,7 +25,7 @@ export default function Chat() {
     queryTest("Hackathon", "all");
   }, []);
 
-  async function queryTest(category:any, searchValue:any) {
+  async function queryTest(category: any, searchValue: any) {
     console.log("Grabbing data from firestore");
     console.log("searchValue:", searchValue);
 
@@ -71,7 +71,11 @@ export default function Chat() {
       >
         <div
           className="join join-vertical"
-          style={{width: "18%", boxShadow:'5px 5px', border:'1px solid black' }}
+          style={{
+            width: "18%",
+            boxShadow: "5px 5px",
+            border: "1px solid black",
+          }}
         >
           <div>
             <>
@@ -130,18 +134,20 @@ export default function Chat() {
                           alignItems: "center",
                           width: "90%",
                           gap: "10px",
-                          border:'1px solid black',
-                          boxShadow:'5px 5px'
+                          border: "1px solid black",
+                          boxShadow: "5px 5px",
                         }}
                       >
-                        <div >
-                          <Image 
-                            src={'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80'}
+                        <div>
+                          <Image
+                            src={
+                              "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
+                            }
                             width={40}
                             height={40}
                           />
                         </div>
-                        <div className="" >
+                        <div className="">
                           <div className="font-bold">Hart Hagerty</div>
                           <div className="text-sm opacity-50">
                             United States
