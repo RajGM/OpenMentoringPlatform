@@ -27,6 +27,6 @@
       "@lib/*": ["lib/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/chat/page.jsx", "app/kanban/page.jsx", "app/mentors/[mentor]/page.jsx", "components/Loader.jsx", "components/MentorFeed/MentorFeed.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/chat/page.jsx", "app/kanban/page.jsx", "app/mentors/[mentor]/page.jsx", "components/Loader.jsx", "components/MentorFeed/MentorFeed.jsx", "components/atoms.js", "lib/firebase.js"],
   "exclude": ["node_modules"]
 }
