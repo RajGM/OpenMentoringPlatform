@@ -30,6 +30,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.1.4",
     "@types/tailwindcss": "^3.1.0",
     "daisyui": "^3.5.1",
     "encoding": "^0.1.13"
