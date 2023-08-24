@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import MentorFeed from "@components/MentorFeed/MentorFeed";
 
 export default function Mentors() {
-  const [oppData, setOppData] = useState([]);
+  const [oppData, setOppData] = useState([{}]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState(false);

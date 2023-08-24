@@ -16,7 +16,7 @@ const data = [
 ];
 
 export default function Chat() {
-  const [oppData, setOppData] = useState([]);
+  const [oppData, setOppData] = useState([{}]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState(false);
