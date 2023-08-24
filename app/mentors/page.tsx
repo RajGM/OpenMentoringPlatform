@@ -13,7 +13,7 @@ export default function Mentors() {
     queryTest("Hackathon", "all");
   }, []);
 
-  async function queryTest(category, searchValue) {
+  async function queryTest(category:any, searchValue:any) {
     console.log("Grabbing data from firestore");
     console.log("searchValue:", searchValue);
 
