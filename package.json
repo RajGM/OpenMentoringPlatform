@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@types/tailwindcss": "^3.1.0",
-    "daisyui": "^3.5.1"
+    "daisyui": "^3.5.1",
+    "encoding": "^0.1.13"
   }
 }
