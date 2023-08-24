@@ -153,7 +153,7 @@ export default function Home() {
     }
   }, []);
 
-  const onDragEnd = (re:any) => {
+  const onDragEnd = (re) => {
     if (!re.destination) return;
     let newBoardData = boardData;
     var dragItem =
@@ -170,7 +170,7 @@ export default function Home() {
     setBoardData(newBoardData);
   };
 
-  const onTextAreaKeyPress = (e:any) => {
+  const onTextAreaKeyPress = (e) => {
     if(e.keyCode === 13) //Enter
     {
       const val = e.target.value;
