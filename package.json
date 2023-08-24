@@ -11,8 +11,6 @@
   "dependencies": {
     "@headlessui/react": "^1.4.0",
     "@heroicons/react": "^1.0.4",
-    "@nivo/bar": "^0.83.0",
-    "@nivo/pie": "^0.83.0",
     "@tailwindcss/forms": "^0.3.3",
     "@types/node": "20.5.0",
     "@types/react": "18.2.20",
