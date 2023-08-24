@@ -7,8 +7,7 @@ import MentorTile from "@components/MentorTile/MentorTile";
 function CardField({ arrData }) {
   return arrData
     ? arrData.map((indiData) => (
-        <div className="eventCard">
-          {" "}
+        <div className="eventCard" key={indiData}>
           <MentorTile data={indiData} key={indiData} />
         </div>
       ))
