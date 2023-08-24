@@ -24,10 +24,10 @@ export default function MentorTile({ data }) {
       <div class="sm:flex sm:justify-between sm:gap-4">
         <div>
           <h3 class="text-lg font-bold text-gray-900 sm:text-xl">
-            Building a SaaS product as a software developer
+            Investing in a SaaS product at early age
           </h3>
 
-          <p class="mt-1 text-xs font-medium text-gray-600">By John Doe</p>
+          <p class="mt-1 text-xs font-medium text-gray-600">John Doe</p>
         </div>
 
         <div class="hidden sm:block sm:shrink-0">
@@ -48,13 +48,13 @@ export default function MentorTile({ data }) {
 
       <dl class="mt-6 flex gap-4 sm:gap-6">
         <div class="flex flex-col-reverse">
-          <dt class="text-sm font-medium text-gray-600">Published</dt>
+          <dt class="text-sm font-medium text-gray-600">Member Since</dt>
           <dd class="text-xs text-gray-500">31st June, 2021</dd>
         </div>
 
         <div class="flex flex-col-reverse">
-          <dt class="text-sm font-medium text-gray-600">Reading time</dt>
-          <dd class="text-xs text-gray-500">3 minute</dd>
+          <dt class="text-sm font-medium text-gray-600">Total Investment</dt>
+          <dd class="text-xs text-gray-500">$500k</dd>
         </div>
       </dl>
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default async function Header() {
   return (
     <div className="navbar bg-info text-primary-content">
@@ -22,13 +24,19 @@ export default async function Header() {
               </a>
             </li>
             <li>
-              <a className="justify-between" href="/mentors">
-                Listing
-                <span className="badge">New</span>
-              </a>
+              <Link href="/chat" className="justify-between">
+                Chat
+              </Link>
             </li>
             <li>
-              <a>Settings</a>
+              <Link href="/mentors" className="justify-between">
+                Listing
+              </Link>
+            </li>
+            <li>
+              <Link href="/kanban" className="justify-between">
+                Kanban
+              </Link>
             </li>
             <li>
               <a>Logout</a>

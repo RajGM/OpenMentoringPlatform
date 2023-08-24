@@ -2,24 +2,24 @@ export default async function Footer() {
     return (
       <footer className="footer p-10 bg-base-200 text-base-content">
       <div>
-        <span className="footer-title">Services</span> 
-        <a className="link link-hover">Branding</a> 
-        <a className="link link-hover">Design</a> 
-        <a className="link link-hover">Marketing</a> 
-        <a className="link link-hover">Advertisement</a>
+        <span className="footer-title">Features</span> 
+        <a className="link link-hover">Online CRM</a> 
+        <a className="link link-hover">Project Management</a> 
+        <a className="link link-hover">Task Management</a> 
+        <a className="link link-hover">Financial Management</a>
       </div> 
       <div>
-        <span className="footer-title">Company</span> 
-        <a className="link link-hover">About us</a> 
-        <a className="link link-hover">Contact</a> 
-        <a className="link link-hover">Jobs</a> 
-        <a className="link link-hover">Press kit</a>
+        <span className="footer-title">Solutions</span> 
+        <a className="link link-hover">IT Departments</a> 
+        <a className="link link-hover">Business Consultants</a> 
+        <a className="link link-hover">Legal Professionals</a> 
+        <a className="link link-hover">Exchange Development</a>
       </div> 
       <div>
-        <span className="footer-title">Legal</span> 
+        <span className="footer-title">Pricing</span> 
         <a className="link link-hover">Terms of use</a> 
         <a className="link link-hover">Privacy policy</a> 
-        <a className="link link-hover">Cookie policy</a>
+        <a className="link link-hover">Public Roadmap</a>
       </div> 
       <div>
         <span className="footer-title">Newsletter</span> 

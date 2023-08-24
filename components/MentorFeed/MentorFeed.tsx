@@ -35,9 +35,8 @@ export default function MentorFeed({ oppData }) {
         className="fullHeightMain middle"
       >
         <h1>Cleaning Data and testing multiple features integrations</h1>
-        <h1>It will be completed by tomorrow, soon</h1>
-        <h1>Sorry, no opportunities found!</h1>
-        <h2>Please add some for the community</h2>
+        <h1>It will be completed, soon</h1>
+        <h1>Sorry, no data found!</h1>
       </div>
     );
   } else {
