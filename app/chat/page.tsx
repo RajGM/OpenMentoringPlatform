@@ -2,6 +2,7 @@
 import { firestore } from "@lib/firebase";
 import { useEffect, useState } from "react";
 import MentorFeed from "@components/MentorFeed/MentorFeed";
+import Image from "next/image";
 
 const data = [
   {
@@ -15,6 +16,44 @@ const data = [
 ];
 
 export default function Chat() {
+  const [oppData, setOppData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState(false);
+
+  useEffect(() => {
+    queryTest("Hackathon", "all");
+  }, []);
+
+  async function queryTest(category, searchValue) {
+    console.log("Grabbing data from firestore");
+    console.log("searchValue:", searchValue);
+
+    let query;
+    if (searchValue == "all" || searchValue == "All") {
+      query = firestore.collection(
+        category.charAt(0).toUpperCase() + category.slice(1)
+      );
+    } else {
+      query = firestore
+        .collection(category.charAt(0).toUpperCase() + category.slice(1))
+        .where("filters", "==", searchValue.toLowerCase()); //.where('Type', '==', filter.toLowerCase());
+    }
+    setLoading(true);
+    const queryData = (await query.get()).docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setOppData(queryData);
+    console.log("queryData:", queryData);
+    setLoading(false);
+  }
+
+  function setFilter() {
+    console.log("filterValue:", filterValue);
+    setFilterValue(!filterValue);
+  }
+
   return (
     <>
       <div
@@ -22,103 +61,100 @@ export default function Chat() {
         style={{
           display: "flex",
           flexDirection: "row",
-          width: "100%",
+          width: "95%",
           minHeight: "90vh",
+          justifyContent: "space-around",
+          gap: "10px",
+          margin: "10px",
+          boxShadow: "5px 5px",
         }}
       >
         <div
           className="join join-vertical"
-          style={{ backgroundColor: "pink", width: "20%" }}
+          style={{width: "18%", boxShadow:'5px 5px', border:'1px solid black' }}
         >
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th>Chats</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* row 1 */}
-              <tr>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="/next.svg"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
+          <div>
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <div
+                  className="navbar text-primary-content"
+                  style={{
+                    marginTop: "10px",
+                    border: "1px solid black",
+                    boxShadow: "5px 5px",
+                    width: "95%",
+                  }}
+                >
+                  <div className="flex-none gap-2">
+                    <div className="form-control">
+                      <input
+                        type="text"
+                        placeholder="Search"
+                        className="input input-bordered w-32 md:w-full"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        style={{ width: "150px" }}
+                      />
                     </div>
+
                     <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">United States</div>
+                      <button
+                        type="submit"
+                        className="btn"
+                        onClick={() => {
+                          queryTest("Hackathon", searchValue);
+                        }}
+                      >
+                        Search
+                      </button>
                     </div>
                   </div>
-                </td>
-              </tr>
-              {/* row 2 */}
-              <tr>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="/next.svg"
-                          alt="Avatar Tailwind CSS Component"
-                        />
+                </div>
+
+                {oppData.length > 0
+                  ? oppData.map((item) => (
+                      <div
+                        key={item.id}
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-evenly",
+                          alignItems: "center",
+                          width: "90%",
+                          gap: "10px",
+                          border:'1px solid black',
+                          boxShadow:'5px 5px'
+                        }}
+                      >
+                        <div >
+                          <Image 
+                            src={'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80'}
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <div className="" >
+                          <div className="font-bold">Hart Hagerty</div>
+                          <div className="text-sm opacity-50">
+                            United States
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">United States</div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              {/* row 3 */}
-              <tr>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="/next.svg"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">United States</div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              {/* row 4 */}
-              <tr>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="/next.svg"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">United States</div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            {/* foot */}
-          </table>
+                    ))
+                  : null}
+              </div>
+            </>
+          </div>
         </div>
+
         <ChatWindow dataArr={data} />
       </div>
     </>
@@ -157,14 +193,14 @@ const ChatInput = () => {
   );
 };
 
-const ChatWindow = ({dataArr}) => {
+const ChatWindow = ({ dataArr }) => {
   return (
     <div
       className="overflow-x-auto"
       style={{
         display: "flex",
         flexDirection: "column",
-        width: "80%",
+        width: "90%",
         backgroundColor: "lightblue",
         padding: "10px",
       }}
@@ -178,7 +214,6 @@ const ChatWindow = ({dataArr}) => {
             <div className="chat-bubble">{item.message}</div>
           </div>
         ))}
-
       </div>
 
       <div>
@@ -204,7 +239,6 @@ const ChatWindow = ({dataArr}) => {
                 textAlign: "center",
               }}
             />
-            
           </div>
         </div>
       </div>
