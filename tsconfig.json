@@ -27,6 +27,6 @@
       "@lib/*": ["lib/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/chat/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/chat/page.jsx", "app/kanban/page.jsx"],
   "exclude": ["node_modules"]
 }
