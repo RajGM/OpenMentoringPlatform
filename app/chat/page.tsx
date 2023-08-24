@@ -122,7 +122,7 @@ export default function Chat() {
                 {oppData.length > 0
                   ? oppData.map((item) => (
                       <div
-                        key={item.id}
+                        key={item}
                         style={{
                           display: "flex",
                           flexDirection: "row",
@@ -208,7 +208,7 @@ const ChatWindow = ({ dataArr }) => {
       <div style={{ height: "90%", width: "100%" }}>
         {dataArr.map((item) => (
           <div
-            key={item.id}
+            key={item}
             className={item.id === 1 ? "chat chat-start" : "chat chat-end"}
           >
             <div className="chat-bubble">{item.message}</div>
