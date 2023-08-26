@@ -4,7 +4,7 @@ export default async function Header() {
   return (
     <div className="navbar bg-info text-primary-content">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl">CRM for VCs</a>
+        <a className="btn btn-ghost normal-case text-xl">FOSS Mentoring</a>
       </div>
       <div className="flex-none gap-2">
         <div className="dropdown dropdown-end">
