@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
-    images: {
-        domains: ['*','randomuser.me','images.unsplash.com'], // Add your domain(s) here
-      },
+  reactStrictMode: true,
 }
 
 module.exports = nextConfig
