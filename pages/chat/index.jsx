@@ -1,5 +1,5 @@
 "use client";
-import { firestore, getDoc, doc, db } from "@lib/firebase";
+import { firestore, getDoc, doc, db, serverTimestamp } from "@lib/firebase";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useContext } from "react";
@@ -65,70 +65,60 @@ export default function Chat() {
       //   console.log("res:", res);
 
       const res = await firestore.collection("chats").doc(combinedId).get();
-      console.log("res:", res);
-      console.log("res:", res.exists);
 
-    
+      //
+
+      try {
+        const ref = firestore.collection("chats").doc(combinedId); //
+        const msgRef = ref.collection("messages");
+
+        console.log("adding");
+        await msgRef.add({
+          text: "Testi123232ng",
+          createdAt: serverTimestamp(),
+          user: user.uid,
+        });
+        console.log("message added");
+      } catch (err) {
+        console.log("error in adding message:", err);
+      }
+
+      //
+      return;
       if (!res.exists) {
         //create a chat in chats collection
-        //await setDoc(doc(db, "chats", combinedId), { messages: [] });
+
         console.log("chat created");
-
-        fetch('/api/createChat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': user?user.accessToken:undefined
-            },
-            body: JSON.stringify({
-                user: user,
-                username:username,
-                combinedId: combinedId,
-                user2: clickedData.id
-            })
-        }).then(response => {
+        return;
+        fetch("/api/createChat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: user ? user.accessToken : undefined,
+          },
+          body: JSON.stringify({
+            user: user,
+            username: username,
+            combinedId: combinedId,
+            user2: clickedData.id,
+          }),
+        })
+          .then((response) => {
             if (response.ok) {
-                console.log("response ok");
+              console.log("response ok");
             } else {
-                console.log("response not ok");
+              console.log("response not ok");
             }
-        }
-        ).catch((error) => {
+          })
+          .catch((error) => {
             console.log("error in fetch:");
-        }
-        );
-
-
-        /*
-        //create user chats
-        //do these from adminSDK
-        await updateDoc(doc(db, "userChats", currentUser.id), {
-          [combinedId + ".userInfo"]: {
-            uid: user.id,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
-
-        //do these from adminSDK
-        await updateDoc(doc(db, "userChats", user.id), {
-          [combinedId + ".userInfo"]: {
-            uid: currentUser.id,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
-        */
+          });
       } else {
         console.log("chat exists");
       }
     } catch (err) {
       console.log("error in creating chat:", err);
     }
-
-
   };
 
   return (
