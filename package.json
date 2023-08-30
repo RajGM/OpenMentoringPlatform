@@ -14,6 +14,7 @@
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "firebase": "^10.3.0",
+    "firebase-admin": "^11.10.1",
     "lodash.debounce": "^4.0.8",
     "next": "13.4.19",
     "postcss": "8.4.29",
