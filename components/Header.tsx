@@ -45,6 +45,9 @@ export default function Header() {
                 tabIndex={0}
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
               >
+                <li style={{color:'black'}}>
+                  {username}
+                </li>
                 <li>
                   <a></a>
                   <a href="/mentors" className="justify-between">

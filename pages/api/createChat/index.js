@@ -1,4 +1,4 @@
-import { db, auth, arrayPush } from '../firebaseAdmin/index'
+import { db, auth, arrayPush,serverTimestamp } from '../firebaseAdmin/index'
 
 export default async function handler(req, res) {
 
@@ -24,6 +24,17 @@ export default async function handler(req, res) {
                     chatId: arrayPush(req.body.combinedId)
                 });
                 await batch.commit();
+
+                const ref = db.collection("chats").doc(req.body.combinedId); //
+                const msgRef = ref.collection("messages");
+
+                console.log("adding");
+                await msgRef.add({
+                    text: "Hello",
+                    createdAt: serverTimestamp(),
+                    user: req.body.user.uid,
+                });
+                console.log("message added");
 
             } catch (err) {
                 console.log(err)

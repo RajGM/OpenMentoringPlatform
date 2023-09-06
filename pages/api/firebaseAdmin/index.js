@@ -23,6 +23,7 @@ if (!admin.apps.length) {
 export const db = admin.firestore();
 export const auth = admin.auth();
 export const arrayPush = admin.firestore.FieldValue.arrayUnion;
+export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
 
 export async function generateFirebaseID(collection) {
     const newRef = push(ref(db, collection));

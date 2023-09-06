@@ -1,9 +1,10 @@
 "use client";
 import { firestore, getDoc, doc, db, serverTimestamp } from "@lib/firebase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useContext } from "react";
 import { UserContext } from "@lib/context";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 const data = [
   {
@@ -21,13 +22,14 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const { user, username } = useContext(UserContext);
+  const [chatdataId, setChatDataId] = useState("");
   console.log("owner user from ChAT PAGE:", user, username);
 
   const [searchedUser, setSearchedUser] = useState({});
 
   useEffect(() => {
     queryTest("rajgm");
-  }, []);
+  }, [chatdataId]);
 
   async function queryTest(searchValue) {
     //if all then query all users in the userbase
@@ -48,10 +50,7 @@ export default function Chat() {
   }
 
   const handleSelect = async (clickedData) => {
-    // console.log("clickedData:", clickedData);
-    // console.log("clickedData:", clickedData.id);
-    // console.log("user ID:", user.uid);
-    // //check whether the group(chats in firestore) exists, if not create
+    //handle select
 
     const combinedId =
       clickedData.id > user.uid
@@ -61,35 +60,13 @@ export default function Chat() {
     console.log("combinedId:", combinedId);
 
     try {
-      //   const res = await getDoc(doc(db, "chats", combinedId));
-      //   console.log("res:", res);
-
+      console.log("combinedId inside TRY:", combinedId);
       const res = await firestore.collection("chats").doc(combinedId).get();
 
-      //
+      // console.log("res:", res.exists)
+      // console.log("res:", res)
 
-      try {
-        const ref = firestore.collection("chats").doc(combinedId); //
-        const msgRef = ref.collection("messages");
-
-        console.log("adding");
-        await msgRef.add({
-          text: "Testi123232ng",
-          createdAt: serverTimestamp(),
-          user: user.uid,
-        });
-        console.log("message added");
-      } catch (err) {
-        console.log("error in adding message:", err);
-      }
-
-      //
-      return;
       if (!res.exists) {
-        //create a chat in chats collection
-
-        console.log("chat created");
-        return;
         fetch("/api/createChat", {
           method: "POST",
           headers: {
@@ -116,6 +93,8 @@ export default function Chat() {
       } else {
         console.log("chat exists");
       }
+
+      setChatDataId(combinedId);
     } catch (err) {
       console.log("error in creating chat:", err);
     }
@@ -228,8 +207,14 @@ export default function Chat() {
             </>
           </div>
         </div>
+        {user && chatdataId && (
+          <ChatWindow
+            dataId={chatdataId ? chatdataId : null}
+            currentUser={user}
+          />
+        )}
 
-        <ChatWindow dataArr={data} />
+        {!chatdataId && <ChatWindowEmpty />}
       </div>
     </>
   );
@@ -267,7 +252,66 @@ const ChatInput = () => {
   );
 };
 
-const ChatWindow = ({ dataArr }) => {
+const ChatWindow = ({ dataId, currentUser }) => {
+  const dummy = useRef();
+  const user = currentUser.uid;
+  const [inputText, setInputText] = useState(""); // State to store input text
+  const [dataArr, setDataArr] = useState([]); // State to store chat messages
+
+  const messagesRef = firestore
+    .collection("chats")
+    .doc(dataId)
+    .collection("messages");
+  const query = messagesRef.orderBy("createdAt").limit(25);
+  const [messages] = useCollectionData(query, { idField: "id" });
+
+  const fetchMsgs = async () => {
+    const dataArr = await messagesRef.get();
+    const messagesData = dataArr.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setDataArr(messagesData);
+    dummy.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (inputText.trim() === "") return; // Prevent adding empty messages
+    console.log("Form submitted!");
+
+    await messagesRef.add({
+      text: inputText,
+      createdAt: serverTimestamp(),
+      user: user,
+    });
+
+    setInputText(""); // Clear the input field
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && inputText.trim() !== "") {
+      // Trigger the onSubmit function when Enter key is pressed
+      handleSubmit(e);
+    }
+  };
+
+  useEffect(() => {
+    if (messages) {
+      const messagesData = messages.map((doc) => ({
+        id: doc.id,
+        ...doc,
+      }));
+      setDataArr(messagesData);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (dataId) {
+      fetchMsgs();
+    }
+  }, [dataId]);
+
   return (
     <div
       className="overflow-x-auto"
@@ -282,12 +326,14 @@ const ChatWindow = ({ dataArr }) => {
       <div style={{ height: "90%", width: "100%" }}>
         {dataArr.map((item) => (
           <div
-            key={item}
-            className={item.id === 1 ? "chat chat-start" : "chat chat-end"}
+            key={item.id}
+            className={item.user !== user ? "chat chat-start" : "chat chat-end"}
           >
-            <div className="chat-bubble">{item.message}</div>
+            <div className="chat-bubble">{item.text}</div>
           </div>
         ))}
+
+        <span ref={dummy}></span>
       </div>
 
       <div>
@@ -305,6 +351,9 @@ const ChatWindow = ({ dataArr }) => {
               id="UserEmail"
               placeholder="Amazing Chats ..."
               className="w-full rounded-md border-gray-200 pe-10 shadow-sm sm:text-sm"
+              onKeyDown={handleKeyDown}
+              onChange={(e) => setInputText(e.target.value)}
+              value={inputText}
               style={{
                 width: "400px",
                 minHeight: "40px",
@@ -315,6 +364,34 @@ const ChatWindow = ({ dataArr }) => {
             />
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const ChatWindowEmpty = () => {
+  return (
+    <div
+      className="overflow-x-auto"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "90%",
+        backgroundColor: "lightblue",
+        padding: "10px",
+      }}
+    >
+      <div style={{ height: "90%", width: "100%" }}></div>
+
+      <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        ></div>
       </div>
     </div>
   );
