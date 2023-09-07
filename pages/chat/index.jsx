@@ -6,19 +6,8 @@ import { useContext } from "react";
 import { UserContext } from "@lib/context";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-const data = [
-  {
-    id: 1,
-    message: "Hart Hagerty from United States",
-  },
-  {
-    id: 2,
-    message: "THis is left message",
-  },
-];
-
 export default function Chat() {
-  const [oppData, setOppData] = useState(data);
+  const [oppData, setOppData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const { user, username } = useContext(UserContext);
@@ -53,21 +42,55 @@ export default function Chat() {
     //handle select
 
     const combinedId =
-      clickedData.id > user.uid
-        ? clickedData.id + user.uid
-        : user.uid + clickedData.id;
-
-    console.log("combinedId:", combinedId);
+      clickedData.username > username
+        ? clickedData.username + username
+        : username + clickedData.username;
 
     try {
       console.log("combinedId inside TRY:", combinedId);
-      const res = await firestore.collection("chats").doc(combinedId).get();
+      
+      firestore.collection("chats").doc(combinedId).get().then(async (doc) => {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          setChatDataId(combinedId);
+        } else {
+          // doc.data() will be undefined in this case
 
-      // console.log("res:", res.exists)
-      // console.log("res:", res)
+          await fetch("/api/createChat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: user ? user.accessToken : undefined,
+            },
+            body: JSON.stringify({
+              user: user,
+              username: username,
+              combinedId: combinedId,
+              user2: clickedData.id,
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log("response ok");
+              } else {
+                console.log("response not ok");
+              }
+            })
+            .catch((error) => {
+              console.log("error in fetch:");
+            });
 
+          console.log("No such document!");
+          setChatDataId(combinedId);
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+
+
+      return //
       if (!res.exists) {
-        fetch("/api/createChat", {
+        await fetch("/api/createChat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
