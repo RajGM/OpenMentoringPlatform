@@ -46,7 +46,7 @@ export default function Chat() {
               if (docSnapshot.exists) {
                 const friendData = docSnapshot.data();
                 return { chatId: friend.chatId, ...friendData };
-                } else {
+              } else {
                 return null; // Document doesn't exist
               }
             });
@@ -55,7 +55,7 @@ export default function Chat() {
           Promise.all(friendDataPromises)
             .then((friendData) => {
               console.log("Friend data retrieved:", friendData);
-              setOppData(friendData)
+              setOppData(friendData);
             })
             .catch((error) => {
               console.error("Error retrieving friend data:", error);
@@ -68,10 +68,6 @@ export default function Chat() {
       } catch (error) {
         console.error("Error retrieving user data:", error);
       }
-
-
-
-
     } else {
       query = firestore
         .collection("users")
@@ -91,63 +87,53 @@ export default function Chat() {
   }
 
   const handleSelect = async (clickedData) => {
-    //handle select
-
-    const combinedId =
-      clickedData.username > username
-        ? clickedData.username + username
-        : username + clickedData.username;
-
-    try {
-      console.log("combinedId inside TRY:", combinedId);
-
-      firestore
-        .collection("chats")
-        .doc(combinedId)
-        .get()
-        .then(async (doc) => {
-          if (doc.exists) {
-            console.log("Document data:", doc.data());
-            setChatDataId(combinedId);
-          } else {
-            // doc.data() will be undefined in this case
-
-            await fetch("/api/createChat", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: user ? user.accessToken : undefined,
-              },
-              body: JSON.stringify({
-                user: user,
-                username: username,
-                combinedId: combinedId,
-                user2: clickedData.id,
-              }),
-            })
-              .then((response) => {
-                if (response.ok) {
-                  console.log("response ok");
-                } else {
-                  console.log("response not ok");
-                }
-              })
-              .catch((error) => {
-                console.log("error in fetch:");
-              });
-
-            console.log("No such document!");
-            setChatDataId(combinedId);
-          }
+    
+    if (clickedData.chatId) {
+      setChatDataId(clickedData.chatId);  
+    } else {
+      const combinedId =
+        clickedData.username > username
+          ? clickedData.username + username
+          : username + clickedData.username;
+ 
+      try {
+        await fetch("/api/createChat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: user ? user.accessToken : undefined,
+          },
+          body: JSON.stringify({
+            user: user,
+            username: username,
+            combinedId: combinedId,
+            user2: clickedData.id,
+          }),
         })
-        .catch((error) => {
-          console.log("Error getting document:", error);
-        });
-    } catch (err) {
-      console.log("error in creating chat:", err);
-    }
-  };
+          .then((response) => {
+            if (response.ok) {
+              console.log("response ok");
+            } else {
+              console.log("response not ok");
+            }
+          })
+          .catch((error) => {
+            console.log("error in fetch:");
+          });
 
+        console.log("No such document!");
+        setChatDataId(combinedId);
+      } catch (err) {
+        console.log("error in creating chat:", err);
+      }
+
+      console.log("create new one");
+    }
+
+    
+
+  };
+  
   return (
     <>
       <div
@@ -234,13 +220,7 @@ export default function Chat() {
                         onClick={() => handleSelect(item)}
                       >
                         <div>
-                          <Image
-                            src={
-                              item.photoURL  
-                            }
-                            width={40}
-                            height={40}
-                          />
+                          <Image src={item.photoURL} width={40} height={40} />
                         </div>
                         <div className="">
                           <div className="font-bold">{item.username}</div>
