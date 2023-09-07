@@ -17,25 +17,77 @@ export default function Chat() {
   const [searchedUser, setSearchedUser] = useState({});
 
   useEffect(() => {
-    queryTest("rajgm");
+    queryTest("");
   }, [chatdataId]);
 
   async function queryTest(searchValue) {
     //if all then query all users in the userbase
+    let query = "";
+    if (!user) {
+      return;
+    }
+    console.log(user.uid);
 
-    let query = firestore
-      .collection("users")
-      .where("username", "==", searchValue);
-    const queryData = (await query.get()).docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log("queryData:", typeof queryData);
-    console.log("queryData Array[0]:", queryData[0]);
+    if (searchValue === "") {
+      query = firestore.collection("userchats").doc(user.uid);
 
-    setOppData(queryData);
-    setSearchedUser[queryData[0]];
-    console.log("queryData UID:", queryData[0].id);
+      try {
+        const docSnapshot = await query.get();
+
+        if (docSnapshot.exists) {
+          const userData = docSnapshot.data();
+          console.log("Retrieved User Data:", userData.friends);
+
+          // Create an array of promises for fetching friend data
+          const friendDataPromises = userData.friends.map((friend) => {
+            const docRef = friend.reference;
+
+            return docRef.get().then((docSnapshot) => {
+              if (docSnapshot.exists) {
+                const friendData = docSnapshot.data();
+                return { chatId: friend.chatId, ...friendData };
+                } else {
+                return null; // Document doesn't exist
+              }
+            });
+          });
+
+          Promise.all(friendDataPromises)
+            .then((friendData) => {
+              console.log("Friend data retrieved:", friendData);
+              setOppData(friendData)
+            })
+            .catch((error) => {
+              console.error("Error retrieving friend data:", error);
+            });
+
+          //setOppData(userData.friends);
+        } else {
+          console.log("Document does not exist.");
+        }
+      } catch (error) {
+        console.error("Error retrieving user data:", error);
+      }
+
+
+
+
+    } else {
+      query = firestore
+        .collection("users")
+        .where("username", "==", searchValue);
+
+      const queryData = (await query.get()).docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("queryData:", typeof queryData);
+      console.log("queryData Array[0]:", queryData[0]);
+
+      setOppData(queryData);
+      setSearchedUser[queryData[0]];
+      console.log("queryData UID:", queryData[0].id);
+    }
   }
 
   const handleSelect = async (clickedData) => {
@@ -48,76 +100,49 @@ export default function Chat() {
 
     try {
       console.log("combinedId inside TRY:", combinedId);
-      
-      firestore.collection("chats").doc(combinedId).get().then(async (doc) => {
-        if (doc.exists) {
-          console.log("Document data:", doc.data());
-          setChatDataId(combinedId);
-        } else {
-          // doc.data() will be undefined in this case
 
-          await fetch("/api/createChat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              authorization: user ? user.accessToken : undefined,
-            },
-            body: JSON.stringify({
-              user: user,
-              username: username,
-              combinedId: combinedId,
-              user2: clickedData.id,
-            }),
-          })
-            .then((response) => {
-              if (response.ok) {
-                console.log("response ok");
-              } else {
-                console.log("response not ok");
-              }
+      firestore
+        .collection("chats")
+        .doc(combinedId)
+        .get()
+        .then(async (doc) => {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            setChatDataId(combinedId);
+          } else {
+            // doc.data() will be undefined in this case
+
+            await fetch("/api/createChat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: user ? user.accessToken : undefined,
+              },
+              body: JSON.stringify({
+                user: user,
+                username: username,
+                combinedId: combinedId,
+                user2: clickedData.id,
+              }),
             })
-            .catch((error) => {
-              console.log("error in fetch:");
-            });
+              .then((response) => {
+                if (response.ok) {
+                  console.log("response ok");
+                } else {
+                  console.log("response not ok");
+                }
+              })
+              .catch((error) => {
+                console.log("error in fetch:");
+              });
 
-          console.log("No such document!");
-          setChatDataId(combinedId);
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-
-
-      return //
-      if (!res.exists) {
-        await fetch("/api/createChat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: user ? user.accessToken : undefined,
-          },
-          body: JSON.stringify({
-            user: user,
-            username: username,
-            combinedId: combinedId,
-            user2: clickedData.id,
-          }),
+            console.log("No such document!");
+            setChatDataId(combinedId);
+          }
         })
-          .then((response) => {
-            if (response.ok) {
-              console.log("response ok");
-            } else {
-              console.log("response not ok");
-            }
-          })
-          .catch((error) => {
-            console.log("error in fetch:");
-          });
-      } else {
-        console.log("chat exists");
-      }
-
-      setChatDataId(combinedId);
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
     } catch (err) {
       console.log("error in creating chat:", err);
     }
@@ -195,7 +220,7 @@ export default function Chat() {
                 {oppData.length > 0
                   ? oppData.map((item) => (
                       <div
-                        key={item}
+                        key={item.chatId}
                         style={{
                           display: "flex",
                           flexDirection: "row",
@@ -211,7 +236,7 @@ export default function Chat() {
                         <div>
                           <Image
                             src={
-                              "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
+                              item.photoURL  
                             }
                             width={40}
                             height={40}
