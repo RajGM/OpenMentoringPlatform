@@ -13,10 +13,11 @@ export default function Chat() {
   const { user, username } = useContext(UserContext);
   const [chatdataId, setChatDataId] = useState("");
   const [searchedUser, setSearchedUser] = useState({});
+  const [selectedUser, setSelectedUser] = useState({});
 
   useEffect(() => {
     queryTest("");
-  }, [chatdataId,user]);
+  }, [chatdataId, user]);
 
   async function queryTest(searchValue) {
     //if all then query all users in the userbase
@@ -26,7 +27,7 @@ export default function Chat() {
     }
     console.log(user.uid);
 
-    console.log("searchValue:", searchValue)
+    console.log("searchValue:", searchValue);
 
     if (searchValue == "" || searchValue.length == 0) {
       query = firestore.collection("userchats").doc(user.uid);
@@ -60,7 +61,6 @@ export default function Chat() {
             .catch((error) => {
               console.error("Error retrieving friend data:", error);
             });
-
         } else {
           console.log("Document does not exist.");
         }
@@ -86,15 +86,15 @@ export default function Chat() {
   }
 
   const handleSelect = async (clickedData) => {
-    
     if (clickedData.chatId) {
-      setChatDataId(clickedData.chatId);  
+      setChatDataId(clickedData.chatId);
+      setSelectedUser(clickedData);
     } else {
       const combinedId =
         clickedData.username > username
           ? clickedData.username + username
           : username + clickedData.username;
- 
+
       try {
         await fetch("/api/createChat", {
           method: "POST",
@@ -122,17 +122,15 @@ export default function Chat() {
 
         console.log("No such document!");
         setChatDataId(combinedId);
+        setSelectedUser(clickedData);
       } catch (err) {
         console.log("error in creating chat:", err);
       }
 
       console.log("create new one");
     }
-
-
-
   };
-  
+
   return (
     <>
       <div
@@ -238,6 +236,7 @@ export default function Chat() {
           <ChatWindow
             dataId={chatdataId ? chatdataId : null}
             currentUser={user}
+            selectedUser={selectedUser}
           />
         )}
 
@@ -279,7 +278,9 @@ const ChatInput = () => {
   );
 };
 
-const ChatWindow = ({ dataId, currentUser }) => {
+const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
+  console.log("CURRENT USER:", currentUser)
+  console.log("SELECTED USER:", selectedUser)
   const dummy = useRef();
   const user = currentUser.uid;
   const [inputText, setInputText] = useState(""); // State to store input text
@@ -350,6 +351,17 @@ const ChatWindow = ({ dataId, currentUser }) => {
         padding: "10px",
       }}
     >
+      <div style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+        <div className="alert alert-info" style={{display:'flex', flexDirection:'row', justifyContent:'center', width:'400px'}}>
+          <div className="avatar">
+              <Image src={selectedUser.photoURL} width={30} height={30} />
+          </div>
+          <div>
+              {selectedUser.username}
+          </div>
+        </div>
+      </div>
+
       <div style={{ height: "90%", width: "100%" }}>
         {dataArr.map((item) => (
           <div
