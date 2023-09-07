@@ -12,13 +12,11 @@ export default function Chat() {
   const [searchValue, setSearchValue] = useState("");
   const { user, username } = useContext(UserContext);
   const [chatdataId, setChatDataId] = useState("");
-  console.log("owner user from ChAT PAGE:", user, username);
-
   const [searchedUser, setSearchedUser] = useState({});
 
   useEffect(() => {
     queryTest("");
-  }, [chatdataId]);
+  }, [chatdataId,user]);
 
   async function queryTest(searchValue) {
     //if all then query all users in the userbase
@@ -28,7 +26,9 @@ export default function Chat() {
     }
     console.log(user.uid);
 
-    if (searchValue === "") {
+    console.log("searchValue:", searchValue)
+
+    if (searchValue == "" || searchValue.length == 0) {
       query = firestore.collection("userchats").doc(user.uid);
 
       try {
@@ -61,7 +61,6 @@ export default function Chat() {
               console.error("Error retrieving friend data:", error);
             });
 
-          //setOppData(userData.friends);
         } else {
           console.log("Document does not exist.");
         }
@@ -130,7 +129,7 @@ export default function Chat() {
       console.log("create new one");
     }
 
-    
+
 
   };
   
