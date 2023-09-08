@@ -1,21 +1,23 @@
 import { useState } from 'react';
-import url from 'url-parse';
 
 const UniversityEmailChecker = () => {
   const [website, setWebsite] = useState('');
   const [email, setEmail] = useState('');
   const [result, setResult] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const [universityDomain, setUniversityDomain] = useState('');
+  const [websiteDomain, setWebsiteDomain] = useState('');
 
   const handleWebsiteChange = (e) => {
     const websiteValue = e.target.value;
     setWebsite(websiteValue);
     setIsFormValid(websiteValue.trim() !== '' && email.trim() !== '');
 
-    const parsedUrl = new url(websiteValue);
-    const extractedDomain = parsedUrl.hostname;
-    setUniversityDomain(extractedDomain);
+    // Extract the domain from the website URL
+    const domainMatch = websiteValue.match(/:\/\/(www\.)?([^/]+)/);
+    if (domainMatch) {
+      const extractedDomain = domainMatch[2];
+      setWebsiteDomain(extractedDomain);
+    }
   };
 
   const handleEmailChange = (e) => {
@@ -31,16 +33,18 @@ const UniversityEmailChecker = () => {
 
     try {
       // Define a regular expression pattern for matching the university domain
-      const domainPattern = new RegExp(`@(\\w+\\.)*${universityDomain}`);
+      const domainPattern = new RegExp(`@.*${websiteDomain.replace('.', '\\.')}`);
 
-     console.log(domainPattern.test(email));
+        console.log(domainPattern)
+        console.log(email)
+        console.log(domainPattern.test(email))
       return 
       // Check if the email matches the domain pattern
       if (domainPattern.test(email)) {
         // Send a request to the backend
         const response = await fetch('/api/verify-email', {
           method: 'POST',
-          body: JSON.stringify({ email, website, universityDomain }),
+          body: JSON.stringify({ email, website, websiteDomain }),
           headers: {
             'Content-Type': 'application/json',
           },
