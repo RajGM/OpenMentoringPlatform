@@ -7,6 +7,9 @@ import { useContext, useRef, useEffect } from "react";
 import { UserContext } from "@lib/context";
 import { auth, googleAuthProvider } from "@lib/firebase";
 
+import ModalButton from "./Modal";
+import HoverModalButton from "./HoverModalButton";
+
 export default function Header() {
   const { user, username } = useContext(UserContext);
   const router = useRouter();
@@ -21,7 +24,7 @@ export default function Header() {
 
   const signOut = () => {
     auth.signOut();
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -45,14 +48,22 @@ export default function Header() {
                 tabIndex={0}
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
               >
-                <li style={{color:'black'}}>
-                  {username}
+                <li style={{ color: "black" }}>{username}</li>
+                <li>
+                  <a href="/opp" className="justify-between">
+                    OPP
+                  </a>
                 </li>
                 <li>
-                  <a></a>
                   <a href="/mentors" className="justify-between">
                     Mentors
                   </a>
+                </li>
+                <li>
+                  <ModalButton eventData={null} />
+                </li>
+                <li>
+                  <HoverModalButton />
                 </li>
                 <li>
                   <a href="/chat" className="justify-between">
@@ -96,17 +107,3 @@ export default function Header() {
     </>
   );
 }
-
-/*
- <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
- <li>
-              <a href="/kanban" className="justify-between">
-                Kanban
-              </a>
-            </li>
-*/
