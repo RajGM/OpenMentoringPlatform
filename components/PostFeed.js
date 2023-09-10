@@ -33,7 +33,7 @@ function PostItem({ post, admin = false }) {
       {/* If admin view, show extra controls for user */}
       {admin && (
         <>
-          <Link href={`/admin/${post.slug}`}>
+          <Link href={`/blog/${post.slug}`}>
             <h3>
               <button className="btn-blue">Edit</button>
             </h3>

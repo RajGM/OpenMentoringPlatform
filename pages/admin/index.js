@@ -15,8 +15,8 @@ export default function AdminPostsPage(props) {
   return (
     <main>
       <AuthCheck>
-        <PostList />
         <CreateNewPost />
+        <PostList />
       </AuthCheck>
     </main>
   );
@@ -50,6 +50,40 @@ function CreateNewPost() {
 
   // Create a new post in firestore
   const createPost = async (e) => {
+
+    // e.preventDefault();
+    // const uid = auth.currentUser.uid;
+    // const refToPostsCollection = firestore.collection('posts'); // Reference to the "posts" collection
+    // const refToUserPostsCollection = firestore.collection('users').doc(uid).collection('posts');
+
+    // // Tip: give all fields a default value here
+    // const data = {
+    //   title,
+    //   slug,
+    //   uid,
+    //   username,
+    //   published: false,
+    //   content: '# hello world!',
+    //   createdAt: serverTimestamp(),
+    //   updatedAt: serverTimestamp(),
+    //   heartCount: 0,
+    // };
+
+    // // Create a new document in the "posts" collection
+    // const postDoc = await refToPostsCollection.add(data);
+
+    // // Create a reference to the newly created "posts" document inside the user's "posts" subcollection
+    // const userPostRef = refToUserPostsCollection.doc(postDoc.id);
+
+    // await userPostRef.set({ postRef: postDoc })
+
+    // toast.success('Post created!');
+
+    // // Imperative navigation after doc is set
+    // router.push(`/admin/${data.slug}`);
+
+
+    
     e.preventDefault();
     const uid = auth.currentUser.uid;
     const ref = firestore.collection('users').doc(uid).collection('posts').doc(slug);
@@ -73,6 +107,7 @@ function CreateNewPost() {
 
     // Imperative navigation after doc is set
     router.push(`/admin/${slug}`);
+    
   };
 
   return (

@@ -31,7 +31,7 @@ export default function Header() {
     <>
       <div className="navbar bg-info text-primary-content">
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">FOSS Mentoring</a>
+          <a className="btn btn-ghost normal-case text-xl">STUDY ABROAD</a>
         </div>
         <div className="flex-none gap-2">
           <div className="dropdown dropdown-end">

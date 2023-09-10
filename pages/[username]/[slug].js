@@ -18,9 +18,9 @@ export async function getStaticProps({ params }) {
   let path;
 
   if (userDoc) {
-    const postRef = userDoc.ref.collection('posts').doc(slug);
+    const postRef = userDoc.ref.collection('posts').where('username','==',s2usr);
     post = postToJSON(await postRef.get());
-
+    console.log(post)
     path = postRef.path;
   }
 
@@ -32,7 +32,7 @@ export async function getStaticProps({ params }) {
 
 export async function getStaticPaths() {
   // Improve my using Admin SDK to select empty docs
-  const snapshot = await firestore.collectionGroup('posts').get();
+  const snapshot = await firestore.collection('posts').get();
 
   const paths = snapshot.docs.map((doc) => {
     const { slug, username } = doc.data();

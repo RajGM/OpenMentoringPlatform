@@ -37,6 +37,7 @@ export default function Home(props) {
   const getMorePosts = async () => {
     setLoading(true);
     const last = posts[posts.length - 1];
+    const tagTest = "Blog"
 
     const cursor =
       typeof last.createdAt === "number"
@@ -44,8 +45,9 @@ export default function Home(props) {
         : last.createdAt;
 
     const query = firestore
-      .collectionGroup("posts")
+      .collection("posts")
       .where("published", "==", true)
+      .where("tag", "==", tagTest)
       .orderBy("createdAt", "desc")
       .startAfter(cursor)
       .limit(LIMIT);
