@@ -1,8 +1,7 @@
-import { getUserWithUsername, postToJSON } from '@lib/firebase';
+import { getUserWithUsername, postToJSON,firestore } from '@lib/firebase';
 import UserProfile from '@components/UserProfile';
 import Metatags from '@components/Metatags';
 import PostFeed from '@components/PostFeed';
-
 
 export async function getServerSideProps({ query }) {
   const { username } = query;
@@ -22,13 +21,20 @@ export async function getServerSideProps({ query }) {
 
   if (userDoc) {
     user = userDoc.data();
-    const postsQuery = userDoc.ref
+    const postsQuery = firestore
       .collection('posts')
       .where('published', '==', true)
+      .where('username', '==', username)
       .orderBy('createdAt', 'desc')
       .limit(5);
     posts = (await postsQuery.get()).docs.map(postToJSON);
+
+    console.log("posts:",posts)
+  }else{
+    console.log("no user DOC")
   }
+
+ 
 
   return {
     props: { user, posts }, // will be passed to the page component as props

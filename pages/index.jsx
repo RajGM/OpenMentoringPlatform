@@ -14,11 +14,14 @@ import { useState } from "react";
 const LIMIT = 10;
 
 export async function getServerSideProps(context) {
+  const tagTest = "VISA"
+
   const postsQuery = firestore
-    .collectionGroup("posts")
-    .where("published", "==", true)
-    .orderBy("createdAt", "desc")
-    .limit(LIMIT);
+  .collection("posts")
+  .where("published", "==", true)
+  .where("tag", "==", tagTest)
+  .orderBy("createdAt", "desc")
+  .limit(LIMIT);
 
   const posts = (await postsQuery.get()).docs.map(postToJSON);
 
@@ -37,7 +40,7 @@ export default function Home(props) {
   const getMorePosts = async () => {
     setLoading(true);
     const last = posts[posts.length - 1];
-    const tagTest = "Blog"
+    const tagTest = "VISA"
 
     const cursor =
       typeof last.createdAt === "number"
@@ -45,7 +48,7 @@ export default function Home(props) {
         : last.createdAt;
 
     const query = firestore
-      .collection("posts")
+      .collectionGroup("posts")
       .where("published", "==", true)
       .where("tag", "==", tagTest)
       .orderBy("createdAt", "desc")

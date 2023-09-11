@@ -4,90 +4,79 @@ import HeartButton from '@components/HeartButton';
 import AuthCheck from '@components/AuthCheck';
 import Metatags from '@components/Metatags';
 import { UserContext } from '@lib/context';
-import { firestore, getUserWithUsername, postToJSON } from '../../lib/firebase';
+import { firestore, getUserWithUsername, postToJSON } from '@lib/firebase';
+import { useRouter } from 'next/router';
 
 import Link from 'next/link';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-export async function getStaticProps({ params }) {
-  const { username, slug } = params;
-  const userDoc = await getUserWithUsername(username);
+export default function Post() {
+  const router = useRouter();
+  const { username, slug } = router.query;
+  const [post, setPost] = useState(null);
+  const [postRef, setPostRef] = useState(null);
 
-  let post;
-  let path;
+  useEffect(() => {
+    if (username && slug) {
+      const postRef = firestore
+        .collection('posts')
+        .where('username', '==', username)
+        .where('published', '==', true)
+        .where('slug', '==', slug);
 
-  if (userDoc) {
-    const postRef = userDoc.ref.collection('posts').where('username','==',s2usr);
-    post = postToJSON(await postRef.get());
-    console.log(post)
-    path = postRef.path;
+        setPostRef(postRef);
+
+      const getPost = async () => {
+        try {
+          const querySnapshot = await postRef.get();
+          if (!querySnapshot.empty) {
+            const postData = querySnapshot.docs[0].data();
+            setPost(postData);
+          } else {
+            // Handle the case where no matching post was found.
+          }
+        } catch (error) {
+          // Handle any errors that may occur during the query.
+          console.error('Error getting post:', error);
+        }
+      };
+
+      getPost();
+    }
+  }, [username, slug]);
+
+  if (!username || !slug) {
+    // Render loading or error state if username or slug is not available yet.
+    return <div>Loading...</div>;
   }
 
-  return {
-    props: { post, path },
-    revalidate: 100,
-  };
-}
-
-export async function getStaticPaths() {
-  // Improve my using Admin SDK to select empty docs
-  const snapshot = await firestore.collection('posts').get();
-
-  const paths = snapshot.docs.map((doc) => {
-    const { slug, username } = doc.data();
-    return {
-      params: { username, slug },
-    };
-  });
-
-  return {
-    // must be in this format:
-    // paths: [
-    //   { params: { username, slug }}
-    // ],
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export default function Post(props) {
-  const postRef = firestore.doc(props.path);
-  const [realtimePost] = useDocumentData(postRef);
-
-  const post = realtimePost || props.post;
-
-  const { user: currentUser } = useContext(UserContext);
-
+  // Render post content here.
   return (
-    <main className={styles.container}>
-      <Metatags title={post.title} description={post.title} />
-      
-      <section>
-        <PostContent post={post} />
-      </section>
+    <div>
+      {/* Render your post content using the 'post' state */}
+      {post ? (
+        <div>
+          {/* Render your post content using 'post' */}
+          <main className={styles.container}>
+            <Metatags title={post.title} description={post.title} />
 
-      <aside className="card">
-        <p>
-          <strong>{post.heartCount || 0} 🤍</strong>
-        </p>
+            <section>
+              <PostContent post={post} />
+            </section>
 
-        <AuthCheck
-          fallback={
-            <Link href="/enter">
-              <button>💗 Sign Up</button>
-            </Link>
-          }
-        >
-          <HeartButton postRef={postRef} />
-        </AuthCheck>
-
-        {currentUser?.uid === post.uid && (
-          <Link href={`/admin/${post.slug}`}>
-            <button className="btn-blue">Edit Post</button>
-          </Link>
-        )}
-      </aside>
-    </main>
+            <aside className="card">
+              <p>
+                <strong>{post.heartCount || 0} 🤍</strong>
+              </p>
+              {/*<HeartButton postRef={postRef} / >  improve this according to vote in opp*/}
+            </aside>
+          </main>
+        </div>
+      ) : (
+        <div>No post found.</div>
+      )}
+    </div>
   );
+
 }
