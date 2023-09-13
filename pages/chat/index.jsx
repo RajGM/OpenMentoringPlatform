@@ -1,5 +1,12 @@
 "use client";
-import { firestore, getDoc, doc, db, serverTimestamp } from "@lib/firebase";
+import {
+  firestore,
+  getDoc,
+  doc,
+  db,
+  serverTimestamp,
+  storage,
+} from "@lib/firebase";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useContext } from "react";
@@ -278,13 +285,16 @@ const ChatInput = () => {
   );
 };
 
-const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
-  console.log("CURRENT USER:", currentUser)
-  console.log("SELECTED USER:", selectedUser)
+const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
+  console.log("CURRENT USER:", currentUser);
+  console.log("SELECTED USER:", selectedUser);
   const dummy = useRef();
   const user = currentUser.uid;
   const [inputText, setInputText] = useState(""); // State to store input text
   const [dataArr, setDataArr] = useState([]); // State to store chat messages
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const messagesRef = firestore
     .collection("chats")
@@ -301,20 +311,6 @@ const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
     }));
     setDataArr(messagesData);
     dummy.current.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (inputText.trim() === "") return; // Prevent adding empty messages
-    console.log("Form submitted!");
-
-    await messagesRef.add({
-      text: inputText,
-      createdAt: serverTimestamp(),
-      user: user,
-    });
-
-    setInputText(""); // Clear the input field
   };
 
   const handleKeyDown = (e) => {
@@ -340,6 +336,52 @@ const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
     }
   }, [dataId]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (inputText.trim() === "") return;
+
+    // Check if a file is attached
+    if (selectedFile) {
+      try {
+        const downloadURL = await uploadMediaToStorage(selectedFile);
+        await messagesRef.add({
+          text: inputText,
+          mediaURL: downloadURL, // Save the media URL in the message
+          createdAt: serverTimestamp(),
+          user: user,
+        });
+      } catch (error) {
+        console.error("Error uploading media message:", error);
+      }
+    } else {
+      await messagesRef.add({
+        text: inputText,
+        createdAt: serverTimestamp(),
+        user: user,
+      });
+    }
+
+    setInputText("");
+  };
+
+  async function uploadMediaToStorage(file) {
+    try {
+      const storageRef = storage.ref(); // Reference to the root of your storage bucket
+      const mediaRef = storageRef.child(`media/${file.name}`); // Specify the path where you want to store the file
+      await mediaRef.put(file); // Upload the file to the specified path
+      const downloadURL = await mediaRef.getDownloadURL(); // Get the download URL of the uploaded media
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading media to storage:", error);
+      throw error;
+    }
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    setSelectedFile(file);
+  };
+
   return (
     <div
       className="overflow-x-auto"
@@ -351,14 +393,26 @@ const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
         padding: "10px",
       }}
     >
-      <div style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
-        <div className="alert alert-info" style={{display:'flex', flexDirection:'row', justifyContent:'center', width:'400px'}}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          className="alert alert-info"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            width: "400px",
+          }}
+        >
           <div className="avatar">
-              <Image src={selectedUser.photoURL} width={30} height={30} />
+            <Image src={selectedUser.photoURL} width={30} height={30} />
           </div>
-          <div>
-              {selectedUser.username}
-          </div>
+          <div>{selectedUser.username}</div>
         </div>
       </div>
 
@@ -368,7 +422,17 @@ const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
             key={item.id}
             className={item.user !== user ? "chat chat-start" : "chat chat-end"}
           >
-            <div className="chat-bubble">{item.text}</div>
+            {item.mediaURL ? (
+              <div>
+                <img
+                  src={item.mediaURL}
+                  alt="Media"
+                  className="media-preview"
+                />
+              </div>
+            ) : (
+              <div className="chat-bubble">{item.text}</div>
+            )}
           </div>
         ))}
 
@@ -384,23 +448,43 @@ const ChatWindow = ({ dataId, currentUser,selectedUser }) => {
             justifyContent: "center",
           }}
         >
-          <div>
-            <input
-              type="text"
-              id="UserEmail"
-              placeholder="Amazing Chats ..."
-              className="w-full rounded-md border-gray-200 pe-10 shadow-sm sm:text-sm"
-              onKeyDown={handleKeyDown}
-              onChange={(e) => setInputText(e.target.value)}
-              value={inputText}
-              style={{
-                width: "400px",
-                minHeight: "40px",
-                padding: "10px",
-                border: "1px solid black",
-                textAlign: "center",
-              }}
-            />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <input
+                type="text"
+                id="UserEmail"
+                placeholder="Amazing Chats ..."
+                className="w-full rounded-md border-gray-200 pe-10 shadow-sm sm:text-sm"
+                onKeyDown={handleKeyDown}
+                onChange={(e) => setInputText(e.target.value)}
+                value={inputText}
+                style={{
+                  width: "400px",
+                  minHeight: "40px",
+                  padding: "10px",
+                  border: "1px solid black",
+                  textAlign: "center",
+                }}
+              />
+            </div>
+
+            <div>
+              <label className="file-input-label">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input"
+                />
+                <span className="file-input-icon">📷</span>{" "}
+              </label>
+            </div>
           </div>
         </div>
       </div>

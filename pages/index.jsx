@@ -11,7 +11,7 @@ import { firestore, fromMillis, postToJSON } from "@lib/firebase";
 import { use, useState, useEffect } from "react";
 
 // Max post to query per page
-const LIMIT = 10;
+const LIMIT = 1;
 
 export async function getServerSideProps(context) {
   const tagTest = "VISA";

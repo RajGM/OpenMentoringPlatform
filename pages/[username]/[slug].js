@@ -25,7 +25,7 @@ export default function Post() {
         .where('published', '==', true)
         .where('slug', '==', slug);
 
-        setPostRef(postRef);
+      setPostRef(postRef);
 
       const getPost = async () => {
         try {
@@ -54,29 +54,37 @@ export default function Post() {
   // Render post content here.
   return (
     <div>
-      {/* Render your post content using the 'post' state */}
-      {post ? (
-        <div>
-          {/* Render your post content using 'post' */}
-          <main className={styles.container}>
-            <Metatags title={post.title} description={post.title} />
+      <div>
+        {/* Render your post content using the 'post' state */}
+        {post ? (
+          <div>
+            {/* Render your post content using 'post' */}
+            <main className={styles.container}>
+              <Metatags title={post.title} description={post.title} />
 
-            <section>
-              <PostContent post={post} />
-            </section>
+              <section>
+                <PostContent post={post} />
+              </section>
 
-            <aside className="card">
-              <p>
-                <strong>{post.heartCount || 0} 🤍</strong>
-              </p>
-              {/*<HeartButton postRef={postRef} / >  improve this according to vote in opp*/}
-            </aside>
-          </main>
-        </div>
-      ) : (
-        <div>No post found.</div>
-      )}
+              <aside className="card">
+                <p>
+                  <strong>{post.heartCount || 0} 🤍</strong>
+                </p>
+                {/*<HeartButton postRef={postRef} / >  improve this according to vote in opp*/}
+              </aside>
+            </main>
+          </div>
+        ) : (
+          <div>No post found.</div>
+        )}
+      </div>
     </div>
   );
 
 }
+
+
+/*
+
+ 
+*/

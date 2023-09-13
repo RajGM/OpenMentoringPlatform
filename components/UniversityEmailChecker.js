@@ -1,6 +1,5 @@
 import { useState, useContext, use, useEffect } from 'react';
 import { UserContext } from "@lib/context";
-import DayWiseAvailability from '@components/DayWiseAvailability';
 
 const UniversityEmailChecker = () => {
     const [website, setWebsite] = useState('');
@@ -140,7 +139,7 @@ const UniversityEmailChecker = () => {
                 </div>
             )}
 
-            <DayWiseAvailability />
+           
 
         </div>
     );

@@ -834,3 +834,32 @@ div.btn-logo {
   flex-direction: row;
   justify-content: center;
 }
+
+.media-preview {
+  max-width: 100%;
+  max-height: 200px; /* Adjust the maximum height as needed */
+}
+
+/* Style the label container */
+.file-input-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Hide the input element */
+.file-input {
+  display: none;
+}
+
+/* Style the icon */
+.file-input-icon {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+/* Style the text */
+.file-input-text {
+  font-size: 16px;
+  color: #333;
+}

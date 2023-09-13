@@ -1,4 +1,4 @@
-import { getUserWithUsername, postToJSON,firestore } from '@lib/firebase';
+import { getUserWithUsername, postToJSON, firestore } from '@lib/firebase';
 import UserProfile from '@components/UserProfile';
 import Metatags from '@components/Metatags';
 import PostFeed from '@components/PostFeed';
@@ -29,12 +29,12 @@ export async function getServerSideProps({ query }) {
       .limit(5);
     posts = (await postsQuery.get()).docs.map(postToJSON);
 
-    console.log("posts:",posts)
-  }else{
+    console.log("posts:", posts)
+  } else {
     console.log("no user DOC")
   }
 
- 
+
 
   return {
     props: { user, posts }, // will be passed to the page component as props
@@ -46,7 +46,19 @@ export default function UserProfilePage({ user, posts }) {
     <main>
       <Metatags title={user.username} description={`${user.username}'s public profile`} />
       <UserProfile user={user} />
-      <PostFeed posts={posts} />
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'space-around', backgroundColor:'pink', justifyContent:'space-around'}}>
+        <div style={{ width: '20%', backgroundColor:'yellow' }}>
+          Schedule call from here
+        </div>
+        <div style={{width:'50%', backgroundColor:'red'}}>
+          <PostFeed posts={posts} />
+        </div>
+        <div style={{ width: '20%', backgroundColor:'yellow' }}>
+          IMPACT MADE HERE
+        </div>
+
+      </div>
+
     </main>
   );
 }
