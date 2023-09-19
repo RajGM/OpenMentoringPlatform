@@ -6,6 +6,8 @@ import { categoriesAtom, filterAtom } from './atoms';
 import { useAtom } from 'jotai';
 import * as Yup from 'yup';
 
+import DatePickerCarousel from './DatePickerCarousel';
+
 import { UserContext } from '@lib/context';
 import { useContext } from 'react';
 
@@ -922,6 +924,7 @@ async function post(type, category, values, user, firestoreid) {
 
 //validation schema
 /*
+
 const hackathonValidationSchema = Yup.object({
     eventN: Yup.string().min(4, 'Too short').max(30, 'Hackathon Name only').required('Event name is required'),
     link: Yup.string().min(3, 'Shorten URLs not allowed').max(60, 'Hackathon HomePage Link only').url('Please only homepage link'),
@@ -933,3 +936,13 @@ const hackathonValidationSchema = Yup.object({
     postedBy: Yup.string().required('Posted by is required')
 });
 */
+
+export const SessionForm = ({ eventData }) => {
+
+    const { user, username } = useContext(UserContext);
+
+    return (
+        <DatePickerCarousel userID={user} />
+    );
+
+}

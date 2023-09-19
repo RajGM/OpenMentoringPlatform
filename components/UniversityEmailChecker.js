@@ -11,13 +11,14 @@ const UniversityEmailChecker = () => {
     const [sendToFirebase, setSendToFirebase] = useState(false);
     const [listMentor, setListMentor] = useState(false);
     const [error, setError] = useState(false);
+    const [solanaWallet, setSolanaWallet] = useState('');
+    const [meetingLink, setMeetingLink] = useState('');
 
     useEffect(() => {
         if (user) {
             setEmail(user.email);
         }
     }, [user]);
-
 
     const handleWebsiteChange = (e) => {
         const websiteValue = e.target.value;
@@ -38,20 +39,32 @@ const UniversityEmailChecker = () => {
         setIsFormValid(e.target.value.trim() !== '' && website.trim() !== '');
     };
 
+    const handleSolanaWalletChange = (e) => {
+        setSolanaWallet(e.target.value);
+    };
+
+    const handleMeetingLinkChange = (e) => {
+        setMeetingLink(e.target.value);
+    };
+
     const checkEmail = async () => {
+
         if (!isFormValid) {
             setResult('Please fill in both fields.');
             return;
         }
 
+        if (listMentor) {
+            // Check if Solana Wallet and Meeting link are filled when listMentor is checked
+            if (!solanaWallet || !meetingLink) {
+                setError('Solana Wallet and Meeting Link are mandatory when adding to Mentor Board.');
+                return;
+            }
+        }
+
         try {
             // Define a regular expression pattern for matching the university domain
             const domainPattern = new RegExp(`${websiteDomain.replace('.', '\\.')}$`);
-
-            console.log("DOMAIN PATTERN", domainPattern)
-            console.log("domain:", websiteDomain)
-            console.log("EMAIL", email + " " + email.split('@')[1])
-            console.log(domainPattern.test(email.split('@')[1]) || websiteDomain.includes(email.split('@')[1]));
 
             // Check if the email domain matches the domain pattern
             if (domainPattern.test(email.split('@')[1]) || websiteDomain.includes(email.split('@')[1])) {
@@ -124,6 +137,27 @@ const UniversityEmailChecker = () => {
                         />
                     </label>
 
+                    <br />
+                    {/* Add input fields for Solana Wallet and Meeting link */}
+                    <label>
+                        Solana Wallet:
+                        <input
+                            type="text"
+                            value={solanaWallet}
+                            onChange={handleSolanaWalletChange}
+                        />
+                    </label>
+                    <br />
+                    <label>
+                        Meeting Link:
+                        <input
+                            type="text"
+                            value={meetingLink}
+                            onChange={handleMeetingLinkChange}
+                        />
+                    </label>
+                    <br />
+
                     {/* Button to send to Firebase */}
                     <div>
                         <button onClick={checkEmail}>Send to Firebase</button>
@@ -138,8 +172,6 @@ const UniversityEmailChecker = () => {
                     <p>{error}</p>
                 </div>
             )}
-
-           
 
         </div>
     );

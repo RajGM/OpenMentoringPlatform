@@ -1,8 +1,8 @@
 import Head from 'next/head';
 
 export default function Metatags({
-  title = 'FOSS Mentoring',
-  description = 'A Free and Open Study Abroad Mentoring Platform'
+  title = 'SOL Mentoring',
+  description = 'A Free and Open Mentoring Platform'
 }) {
   return (
     <Head>

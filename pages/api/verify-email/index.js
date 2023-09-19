@@ -2,8 +2,6 @@ import { db, auth, writeToFirestore } from '../firebaseAdmin/index'
 
 export default async function handler(req, res) {
 
-    console.log("REQUEST HERE")
-
     await auth.verifyIdToken(req.headers.authorization)
         .then(async (decodedToken) => {
 
