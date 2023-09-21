@@ -1,11 +1,20 @@
 // components/DatePickerCarousel.js
 import { useState, useEffect } from 'react';
 import { firestore } from '@lib/firebase';
+import { date } from 'yup';
 
-const DatePickerCarousel = ({ userID }) => {
+const DatePickerCarousel = ({ userID, gapAmount }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const daysToShow = 7; // Number of days to show in the carousel
     const [availableSlots, setAvailableSlots] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phoneNumber: '',
+    });
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedSlot, setSelectedSlot] = useState(null); // Initialize with null or default value
 
     console.log("userID:", userID)
 
@@ -23,7 +32,7 @@ const DatePickerCarousel = ({ userID }) => {
                 <div
                     key={formattedDate}
                     className="date-item"
-                    onClick={() => fetchDataFromFirestore(dayOfWeek)}
+                    onClick={() => fetchDataFromFirestore(dayOfWeek, formattedDate)}
                 >
                     <div className="date">{formattedDate}</div>
                     <div className="day">{dayOfWeek}</div>
@@ -59,24 +68,135 @@ const DatePickerCarousel = ({ userID }) => {
         setCurrentDate(newDate);
     };
 
+    function getYearMonthDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed, so we add 1. We also ensure it's two digits.
+        const day = date.getDate().toString().padStart(2, '0'); // Ensure the day is two digits.
+        return `${year}${month}${day}`;
+    }
+
     // Function to fetch available slots from Firestore
-    const fetchDataFromFirestore = async (formattedDate) => {
+    const fetchDataFromFirestore = async (dayOfWeek, date) => {
         // Replace 'userID' with the actual user ID
-        const day = formattedDate;
+        setSelectedDate(date);
 
         try {
             console.log("userID:", userID)
-            const docRef = firestore.collection('users').doc(userID.uid).collection('availability').doc(formattedDate);
-            const doc = await docRef.get();
 
-            console.log("doc:", doc)
+            const fullDate = getYearMonthDate(currentDate);
+
+            console.log(fullDate);
+
+            const docRef1 = firestore.collection('users').doc(userID.uid).collection('availability').doc(dayOfWeek);
+            const docRef2 = firestore.collection('users').doc(userID.uid).collection('booking').doc(String(fullDate));
+
+            // Fetch both documents in parallel
+            const [doc, doc2] = await Promise.all([
+                docRef1.get(),
+                docRef2.get()
+            ]);
 
             if (doc.exists) {
                 const data = doc.data();
+                const data2 = doc2.data();
+
                 console.log("data:", data)
-                console.log("data.slots:", data.slots)
+                console.log("data2:", data2)
+
+                /// here 
+                function convertToMinutes(time) {
+                    const [hours, minutes] = time.split(':').map(Number);
+                    return hours * 60 + minutes;
+                }
+                
+                function formatMinutesToTime(minutes) {
+                    const hour = Math.floor(minutes / 60);
+                    const minute = minutes % 60;
+                    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                }
+                
+                function overlap(slot1, slot2) {
+                    return convertToMinutes(slot1.startTime) < convertToMinutes(slot2.endTime) && convertToMinutes(slot1.endTime) > convertToMinutes(slot2.startTime);
+                }
+                
+                function getAvailableSlots(data1, data2) {
+                    let availableSlots = [];
+                
+                    for (let slot of data1) {
+                        let isOverlapping = false;
+                        let tempSlots = [slot];
+                
+                        for (let booked of data2) {
+                            if (overlap(slot, booked)) {
+                                isOverlapping = true;
+                                let newSlots = [];
+                
+                                for (let tempSlot of tempSlots) {
+                                    if (convertToMinutes(booked.startTime) > convertToMinutes(tempSlot.startTime)) {
+                                        newSlots.push({
+                                            startTime: tempSlot.startTime,
+                                            endTime: formatMinutesToTime(convertToMinutes(booked.startTime))
+                                        });
+                                    }
+                                    if (convertToMinutes(booked.endTime) < convertToMinutes(tempSlot.endTime)) {
+                                        newSlots.push({
+                                            startTime: formatMinutesToTime(convertToMinutes(booked.endTime)),
+                                            endTime: tempSlot.endTime
+                                        });
+                                    }
+                                }
+                
+                                tempSlots = newSlots;
+                            }
+                        }
+                
+                        if (!isOverlapping) {
+                            availableSlots.push(slot);
+                        } else {
+                            availableSlots = availableSlots.concat(tempSlots);
+                        }
+                    }
+                
+                    return availableSlots;
+                }
+
+                const freeSlots = getAvailableSlots(data.slots, data2.slots); 
+
+                ////here 
+                
+                const breakDownSlots = (slots, gap) => {
+                    const brokenSlots = [];
+                    for (const slot of slots) {
+                        const parseTime = (time) => {
+                            const [hours, minutes] = time.split(':');
+                            return new Date(0, 0, 0, hours, minutes);
+                        };
+
+                        const start = parseTime(slot.startTime);
+                        const end = parseTime(slot.endTime);
+                        let current = start;
+                        while (current < end) {
+                            let nextEnd = new Date(current.getTime() + gap * 60000); // Convert gap to milliseconds
+                            if (nextEnd > end) {
+                                // Ensure the broken slot doesn't exceed the original slot's end time
+                                nextEnd = end;
+                            }
+                            brokenSlots.push({
+                                startTime: current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                endTime: nextEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            });
+                            current = nextEnd;
+                        }
+                    }
+                    return brokenSlots;
+                };
+
+                // Break down the original slots with the specified gapAmount
+                const brokenSlots = breakDownSlots(freeSlots, gapAmount);
+
                 // Set the available slots in state
-                setAvailableSlots(data.slots);
+                setAvailableSlots(brokenSlots);
+
             } else {
                 // If no data is available, reset the available slots
                 setAvailableSlots([]);
@@ -84,6 +204,124 @@ const DatePickerCarousel = ({ userID }) => {
         } catch (error) {
             console.error('Error fetching data from Firestore:', error);
         }
+    };
+
+    const handleButtonClick = (index) => {
+        // Show the form when a button is clicked
+        const clickedSlot = availableSlots[index];
+        setSelectedSlot(clickedSlot);
+        setShowForm(true);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        // Update the form data when input fields change
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    function sendEmailWithInvite(recipients, htmlBody, subject, plainBody, icsString) {
+        const base64Ics = btoa(icsString);
+        const docRef = firestore.collection('mail');
+
+        docRef.add({
+            to: recipients,
+            message: {
+                html: htmlBody,
+                subject: subject,
+                text: plainBody,
+                attachments: [
+                    {
+                        filename: 'invite.ics',
+                        content: base64Ics,
+                        encoding: 'base64',
+                        type: 'text/calendar'
+                    }
+                ]
+            }
+        });
+    }
+
+    function createICS(event) {
+        const { start, end, summary, description, location } = event;
+
+        return [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "BEGIN:VEVENT",
+            `DTSTART:${start}`,
+            `DTEND:${end}`,
+            `SUMMARY:${summary}`,
+            `DESCRIPTION:${description}`,
+            `LOCATION:${location}`,
+            "END:VEVENT",
+            "END:VCALENDAR"
+        ].join('\r\n');
+    }
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+
+        // Create a new object with formData, selectedDate, and selectedSlot
+        const formDataWithDetails = {
+            ...formData,
+            date: selectedDate, // Add the selectedDate
+            startTime: selectedSlot.startTime, // Add the selectedSlot start time
+            endTime: selectedSlot.endTime, // Add the selectedSlot end time
+        };
+
+        console.log('Form data with details:', formDataWithDetails);
+
+        return
+        const event = {
+            start: '20230921T100000Z', // Start time in YYYYMMDDTHHmmssZ format
+            end: '20230921T110000Z',   // End time in YYYYMMDDTHHmmssZ format
+            summary: 'Meeting with John',
+            description: 'Discuss project updates',
+            location: 'Conference Room A'
+        };
+
+        const icsString = createICS(event);
+
+        const recipientsArray = ['rajgmsocial19@gmail.com'];
+        const htmlBody = "Code HTML body";
+        const subjectText = "Hello subject";
+        const plainBodyText = "This is a plain email body";
+
+        sendEmailWithInvite(recipientsArray, htmlBody, subjectText, plainBodyText, icsString);
+
+        return
+
+        // Make a request to the /book endpoint with the updated formData
+        try {
+            const response = await fetch('/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formDataWithDetails),
+            });
+
+            if (response.ok) {
+                // Handle successful booking, e.g., show a confirmation message
+                console.log('Booking successful');
+            } else {
+                // Handle booking error, e.g., show an error message
+                console.error('Booking failed');
+            }
+        } catch (error) {
+            console.error('Error booking:', error);
+        }
+
+        // Reset the form and hide it
+        setFormData({
+            name: '',
+            email: '',
+            phoneNumber: '',
+        });
+        setShowForm(false);
     };
 
     useEffect(() => {
@@ -102,13 +340,34 @@ const DatePickerCarousel = ({ userID }) => {
                 {availableSlots.length > 0 ? (
                     <ul>
                         {availableSlots.map((slot, index) => (
-                            <li key={index}>{slot.startTime}</li>
+                            <li key={index}>
+                                <button onClick={() => handleButtonClick(index)}>{slot.startTime}</button>
+                            </li>
                         ))}
                     </ul>
                 ) : (
                     <p>No available slots for this date.</p>
                 )}
             </div>
+
+            {/* Display the form when showForm is true */}
+            {showForm && (
+                <form onSubmit={handleFormSubmit}>
+                    <label>
+                        Name:
+                        <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
+                    </label>
+                    <label>
+                        Email:
+                        <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+                    </label>
+                    <label>
+                        Phone Number (optional):
+                        <input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} />
+                    </label>
+                    <button type="submit">Confirm Booking</button>
+                </form>
+            )}
 
             <style jsx>{`
         .date-picker {

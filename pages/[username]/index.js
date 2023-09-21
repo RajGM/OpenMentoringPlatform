@@ -66,7 +66,7 @@ export default function UserProfilePage({ user, posts, sessions }) {
                 {session.title}
                 Book here 
                 {session.duration}
-                <SessionModal/>
+                <SessionModal gapAmount={session.duration} />
                 </div>
               </li>
               // Replace "session.title" with the appropriate field from your session data

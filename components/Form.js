@@ -937,12 +937,12 @@ const hackathonValidationSchema = Yup.object({
 });
 */
 
-export const SessionForm = ({ eventData }) => {
+export const SessionForm = ({ gapAmount }) => {
 
     const { user, username } = useContext(UserContext);
 
     return (
-        <DatePickerCarousel userID={user} />
+        <DatePickerCarousel userID={user} gapAmount={gapAmount} />
     );
 
 }

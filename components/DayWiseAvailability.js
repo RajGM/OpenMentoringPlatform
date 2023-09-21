@@ -71,6 +71,8 @@ const DayAvailability = () => {
         startTime: startTime.toTimeString().slice(0, 5),
         endTime: endTime.toTimeString().slice(0, 5),
       });
+    }else{
+      mergedSlots.push(newSlot);
     }
 
     mergedSlots = mergedSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
@@ -83,7 +85,6 @@ const DayAvailability = () => {
     // Clear input fields after adding a slot
     setTimeSlots({ ...timeSlots, [day]: { startTime: '', endTime: '' } });
   };
-
 
   const deleteSlot = (day, index) => {
     const updatedAvailability = { ...availability };

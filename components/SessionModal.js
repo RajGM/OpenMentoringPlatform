@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
 
-export default function ModalButton({ eventData }) {
+export default function SessionModal({ gapAmount }) {
 
     const { user, username } = useContext(UserContext);
     const router = useRouter();
@@ -32,7 +32,7 @@ export default function ModalButton({ eventData }) {
         <div>
             <button onClick={onOpenModal}>Opp</button>
             <Modal open={open} onClose={onCloseModal} center>
-                <SessionForm eventData={eventData} />
+                <SessionForm gapAmount={gapAmount} />
             </Modal>
         </div>
     )
