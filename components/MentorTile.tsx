@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-// import ModalButton from './Modal';
-// import HoverMenuButton from './HoverMenuButton';
-//       <Image src={data.logoUrl ? data.logoUrl : "https://www.infiopp.com/favicon.ico"} alt="title" height="20" width="20" className="iconLogo"/>
-
 export default function MentorTile({ data }:any) {
   const [dataToshow, setDataToshow] = useState(data.eventN);
 

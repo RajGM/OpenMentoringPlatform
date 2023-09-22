@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { Customform, MyFormComponent } from './Form';
 import { categoriesAtom } from './atoms';
 import { useAtom } from 'jotai';
-
-import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
 
-export default function ModalButton({ eventData }) {
+interface ModalButtonProps {
+    eventData: any; // You should replace 'any' with the actual type of the eventData
+}
+
+const ModalButton: React.FC<ModalButtonProps> = ({ eventData }) => {
 
     const { user, username } = useContext(UserContext);
     const router = useRouter();
@@ -49,3 +51,5 @@ export default function ModalButton({ eventData }) {
     }
 
 };
+
+export default ModalButton;
