@@ -1,8 +1,8 @@
-import CategoryBar from "@components/CategoryBar.tsx"
+import React from 'react';
+import CategoryBar from "@components/CategoryBar";
 import MainFeed from "@components/MainFeed";
 
-const Opp = () => {
-
+const Opp: React.FC = () => {
   return (
     <div className="middle">
       <div className="childDiv">
@@ -12,7 +12,7 @@ const Opp = () => {
         <MainFeed />
       </div>
     </div>
-  )
+  );
 }
 
-export default Opp
+export default Opp;
