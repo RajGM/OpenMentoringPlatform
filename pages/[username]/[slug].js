@@ -82,9 +82,3 @@ export default function Post() {
   );
 
 }
-
-
-/*
-
- 
-*/

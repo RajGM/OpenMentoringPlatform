@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-import PostFeed from "@components/PostFeed";
+import PostFeed from "@components/PostFeed.tsx";
 import Metatags from "@components/Metatags";
 import Loader from "@components/Loader";
 import { firestore, fromMillis, postToJSON } from "@lib/firebase";

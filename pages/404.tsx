@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Custom404() {
+const Custom404: React.FC = () => {
   return (
     <main>
       <h1>404 - That page does not seem to exist...</h1>
@@ -16,3 +16,5 @@ export default function Custom404() {
     </main>
   );
 }
+
+export default Custom404;

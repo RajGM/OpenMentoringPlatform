@@ -1,10 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import 'react-responsive-modal/styles.css';
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import toast, { Toaster } from 'react-hot-toast';
-import { categoriesAtom, filterAtom } from './atoms';
-import { useAtom } from 'jotai';
-import * as Yup from 'yup';
 
 import DatePickerCarousel from './DatePickerCarousel';
 

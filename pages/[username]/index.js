@@ -1,7 +1,7 @@
 import { getUserWithUsername, postToJSON, firestore,getUserIdWithUsername } from '@lib/firebase';
 import UserProfile from '@components/UserProfile';
 import Metatags from '@components/Metatags';
-import PostFeed from '@components/PostFeed';
+import PostFeed from '@components/PostFeed.tsx';
 import SessionModal from '@components/SessionModal';
 
 export async function getServerSideProps({ query }) {

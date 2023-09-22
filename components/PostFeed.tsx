@@ -1,10 +1,29 @@
 import Link from 'next/link';
 
-export default function PostFeed({ posts, admin }) {
+interface Post {
+  content: string;
+  username: string;
+  slug: string;
+  title: string;
+  heartCount?: number;
+  published?: boolean;
+}
+
+interface PostFeedProps {
+  posts: Post[];
+  admin?: boolean;
+}
+
+export default function PostFeed({ posts, admin }: PostFeedProps) {
   return posts ? posts.map((post) => <PostItem post={post} key={post.slug} admin={admin} />) : null;
 }
 
-function PostItem({ post, admin = false }) {
+interface PostItemProps {
+  post: Post;
+  admin?: boolean;
+}
+
+function PostItem({ post, admin = false }: PostItemProps) {
   // Naive method to calc word count and read time
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
@@ -12,15 +31,11 @@ function PostItem({ post, admin = false }) {
   return (
     <div className="card">
       <Link href={`/${post.username}`}>
-        
-          <strong>By @{post.username}</strong>
-        
+        <strong>By @{post.username}</strong>
       </Link>
 
       <Link href={`/${post.username}/${post.slug}`}>
-        <h2>
-        {post.title}
-        </h2>
+        <h2>{post.title}</h2>
       </Link>
 
       <footer>
@@ -34,9 +49,7 @@ function PostItem({ post, admin = false }) {
       {admin && (
         <>
           <Link href={`/blog/${post.slug}`}>
-            <h3>
-              <button className="btn-blue">Edit</button>
-            </h3>
+            <button className="btn-blue">Edit</button>
           </Link>
 
           {post.published ? <p className="text-success">Live</p> : <p className="text-danger">Unpublished</p>}

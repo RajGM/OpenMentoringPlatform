@@ -20,6 +20,6 @@
       "@lib/*": ["lib/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/index.jsx", "lib/types.ts", "components/atoms.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/index.jsx", "lib/types.ts", "components/atoms.js", "components/Form.js", "pages/[username]/[slug].js"],
   "exclude": ["node_modules"]
 }

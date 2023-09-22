@@ -22,9 +22,23 @@ export default function AdminPostsPage(props) {
     );
 }
 
+interface Post {
+    title: string;
+    slug: string;
+    uid: string;
+    username: string;
+    published: boolean;
+    content: string;
+    createdAt: typeof serverTimestamp;
+    updatedAt: typeof serverTimestamp;
+    heartCount: number;
+    postRef?: any; // Adjust this type based on the structure of your data
+    // Add other post properties as needed
+}
+
 function PostList() {
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<Post[]>([]);
 
     const fetchPosts = async () => {
         const userRef = firestore.collection('users').doc(auth.currentUser.uid).collection('posts');
@@ -64,7 +78,7 @@ function PostList() {
 function CreateNewPost() {
     const router = useRouter();
     const { username } = useContext(UserContext);
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState<string>('');
 
     // Ensure slug is URL safe
     const slug = encodeURI(kebabCase(title));
