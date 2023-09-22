@@ -547,27 +547,9 @@ input[type="file"] {
 }
 
 
-.eventTile {
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid black;
-  box-shadow: 5px 5px;
-}
 
-.rowFlex {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
-}
 
-.itemCenter {
-  justify-content: center;
-}
+
 
 .margin-right {
   margin-right: 10px;
@@ -583,12 +565,6 @@ input[type="file"] {
   max-width: 120px;
 }
 
-.iconLogo {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid black;
-}
 
 .contributorAvator {
   width: 20px;
@@ -701,14 +677,6 @@ img {
   box-shadow: 2px 2px;
 }
 
-.tileData{
-  padding: 5px;
-  width: 250px;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
 
 .media-preview {
   max-width: 100%;

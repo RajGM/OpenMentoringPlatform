@@ -1,16 +1,30 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ModalButton from './Modal';
 import SponsoredTile from './SponsoredTile';
 import HoverMenuButton from './HoverMenuButton';
 
-export default function TestTile({ data }) {
-    const [dataToshow, setDataToshow] = useState(data.eventN);
+interface HackathonTileProps {
+    data: {
+        eventN: string;
+        sponsored?: boolean;
+        logoUrl?: string;
+        link: string;
+        appS: string;
+        appE: string;
+        eventS?: string;
+        eventE?: string;
+        postedBy: string;
+    };
+}
+const HackathonTile: React.FC<HackathonTileProps> = ({ data }) => {
+    const [dataToshow, setDataToshow] = useState<string>(data.eventN);
 
     useEffect(() => {
         setDataToshow(data.eventN);
     }, [data.eventN]);
 
     console.log("data:", data);
+
 
     return (
         <div className="eventTile">
@@ -81,6 +95,8 @@ export default function TestTile({ data }) {
         </div>
     );
 }
+
+export default HackathonTile;
 
 /*
 

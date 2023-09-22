@@ -1,34 +1,35 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HackathonTile from './HackathonTile';
 import { useAtom } from 'jotai';
 import { categoriesAtom, filterAtom } from './atoms';
 import { firestore } from '@lib/firebase';
 import Loader from './Loader';
 
-//let dataToShow = [];
-
-function CardField({ arrData }) {
-    //console.log("arrDATA from CardField:",arrData);
-    return arrData ? arrData.map((indiData) => <div className="eventCard"> <HackathonTile data={indiData} key={indiData} /></div>) : null;
+interface CardFieldProps {
+    arrData: any[]; // You should replace 'any' with the actual type of the data
 }
 
-export default function MainFeed() {
+const CardField: React.FC<CardFieldProps> = ({ arrData }) => {
+    return arrData ? arrData.map((indiData) => <div className="eventCard"> <HackathonTile data={indiData} key={indiData.id} /></div>) : null;
+}
+
+const MainFeed: React.FC = () => {
 
     const [category] = useAtom(categoriesAtom);
     const [filter] = useAtom(filterAtom);
-    const [oppData, setOppData] = useState([]);
+    const [oppData, setOppData] = useState<any[]>([]); // Replace 'any' with the actual type of the data
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         queryTest(category, filter);
     }, [filter]);
 
-    async function queryTest(category, filter) {
+    async function queryTest(category: string, filter: string) {
         let query;
-        if(filter=='all' || filter=='All'){
-            query    = firestore.collection(category.charAt(0).toUpperCase() + category.slice(1));
-        }else{
-            query    = firestore.collection(category.charAt(0).toUpperCase() + category.slice(1)).where('filters','==',filter.toLowerCase());//.where('Type', '==', filter.toLowerCase());
+        if (filter === 'all' || filter === 'All') {
+            query = firestore.collection(category.charAt(0).toUpperCase() + category.slice(1));
+        } else {
+            query = firestore.collection(category.charAt(0).toUpperCase() + category.slice(1)).where('filters', '==', filter.toLowerCase());
         }
         setLoading(true);
         const queryData = (await query.get()).docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -60,6 +61,8 @@ export default function MainFeed() {
     }
 
 }
+
+export default MainFeed;
 
 /*
 
