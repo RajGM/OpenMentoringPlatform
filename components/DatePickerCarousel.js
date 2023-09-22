@@ -32,7 +32,7 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
                 <div
                     key={formattedDate}
                     className="date-item"
-                    onClick={() => fetchDataFromFirestore(dayOfWeek, formattedDate)}
+                    onClick={() => fetchDataFromFirestore(dayOfWeek, formattedDate,date)}
                 >
                     <div className="date">{formattedDate}</div>
                     <div className="day">{dayOfWeek}</div>
@@ -76,14 +76,14 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
     }
 
     // Function to fetch available slots from Firestore
-    const fetchDataFromFirestore = async (dayOfWeek, date) => {
+    const fetchDataFromFirestore = async (dayOfWeek, formattedDate,date) => {
         // Replace 'userID' with the actual user ID
-        setSelectedDate(date);
+        setSelectedDate(formattedDate);
 
         try {
             console.log("userID:", userID)
-
-            const fullDate = getYearMonthDate(currentDate);
+            
+            const fullDate = getYearMonthDate(date);
 
             console.log(fullDate);
 
@@ -99,9 +99,6 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
             if (doc.exists) {
                 const data = doc.data();
                 const data2 = doc2.data();
-
-                console.log("data:", data)
-                console.log("data2:", data2)
 
                 /// here 
                 function convertToMinutes(time) {
@@ -261,15 +258,30 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
         ].join('\r\n');
     }
 
+    function to24HourFormat(time) {
+        const [mainHour, rest] = time.split(':');
+        const [minutes, period] = rest.split(' ').map(str => str.trim());
+        let hour = parseInt(mainHour, 10);
+    
+        if (period === 'PM' && hour !== 12) {
+            hour += 12;
+        } else if (period === 'AM' && hour === 12) {
+            hour = 0;
+        }
+    
+        return `${hour.toString().padStart(2, '0')}:${minutes}`;
+    }
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+        console.log("currentDate:",currentDate)
         // Create a new object with formData, selectedDate, and selectedSlot
         const formDataWithDetails = {
-            ...formData,
-            date: selectedDate, // Add the selectedDate
-            startTime: selectedSlot.startTime, // Add the selectedSlot start time
-            endTime: selectedSlot.endTime, // Add the selectedSlot end time
+            date: getYearMonthDate(currentDate), // Add the selectedDate
+            attendees :[userID.displayName, formData.name],
+            email: [userID.email, formData.email],
+            startTime: to24HourFormat(selectedSlot.startTime), // Add the selectedSlot start time
+            endTime: to24HourFormat(selectedSlot.endTime), // Add the selectedSlot end time
         };
 
         console.log('Form data with details:', formDataWithDetails);

@@ -1,4 +1,4 @@
-import CategoryBar from "@components/CategoryBar"
+import CategoryBar from "@components/CategoryBar.tsx"
 import MainFeed from "@components/MainFeed";
 
 const Opp = () => {

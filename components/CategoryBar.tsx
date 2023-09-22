@@ -1,15 +1,24 @@
-import { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CategoriesFeed from "@components/CategoriesFeed";
-//"OpenSource"
-let categories = ["Hackathon", "Grants", "Conferences", "Internship"];
+
+let categories: string[] = ["Hackathon", "Grants", "Conferences", "Internship"];
 import FilterBar from "@components/FilterBar";
 
+interface CategoriesFeedProps {
+  categories: string[];
+  cChanger: (category: string) => void;
+}
+
+interface FilterBarProps {
+  selectedC: string;
+}
+
 //CategoryBar
-export default function CategoryBar() {
-  const [stateC, setCState] = useState('Hackathon');
+const CategoryBar: React.FC = () => {
+  const [stateC, setCState] = useState<string>('Hackathon');
 
   return (
-    <div className='middle' >
+    <div className='middle'>
       <div className='childDiv'>
         <nav className="categoryBar">
           <ul>
@@ -33,6 +42,7 @@ export default function CategoryBar() {
       </div>
 
     </div>
-
   );
 }
+
+export default CategoryBar;
