@@ -157,3 +157,12 @@ button.btn-logo {
 .itemCenter {
   justify-content: center;
 }
+
+.smallButton {
+    padding: 5px;
+    width: 100px;
+    box-shadow: 2px 2px #f6f4eb;
+    margin-left: -40px;
+    border-radius: 20px;
+    background-color: #09a8fa;
+  }
