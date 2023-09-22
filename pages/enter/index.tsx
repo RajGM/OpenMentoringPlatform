@@ -10,12 +10,9 @@ import Loader from "@components/Loader";
 
 import Link from "next/link";
 
-export default function Enter(props) {
+export default function Enter(props: any) {
   const { user, username } = useContext(UserContext);
 
-  // 1. user signed out <SignInButton />
-  // 2. user signed in, but missing username <UsernameForm />
-  // 3. user signed in, has username <SignOutButton />
   return (
     <main className="middle fullHeight">
       <div>
@@ -25,7 +22,6 @@ export default function Enter(props) {
   );
 }
 
-// Sign in with Google button
 function SignInButton() {
   const signInWithGoogle = async () => {
     await auth.signInWithPopup(googleAuthProvider);
@@ -48,7 +44,6 @@ function SignInButton() {
   );
 }
 
-// Sign out button
 function HomePage() {
   return (
     <Link href="/">
@@ -57,39 +52,34 @@ function HomePage() {
   );
 }
 
-// Username form
 function UsernameForm() {
-  const [formValue, setFormValue] = useState("");
-  const [isValid, setIsValid] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [formValue, setFormValue] = useState<string>("");
+  const [isValid, setIsValid] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { user, username } = useContext(UserContext);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Create refs for both documents
-    const userDoc = firestore.doc(`users/${user.uid}`);
+    const userDoc = firestore.doc(`users/${user!.uid}`);
     const usernameDoc = firestore.doc(`usernames/${formValue}`);
 
-    // Commit both docs together as a batch write.
     const batch = firestore.batch();
     batch.set(userDoc, {
       username: formValue,
-      photoURL: user.photoURL,
-      displayName: user.displayName,
+      photoURL: user!.photoURL,
+      displayName: user!.displayName,
     });
-    batch.set(usernameDoc, { uid: user.uid });
+    batch.set(usernameDoc, { uid: user!.uid });
 
     await batch.commit();
   };
 
-  const onChange = (e) => {
-    // Force form value typed in form to match correct format
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.toLowerCase();
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
-    // Only set form value if length is < 3 OR it passes regex
     if (val.length < 3) {
       setFormValue(val);
       setLoading(false);
@@ -103,20 +93,15 @@ function UsernameForm() {
     }
   };
 
-  //
-
   useEffect(() => {
     checkUsername(formValue);
   }, [formValue]);
 
-  // Hit the database for username match after each debounced change
-  // useCallback is required for debounce to work
   const checkUsername = useCallback(
-    debounce(async (username) => {
+    debounce(async (username: string) => {
       if (username.length >= 3) {
         const ref = firestore.doc(`usernames/${username}`);
         const { exists } = await ref.get();
-        console.log("Firestore read executed!");
         setIsValid(!exists);
         setLoading(false);
       }
@@ -158,7 +143,13 @@ function UsernameForm() {
   );
 }
 
-function UsernameMessage({ username, isValid, loading }) {
+interface UsernameMessageProps {
+  username: string;
+  isValid: boolean;
+  loading: boolean;
+}
+
+function UsernameMessage({ username, isValid, loading }: UsernameMessageProps) {
   if (loading) {
     return <p>Checking...</p>;
   } else if (isValid) {
