@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { filterAtom } from './atoms';
+import { filterAtom } from '@lib/atoms';
 
 const categoriesAndFilters: Record<string, string[]> = {
   "Hackathon": ["Onsite", "Remote", "Hybrid", "All"],

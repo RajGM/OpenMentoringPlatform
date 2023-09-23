@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import HackathonTile from './HackathonTile';
 import { useAtom } from 'jotai';
-import { categoriesAtom, filterAtom } from './atoms';
+import { categoriesAtom, filterAtom } from '@lib/atoms';
 import { firestore } from '@lib/firebase';
 import Loader from './Loader';
 

@@ -8,7 +8,7 @@ import React, {
 import { Menu, MenuButton, MenuList, MenuItem } from "@reach/menu-button";
 import Image from "next/image";
 import { useAtom } from "jotai";
-import { categoriesAtom, filterAtom } from "./atoms";
+import { categoriesAtom, filterAtom } from "@lib/atoms";
 import toast, { Toaster } from "react-hot-toast";
 import { UserContext } from "@lib/context";
 import { useContext } from "react";

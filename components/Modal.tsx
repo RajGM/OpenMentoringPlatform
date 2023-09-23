@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { Customform, MyFormComponent } from './Form';
-import { categoriesAtom } from './atoms';
+import { categoriesAtom } from '../lib/atoms';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';

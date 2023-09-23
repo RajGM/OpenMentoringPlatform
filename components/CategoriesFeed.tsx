@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { categoriesAtom } from './atoms';
+import { categoriesAtom } from '@lib/atoms';
 
 interface CategoriesFeedProps {
   categories: string[];

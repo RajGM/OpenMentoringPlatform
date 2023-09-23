@@ -76,8 +76,10 @@ export default function Post() {
                 <p>
                   <strong>{post.heartCount || 0} 🤍</strong>
                 </p>
-                {/*<HeartButton postRef={postRef} / >  improve this according to vote in opp*/}
+                
+                {/*<HeartButton postRef={postRef} />  improve this according to vote in opp*/}
               </aside>
+             
             </main>
           </div>
         ) : (
