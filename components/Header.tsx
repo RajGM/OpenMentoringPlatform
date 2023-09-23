@@ -61,7 +61,7 @@ export default function Header() {
                   </a>
                 </li>
                 <li>
-                  <a href="/mentors" className="justify-between">
+                  <a href="/mentor" className="justify-between">
                     Mentors
                   </a>
                 </li>

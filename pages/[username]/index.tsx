@@ -30,7 +30,6 @@ type User = {
   username: string;
   // Add other fields as necessary
 };
-
 interface UserProfilePageProps {
   user: User;
   posts: Post[];
@@ -79,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 };
 
-const UserProfilePage: React.FC<UserProfilePageProps> = ({
+export const UserProfilePage: React.FC<UserProfilePageProps> = ({
   user,
   posts,
   sessions,
