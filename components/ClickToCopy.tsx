@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FaCopy } from 'react-icons/fa';
 
-export default function ClickToCopy({ text }) {
+interface ClickToCopyProps {
+  text: string;
+}
+
+const ClickToCopy: React.FC<ClickToCopyProps> = ({ text }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -20,3 +24,5 @@ export default function ClickToCopy({ text }) {
         </>
     );
 }
+
+export default ClickToCopy;

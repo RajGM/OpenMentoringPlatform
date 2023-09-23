@@ -84,8 +84,6 @@ code {
   cursor: pointer;
 }
 
-
-
 /* Loader */
 .loader {
   border: 10px solid var(--color-bg);
@@ -100,66 +98,6 @@ code {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-
-
-/* Form CSS */
-Form {
-  display: flex;
-  flex-direction: column;
-  color: black;
-}
-
-.multiOption {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-self: center;
-  text-align: center;
-}
-
-.optionDiv {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.copy-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background-color: transparent;
-  border: 1px solid black;
-  color: #333;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 0.5rem;
-}
-
-.calendarDiv {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 10px;
-  width: 250px;
-  background-color: whitesmoke;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 100px;
-}
-
-.content {
-  text-align: left;
-  width: 100%;
-}
-
-
 
 /* Style the label container */
 .file-input-label {

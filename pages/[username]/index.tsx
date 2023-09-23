@@ -1,14 +1,42 @@
-import { getUserWithUsername, postToJSON, firestore,getUserIdWithUsername } from '@lib/firebase';
+import { getUserWithUsername, postToJSON, firestore, getUserIdWithUsername } from '@lib/firebase';
 import UserProfile from '@components/UserProfile';
 import Metatags from '@components/Metatags';
-import PostFeed from '@components/PostFeed.tsx';
+import PostFeed from '@components/PostFeed';
 import SessionModal from '@components/SessionModal';
+import { GetServerSideProps } from 'next';
 
-export async function getServerSideProps({ query }) {
+type Session = {
+  id: string;
+  title: string;
+  duration: number;
+  // Add other fields as necessary
+};
+
+type Post = {
+  // Define the shape of your post here
+  // For example:
+  title: string;
+  content: string;
+  createdAt: Date;
+  // Add other fields as necessary
+};
+
+type User = {
+  username: string;
+  // Add other fields as necessary
+};
+
+interface UserProfilePageProps {
+  user: User;
+  posts: Post[];
+  sessions: Session[];
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query;
 
-  const userDoc = await getUserWithUsername(username);
-  const userId = await getUserIdWithUsername(username);
+  const userDoc = await getUserWithUsername(username as string);
+  const userId = await getUserIdWithUsername(username as string);
 
   // If no user, short circuit to 404 page
   if (!userDoc && !userId) {
@@ -38,38 +66,32 @@ export async function getServerSideProps({ query }) {
       .doc(userId)
       .collection('sessions');
 
-      console.log("userId:", userId)
     sessions = (await sessionsQuery.get()).docs.map((doc) => doc.data());
-
-    console.log("sessions:", sessions);
-  } else {
-    console.log("no user DOC")
   }
 
   return {
     props: { user, posts, sessions }, // will be passed to the page component as props
   };
-}
+};
 
-export default function UserProfilePage({ user, posts, sessions }) {
+const UserProfilePage: React.FC<UserProfilePageProps> = ({ user, posts, sessions }) => {
   return (
     <main>
       <Metatags title={user.username} description={`${user.username}'s public profile`} />
       <UserProfile user={user} />
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'space-around', backgroundColor: 'pink', justifyContent: 'space-around' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'space-around', backgroundColor: 'pink' }}>
         <div style={{ width: '20%', backgroundColor: 'yellow' }}>
           <h2>Sessions</h2>
           <ul>
             {sessions.map((session) => (
               <li key={session.id}>
                 <div>
-                {session.title}
-                Book here 
-                {session.duration}
-                <SessionModal gapAmount={session.duration} />
+                  {session.title}
+                  Book here 
+                  {session.duration}
+                  <SessionModal gapAmount={session.duration} />
                 </div>
               </li>
-              // Replace "session.title" with the appropriate field from your session data
             ))}
           </ul>
         </div>
@@ -79,9 +101,9 @@ export default function UserProfilePage({ user, posts, sessions }) {
         <div style={{ width: '20%', backgroundColor: 'yellow' }}>
           IMPACT MADE HERE
         </div>
-
       </div>
-
     </main>
   );
-}
+};
+
+export default UserProfilePage;

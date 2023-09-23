@@ -99,6 +99,9 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
             if (doc.exists) {
                 const data = doc.data();
                 const data2 = doc2.data();
+                console.log("data:", data)
+                console.log("data2:", data2)
+
 
                 /// here 
                 function convertToMinutes(time) {
@@ -157,7 +160,11 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
                     return availableSlots;
                 }
 
-                const freeSlots = getAvailableSlots(data.slots, data2.slots); 
+                let freeSlots = data.slots//getAvailableSlots(data.slots, data2.slots); 
+
+                if(data2){
+                    freeSlots = getAvailableSlots(data.slots, data2.slots);
+                }
 
                 ////here 
                 

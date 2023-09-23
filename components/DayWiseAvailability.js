@@ -234,7 +234,6 @@ const DayAvailability = () => {
 
       <button onClick={() => saveAvailabilityToFirestore('6yFshQm091N8zItTNpQmUX60twm1', availability)}>Save Availability</button>
 
-
     </div>
   );
 };

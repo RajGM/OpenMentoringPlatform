@@ -1,5 +1,12 @@
-// UI component for user profile
-export default function UserProfile({ user }) {
+interface UserProfileProps {
+  user: {
+    photoURL?: string;
+    username: string;
+    displayName?: string;
+  };
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   return (
     <div className="box-center">
       <img src={user.photoURL || '/hacker.png'} className="card-img-center" />
@@ -9,4 +16,6 @@ export default function UserProfile({ user }) {
       <h1>{user.displayName || 'Anonymous User'}</h1>
     </div>
   );
-}
+};
+
+export default UserProfile;

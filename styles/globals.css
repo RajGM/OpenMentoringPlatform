@@ -254,7 +254,8 @@ button.btn-blue {
 }
 
 /* Buttons */
-.btn, button {
+.btn,
+button {
   background-color: #09a8fa;
   border: none;
   color: var(--color-text);
@@ -264,7 +265,7 @@ button.btn-blue {
   text-align: center;
   justify-content: center;
   text-decoration: none;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-weight: bold;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -283,7 +284,8 @@ button:hover {
   filter: brightness(90%);
 }
 
-button:disabled, button[disabled] {
+button:disabled,
+button[disabled] {
   filter: brightness(80%);
   cursor: not-allowed;
 }
@@ -404,4 +406,60 @@ footer {
   box-shadow: 5px 5px;
   min-width: 190px;
   text-align: center;
+}
+
+.calendarDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  width: 250px;
+  background-color: whitesmoke;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100px;
+}
+
+/* Form CSS */
+Form {
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+.multiOption {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  text-align: center;
+}
+
+.optionDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  border: 1px solid black;
+  color: #333;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0.5rem;
+}
+
+.content {
+  text-align: left;
+  width: 100%;
 }

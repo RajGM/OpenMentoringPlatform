@@ -1,9 +1,14 @@
 import Head from 'next/head';
 
-export default function Metatags({
+interface MetatagsProps {
+  title?: string;
+  description?: string;
+}
+
+const Metatags: React.FC<MetatagsProps> = ({
   title = 'SOL Mentoring',
   description = 'A Free and Open Mentoring Platform'
-}) {
+}) => {
   return (
     <Head>
       <title>{title}</title>
@@ -17,3 +22,5 @@ export default function Metatags({
     </Head>
   );
 }
+
+export default Metatags;

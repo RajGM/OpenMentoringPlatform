@@ -11,14 +11,20 @@ import Link from 'next/link';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useContext, useEffect, useState } from 'react';
 
+interface PostData {
+  title: string;
+  heartCount?: number;
+  // Add other fields as necessary
+}
+
 export default function Post() {
   const router = useRouter();
   const { username, slug } = router.query;
-  const [post, setPost] = useState(null);
-  const [postRef, setPostRef] = useState(null);
+  const [post, setPost] = useState<PostData | null>(null);
+  const [postRef, setPostRef] = useState<any | null>(null); // Define the shape of postRef if known.
 
   useEffect(() => {
-    if (username && slug) {
+    if (typeof username === 'string' && typeof slug === 'string') {
       const postRef = firestore
         .collection('posts')
         .where('username', '==', username)
@@ -31,7 +37,7 @@ export default function Post() {
         try {
           const querySnapshot = await postRef.get();
           if (!querySnapshot.empty) {
-            const postData = querySnapshot.docs[0].data();
+            const postData = querySnapshot.docs[0].data() as PostData;
             setPost(postData);
           } else {
             // Handle the case where no matching post was found.
@@ -80,5 +86,4 @@ export default function Post() {
       </div>
     </div>
   );
-
 }

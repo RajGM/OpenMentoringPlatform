@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import 'react-responsive-modal/styles.css';
-import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import toast, { Toaster } from 'react-hot-toast';
-import { categoriesAtom, filterAtom } from './atoms';
-import { useAtom } from 'jotai';
-import * as Yup from 'yup';
 import { auth, firestore } from '@lib/firebase';
-
-import { useContext } from 'react';
 import { UserContext } from '@lib/context';
 
-export function Social() {
+interface SocialProps {} // If you have any props for Social, define them here.
+
+interface InitialValues {
+  discord: string;
+  telegram: string;
+  twitter: string;
+  instagram: string;
+}
+export const Social: React.FC<SocialProps> = () => {
 
     const { user, username } = useContext(UserContext);
-    const [eventData, seteventData] = useState(false);
-    
+    const [eventData, seteventData] = useState<any | null>(null); // Define the shape of eventData if known.
+
     useEffect(() => {
         if(!username) return;
         firestore.collection('usernames').doc(username).get().then((doc) => {
@@ -23,7 +26,7 @@ export function Social() {
     }, [username]);
  
     return (
-        <Formik
+        <Formik<InitialValues>
             initialValues={{
                 discord: '',
                 telegram: '',
@@ -32,7 +35,6 @@ export function Social() {
             }}
 
             onSubmit={async (values) => {
-
                 toast.promise(firestore.collection('usernames').doc(username).update({
                     discord: values.discord,
                     telegram: values.telegram,
@@ -43,9 +45,7 @@ export function Social() {
                     success: <b>Added socials!</b>,
                     error: <b>Failed to add socials</b>,
                 });
-
             }}
-
         >
             {({ isSubmitting, values }) => (
                 <Form style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '20px', textAlign: 'center', width: '300px', padding: '10px', border: '1px solid black', backgroundColor: 'white', borderRadius: '10px' }}>

@@ -1,8 +1,18 @@
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
-// UI component for main post content
-export default function PostContent({ post }) {
+interface Post {
+  title?: string;
+  content?: string;
+  username?: string;
+  createdAt: number | { toDate: () => Date };
+}
+
+interface PostContentProps {
+  post: Post;
+}
+
+const PostContent: React.FC<PostContentProps> = ({ post }) => {
   const createdAt = typeof post?.createdAt === 'number' ? new Date(post.createdAt) : post.createdAt.toDate();
 
   return (
@@ -15,7 +25,9 @@ export default function PostContent({ post }) {
         </Link>{' '}
         on {createdAt.toISOString()}
       </span>
-      <ReactMarkdown>{post?.content}</ReactMarkdown>
+      <ReactMarkdown>{post?.content||''}</ReactMarkdown>
     </div>
   );
 }
+
+export default PostContent;
