@@ -2,15 +2,32 @@ import { useState, useContext, useEffect } from 'react';
 import { firestore } from '@lib/firebase';
 import { UserContext } from '@lib/context'
 
-const DayAvailability = () => {
-  const [selectedDays, setSelectedDays] = useState([]);
-  const [availability, setAvailability] = useState({});
-  const [timeSlots, setTimeSlots] = useState({});
-  const [error, setError] = useState({});
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const { user, username } = useContext(UserContext)
+interface TimeSlot {
+  startTime: string;
+  endTime: string;
+}
 
-  const addSlot = (day) => {
+interface Availability {
+  [key: string]: TimeSlot[];
+}
+
+interface TimeSlots {
+  [key: string]: TimeSlot;
+}
+
+interface Error {
+  [key: string]: string;
+}
+
+const DayAvailability = () => {
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [availability, setAvailability] = useState<Availability>({});
+  const [timeSlots, setTimeSlots] = useState<TimeSlots>({});
+  const [error, setError] = useState<Error>({});
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const { user, username } = useContext(UserContext);
+
+  const addSlot = (day:string) => {
     if (!timeSlots[day] || !timeSlots[day].startTime || !timeSlots[day].endTime) {
       setError({ ...error, [day]: 'Please provide valid time slots.' });
       return;

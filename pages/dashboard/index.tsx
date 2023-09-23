@@ -4,7 +4,7 @@ import Sessions from "@components/Sessions";
 import { UserContext } from '@lib/context';
 import { useState, useContext, useEffect } from 'react';
 
-export default function UserProfilePage() {
+const UserProfilePage: React.FC = () => {
   return (
     <main>
       <div>THIS IS DASHBOARD</div>
@@ -20,3 +20,5 @@ export default function UserProfilePage() {
     </main>
   );
 }
+
+export default UserProfilePage;

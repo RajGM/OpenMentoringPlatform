@@ -2,10 +2,16 @@ import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '@lib/context';
 import { firestore } from '@lib/firebase';
 
+interface Session {
+    id: string;
+    title: string;
+    duration: string;
+}
+
 const Sessions = () => {
-    const [sessions, setSessions] = useState([]);
-    const [sessionTitle, setSessionTitle] = useState('');
-    const [sessionDuration, setSessionDuration] = useState('');
+    const [sessions, setSessions] = useState<Session[]>([]);
+    const [sessionTitle, setSessionTitle] = useState<string>('');
+    const [sessionDuration, setSessionDuration] = useState<string>('');
     const { user, username } = useContext(UserContext);
 
     useEffect(() => {

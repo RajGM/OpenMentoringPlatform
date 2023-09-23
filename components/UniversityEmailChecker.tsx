@@ -2,17 +2,16 @@ import { useState, useContext, use, useEffect } from 'react';
 import { UserContext } from "@lib/context";
 
 const UniversityEmailChecker = () => {
-    const [website, setWebsite] = useState('');
-    const [email, setEmail] = useState('');
-    const [result, setResult] = useState('');
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [websiteDomain, setWebsiteDomain] = useState('');
+    const [website, setWebsite] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [result, setResult] = useState<string>('');
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const [websiteDomain, setWebsiteDomain] = useState<string>('');
     const { user, username } = useContext(UserContext);
-    const [sendToFirebase, setSendToFirebase] = useState(false);
-    const [listMentor, setListMentor] = useState(false);
-    const [error, setError] = useState(false);
-    const [solanaWallet, setSolanaWallet] = useState('');
-    const [meetingLink, setMeetingLink] = useState('');
+    const [sendToFirebase, setSendToFirebase] = useState<boolean>(false);
+    const [listMentor, setListMentor] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [meetingLink, setMeetingLink] = useState<string>('');
 
     useEffect(() => {
         if (user) {
@@ -39,10 +38,6 @@ const UniversityEmailChecker = () => {
         setIsFormValid(e.target.value.trim() !== '' && website.trim() !== '');
     };
 
-    const handleSolanaWalletChange = (e) => {
-        setSolanaWallet(e.target.value);
-    };
-
     const handleMeetingLinkChange = (e) => {
         setMeetingLink(e.target.value);
     };
@@ -55,9 +50,9 @@ const UniversityEmailChecker = () => {
         }
 
         if (listMentor) {
-            // Check if Solana Wallet and Meeting link are filled when listMentor is checked
-            if (!solanaWallet || !meetingLink) {
-                setError('Solana Wallet and Meeting Link are mandatory when adding to Mentor Board.');
+            // Check if Meeting link are filled when listMentor is checked
+            if (!meetingLink) {
+                setError('Meeting Link are mandatory when adding to Mentor Board.');
                 return;
             }
         }
@@ -138,16 +133,7 @@ const UniversityEmailChecker = () => {
                     </label>
 
                     <br />
-                    {/* Add input fields for Solana Wallet and Meeting link */}
-                    <label>
-                        Solana Wallet:
-                        <input
-                            type="text"
-                            value={solanaWallet}
-                            onChange={handleSolanaWalletChange}
-                        />
-                    </label>
-                    <br />
+
                     <label>
                         Meeting Link:
                         <input
