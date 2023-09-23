@@ -1,21 +1,52 @@
-// components/DatePickerCarousel.js
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { firestore } from '@lib/firebase';
-import { date } from 'yup';
 
-const DatePickerCarousel = ({ userID, gapAmount }) => {
-    const [currentDate, setCurrentDate] = useState(new Date());
+interface DatePickerCarouselProps {
+  userID: {
+    uid: string;
+    displayName: string;
+    email: string;
+  };
+  gapAmount: number;
+}
+
+interface Slot {
+  startTime: string;
+  endTime: string;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
+
+type SlotType = {
+    startTime: string;
+    endTime: string;
+};
+
+type ICSData = {
+    start: string;
+    end: string;
+    summary: string;
+    description: string;
+    location: string;
+};
+
+const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({ userID, gapAmount }) => {
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const daysToShow = 7; // Number of days to show in the carousel
-    const [availableSlots, setAvailableSlots] = useState([]);
-    const [showForm, setShowForm] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phoneNumber: '',
+    const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
+    const [showForm, setShowForm] = useState<boolean>(false);
+    const [formData, setFormData] = useState<FormData>({
+      name: '',
+      email: '',
+      phoneNumber: '',
     });
-    const [selectedDate, setSelectedDate] = useState('');
-    const [selectedSlot, setSelectedSlot] = useState(null); // Initialize with null or default value
-
+    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null); // Initialize with null or default value
+  
     console.log("userID:", userID)
 
     // Function to generate date items
@@ -44,23 +75,18 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
     };
 
     // Function to format a date as "MM/DD"
-    const formatDate = (date) => {
+    const formatDate = (date: Date): string => {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const day = date.getDate().toString().padStart(2, '0');
         return `${month}/${day}`;
     };
 
     // Function to get the day of the week
-    const getDayOfWeek = (date) => {
+    const getDayOfWeek = (date: Date): string => {
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return daysOfWeek[date.getDay()];
     };
-
-    // Function to select a date
-    const selectDate = (date) => {
-        alert(`Selected date: ${formatDate(date)}`);
-    };
-
+    
     // Function to handle clicking the next button
     const handleNextClick = () => {
         const newDate = new Date(currentDate);
@@ -68,13 +94,75 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
         setCurrentDate(newDate);
     };
 
-    function getYearMonthDate(date) {
+    function getYearMonthDate(date: Date): string {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed, so we add 1. We also ensure it's two digits.
         const day = date.getDate().toString().padStart(2, '0'); // Ensure the day is two digits.
         return `${year}${month}${day}`;
     }
 
+    function convertToMinutes(time: string): number {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
+    
+    function formatMinutesToTime(minutes: number): string {
+        const hour = Math.floor(minutes / 60);
+        const minute = minutes % 60;
+        return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+    }
+    
+    function overlap(slot1: Slot, slot2: Slot): boolean {
+        return convertToMinutes(slot1.startTime) < convertToMinutes(slot2.endTime) && 
+               convertToMinutes(slot1.endTime) > convertToMinutes(slot2.startTime);
+    }
+    
+    type Slot = {
+        startTime: string;
+        endTime: string;
+    }
+    
+    function getAvailableSlots(data1: Slot[], data2: Slot[]): Slot[] {
+        let availableSlots: Slot[] = [];
+        
+        for (let slot of data1) {
+            let isOverlapping = false;
+            let tempSlots: Slot[] = [slot];
+        
+            for (let booked of data2) {
+                if (overlap(slot, booked)) {
+                    isOverlapping = true;
+                    let newSlots: Slot[] = [];
+        
+                    for (let tempSlot of tempSlots) {
+                        if (convertToMinutes(booked.startTime) > convertToMinutes(tempSlot.startTime)) {
+                            newSlots.push({
+                                startTime: tempSlot.startTime,
+                                endTime: formatMinutesToTime(convertToMinutes(booked.startTime))
+                            });
+                        }
+                        if (convertToMinutes(booked.endTime) < convertToMinutes(tempSlot.endTime)) {
+                            newSlots.push({
+                                startTime: formatMinutesToTime(convertToMinutes(booked.endTime)),
+                                endTime: tempSlot.endTime
+                            });
+                        }
+                    }
+        
+                    tempSlots = newSlots;
+                }
+            }
+        
+            if (!isOverlapping) {
+                availableSlots.push(slot);
+            } else {
+                availableSlots = availableSlots.concat(tempSlots);
+            }
+        }
+        
+        return availableSlots;
+    }
+    
     // Function to fetch available slots from Firestore
     const fetchDataFromFirestore = async (dayOfWeek, formattedDate,date) => {
         // Replace 'userID' with the actual user ID
@@ -101,64 +189,6 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
                 const data2 = doc2.data();
                 console.log("data:", data)
                 console.log("data2:", data2)
-
-
-                /// here 
-                function convertToMinutes(time) {
-                    const [hours, minutes] = time.split(':').map(Number);
-                    return hours * 60 + minutes;
-                }
-                
-                function formatMinutesToTime(minutes) {
-                    const hour = Math.floor(minutes / 60);
-                    const minute = minutes % 60;
-                    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                }
-                
-                function overlap(slot1, slot2) {
-                    return convertToMinutes(slot1.startTime) < convertToMinutes(slot2.endTime) && convertToMinutes(slot1.endTime) > convertToMinutes(slot2.startTime);
-                }
-                
-                function getAvailableSlots(data1, data2) {
-                    let availableSlots = [];
-                
-                    for (let slot of data1) {
-                        let isOverlapping = false;
-                        let tempSlots = [slot];
-                
-                        for (let booked of data2) {
-                            if (overlap(slot, booked)) {
-                                isOverlapping = true;
-                                let newSlots = [];
-                
-                                for (let tempSlot of tempSlots) {
-                                    if (convertToMinutes(booked.startTime) > convertToMinutes(tempSlot.startTime)) {
-                                        newSlots.push({
-                                            startTime: tempSlot.startTime,
-                                            endTime: formatMinutesToTime(convertToMinutes(booked.startTime))
-                                        });
-                                    }
-                                    if (convertToMinutes(booked.endTime) < convertToMinutes(tempSlot.endTime)) {
-                                        newSlots.push({
-                                            startTime: formatMinutesToTime(convertToMinutes(booked.endTime)),
-                                            endTime: tempSlot.endTime
-                                        });
-                                    }
-                                }
-                
-                                tempSlots = newSlots;
-                            }
-                        }
-                
-                        if (!isOverlapping) {
-                            availableSlots.push(slot);
-                        } else {
-                            availableSlots = availableSlots.concat(tempSlots);
-                        }
-                    }
-                
-                    return availableSlots;
-                }
 
                 let freeSlots = data.slots//getAvailableSlots(data.slots, data2.slots); 
 
@@ -210,9 +240,8 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
         }
     };
 
-    const handleButtonClick = (index) => {
-        // Show the form when a button is clicked
-        const clickedSlot = availableSlots[index];
+    const handleButtonClick = (index: number): void => {
+        const clickedSlot: SlotType = availableSlots[index];
         setSelectedSlot(clickedSlot);
         setShowForm(true);
     };
@@ -226,11 +255,17 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
         });
     };
 
-    function sendEmailWithInvite(recipients, htmlBody, subject, plainBody, icsString) {
+    function sendEmailWithInvite(
+        recipients: string[],
+        htmlBody: string,
+        subject: string,
+        plainBody: string,
+        icsString: string
+    ): void {
         const base64Ics = btoa(icsString);
         const docRef = firestore.collection('mail');
-
-        docRef.add({
+    
+        const emailData = {
             to: recipients,
             message: {
                 html: htmlBody,
@@ -245,12 +280,14 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
                     }
                 ]
             }
-        });
+        };
+    
+        docRef.add(emailData);
     }
 
-    function createICS(event) {
+    function createICS(event: ICSData): string {
         const { start, end, summary, description, location } = event;
-
+    
         return [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
@@ -265,20 +302,20 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
         ].join('\r\n');
     }
 
-    function to24HourFormat(time) {
+    function to24HourFormat(time: string): string {
         const [mainHour, rest] = time.split(':');
         const [minutes, period] = rest.split(' ').map(str => str.trim());
         let hour = parseInt(mainHour, 10);
-    
+        
         if (period === 'PM' && hour !== 12) {
             hour += 12;
         } else if (period === 'AM' && hour === 12) {
             hour = 0;
         }
-    
+        
         return `${hour.toString().padStart(2, '0')}:${minutes}`;
     }
-
+    
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         console.log("currentDate:",currentDate)
@@ -355,7 +392,6 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
 
             {/* Display available slots */}
             <div className="available-slots">
-                {console.log("availableSlots:", availableSlots)}
                 {availableSlots.length > 0 ? (
                     <ul>
                         {availableSlots.map((slot, index) => (
@@ -388,47 +424,6 @@ const DatePickerCarousel = ({ userID, gapAmount }) => {
                 </form>
             )}
 
-            <style jsx>{`
-        .date-picker {
-          display: flex;
-          overflow: hidden;
-        }
-
-        .date-picker-inner {
-          display: flex;
-          transition: transform 0.3s ease-in-out;
-        }
-
-        .date-item {
-          width: 150px;
-          height: 100px;
-          background-color: #eee;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          border: 1px solid #ccc;
-          cursor: pointer;
-        }
-
-        .date {
-          font-weight: bold;
-        }
-
-        .day {
-          margin-top: 8px;
-        }
-
-        button {
-          width: 100px;
-          height: 40px;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          cursor: pointer;
-        }
-      `}</style>
         </div>
     );
 };
