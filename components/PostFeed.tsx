@@ -1,5 +1,6 @@
-import Link from 'next/link';
-import { PostFeedProps, PostItemProps } from '@lib/types';
+import Link from "next/link";
+import { PostFeedProps, PostItemProps } from "@lib/types";
+import { extractDDMMYYFromInput } from "@lib/utils";
 
 interface Post {
   content: string;
@@ -11,24 +12,83 @@ interface Post {
 }
 
 export default function PostFeed({ posts, admin }: PostFeedProps) {
-  return posts ? posts.map((post) => <PostItem post={post} key={post.slug} admin={admin} />) : null;
+  return posts
+    ? posts.map((post, index) => (
+        <PostItem post={post} key={index} admin={admin} />
+      ))
+    : null;
 }
 
 function PostItem({ post, admin = false }: PostItemProps) {
-  // Naive method to calc word count and read time
+  console.log("POSTDATA:", post);
+
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
 
   return (
-    <div className="card">
-      <Link href={`/${post.username}`}>
-        <strong>By @{post.username}</strong>
-      </Link>
+    <article className="flex bg-white transition hover:shadow-xl" style={{backgroundColor:'#eef0f1'}}>
+      <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
+        <time
+          datetime="2022-10-10"
+          className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
+        >
+          <span>By</span>
+          <span className="w-px flex-1 bg-gray-900/10"></span>
+          <span>{post.username}</span>
+        </time>
+      </div>
 
-      <Link href={`/${post.username}/${post.slug}`}>
-        <h2>{post.title}</h2>
-      </Link>
+      <div className="hidden sm:block sm:basis-56">
+        <img
+          alt="Guitar"
+          src="https://images.unsplash.com/photo-1609557927087-f9cf8e88de18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
+          className="aspect-square h-full w-full object-cover"
+        />
+      </div>
 
+      <div className="flex flex-1 flex-col justify-between">
+        <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
+          <a href="#">
+            <h3 className="font-bold uppercase text-gray-900">{post.title}</h3>
+          </a>
+
+          <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-700">
+            {post.content}
+          </p>
+        </div>
+
+        <div className="sm:flex sm:items-end sm:justify-end">
+          <Link
+            href={`/${post.username}/${post.slug}`}
+            className="block bg-yellow-300 px-5 py-3 text-center text-xs font-bold uppercase text-gray-900 transition hover:bg-yellow-400"
+          >
+            <h2>Read More</h2>
+          </Link>
+        </div>
+
+        {admin && (
+          <>
+            <Link href={`/blog/${post.slug}`}>
+              <button className="btn-blue">Edit</button>
+            </Link>
+
+            {post.published ? (
+              <p className="text-success">Live</p>
+            ) : (
+              <p className="text-danger">Unpublished</p>
+            )}
+          </>
+        )}
+
+      </div>
+    </article>
+  );
+}
+
+/*
+
+<div className="card">
+     
       <footer>
         <span>
           {wordCount} words. {minutesToRead} min read
@@ -36,7 +96,8 @@ function PostItem({ post, admin = false }: PostItemProps) {
         <span className="push-left">💗 {post.heartCount || 0} Hearts</span>
       </footer>
 
-      {/* If admin view, show extra controls for user */}
+     //{admin if }
+
       {admin && (
         <>
           <Link href={`/blog/${post.slug}`}>
@@ -47,5 +108,6 @@ function PostItem({ post, admin = false }: PostItemProps) {
         </>
       )}
     </div>
-  );
-}
+
+
+*/
