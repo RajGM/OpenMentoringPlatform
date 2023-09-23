@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
 import { SessionModalProps } from '@lib/types';
 
-
 const SessionModal: React.FC<SessionModalProps> = ({ gapAmount }) => {
   const { user, username } = useContext(UserContext);
   const router = useRouter();
