@@ -6,10 +6,8 @@ import { categoriesAtom } from '@lib/atoms';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
+import { SessionModalProps } from '@lib/types';
 
-interface SessionModalProps {
-  gapAmount: number;
-}
 
 const SessionModal: React.FC<SessionModalProps> = ({ gapAmount }) => {
   const { user, username } = useContext(UserContext);

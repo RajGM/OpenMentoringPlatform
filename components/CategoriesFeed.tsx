@@ -1,20 +1,18 @@
-import React from 'react';
-import { useAtom } from 'jotai';
-import { categoriesAtom } from '@lib/atoms';
+import React from "react";
+import { useAtom } from "jotai";
+import { categoriesAtom } from "@lib/atoms";
+import { CategoriesFeedProps, CategoryBarProps } from "@lib/types";
 
-interface CategoriesFeedProps {
-  categories: string[];
-  cChanger: (category: string) => void;
-}
-
-const CategoriesFeed: React.FC<CategoriesFeedProps> = ({ categories, cChanger }) => {
-  return categories ? categories.map((category) => <CategoryBar category={category} key={category} cChanger={cChanger} />) : null;
-}
-
-interface CategoryBarProps {
-  category: string;
-  cChanger: (category: string) => void;
-}
+const CategoriesFeed: React.FC<CategoriesFeedProps> = ({
+  categories,
+  cChanger,
+}) => {
+  return categories
+    ? categories.map((category) => (
+        <CategoryBar category={category} key={category} cChanger={cChanger} />
+      ))
+    : null;
+};
 
 const CategoryBar: React.FC<CategoryBarProps> = ({ category, cChanger }) => {
   const [, updateCategoryAtom] = useAtom(categoriesAtom);
@@ -26,9 +24,11 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ category, cChanger }) => {
 
   return (
     <div>
-      <button className='categoryFilterButton' onClick={() => changeCat()}>{category}</button>
+      <button className="categoryFilterButton" onClick={() => changeCat()}>
+        {category}
+      </button>
     </div>
   );
-}
+};
 
 export default CategoriesFeed;

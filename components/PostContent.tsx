@@ -1,16 +1,6 @@
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
-
-interface Post {
-  title?: string;
-  content?: string;
-  username?: string;
-  createdAt: number | { toDate: () => Date };
-}
-
-interface PostContentProps {
-  post: Post;
-}
+import { PostContentProps } from '@lib/types';
 
 const PostContent: React.FC<PostContentProps> = ({ post }) => {
   const createdAt = typeof post?.createdAt === 'number' ? new Date(post.createdAt) : post.createdAt.toDate();

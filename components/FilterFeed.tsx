@@ -2,25 +2,16 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { filterAtom } from '@lib/atoms';
 
-const categoriesAndFilters: Record<string, string[]> = {
-  "Hackathon": ["Onsite", "Remote", "Hybrid", "All"],
-  "Internship": ["Onsite", "Remote", "Hybrid"],
-  "Grants": ["Travel", "Course", "Conference"],
-  "Conferences": ["Design", "Launch Event"]
-}
-
-interface FilterFeedProps {
-  selectedCategory: string;
-}
+import { 
+  categoriesAndFilters, 
+  FilterFeedProps, 
+  FilterBarProps 
+} from '@lib/types';  // adjust the path as necessary
 
 const FilterFeed: React.FC<FilterFeedProps> = ({ selectedCategory }) => {
   const filters = categoriesAndFilters[selectedCategory];
 
   return filters ? filters.map((filter) => <FilterBar filter={filter} key={filter} />) : null;
-}
-
-interface FilterBarProps {
-  filter: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({ filter }) => {

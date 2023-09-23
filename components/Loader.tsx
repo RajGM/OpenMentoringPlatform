@@ -1,9 +1,6 @@
 import React from 'react';
 
-interface LoaderProps {
-  show: boolean;
-  className?: string;  // Added className property
-}
+import { LoaderProps } from '@lib/types';
 
 const Loader: React.FC<LoaderProps> = ({ show, className }) => {
   return show ? <div className={`loader ${className}`}></div> : null;

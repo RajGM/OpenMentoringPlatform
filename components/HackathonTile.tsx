@@ -2,20 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ModalButton from './Modal';
 import SponsoredTile from './SponsoredTile';
 import HoverMenuButton from './HoverMenuButton';
+import { HackathonTileProps } from '@lib/types';
 
-interface HackathonTileProps {
-    data: {
-        eventN: string;
-        sponsored?: boolean;
-        logoUrl?: string;
-        link: string;
-        appS: string;
-        appE: string;
-        eventS?: string;
-        eventE?: string;
-        postedBy: string;
-    };
-}
 const HackathonTile: React.FC<HackathonTileProps> = ({ data }) => {
     const [dataToshow, setDataToshow] = useState<string>(data.eventN);
 

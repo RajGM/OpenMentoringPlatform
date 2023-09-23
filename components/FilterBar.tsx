@@ -2,10 +2,7 @@ import React, { useContext } from 'react';
 import { UserContext } from '@lib/context';
 import Loader from "@components/Loader";
 import FilterFeed from "@components/FilterFeed";
-
-interface FilterBarProps {
-  selectedC: string;
-}
+import { FilterBarProps } from '@lib/types';
 
 const FilterBar: React.FC<FilterBarProps> = ({ selectedC }) => {
   const { username } = useContext(UserContext);

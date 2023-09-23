@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import CategoriesFeed from "@components/CategoriesFeed";
+import { CategoriesType } from '@lib/types';
 
-let categories: string[] = ["Hackathon", "Grants", "Conferences", "Internship"];
+let categories: CategoriesType = ["Hackathon", "Grants", "Conferences", "Internship"];
 import FilterBar from "@components/FilterBar";
 
 interface CategoriesFeedProps {

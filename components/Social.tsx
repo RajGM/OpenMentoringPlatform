@@ -4,15 +4,10 @@ import { Formik, Form, Field } from 'formik';
 import toast, { Toaster } from 'react-hot-toast';
 import { auth, firestore } from '@lib/firebase';
 import { UserContext } from '@lib/context';
+import { InitialValues } from '@lib/types';
 
 interface SocialProps {} // If you have any props for Social, define them here.
 
-interface InitialValues {
-  discord: string;
-  telegram: string;
-  twitter: string;
-  instagram: string;
-}
 export const Social: React.FC<SocialProps> = () => {
 
     const { user, username } = useContext(UserContext);

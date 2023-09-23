@@ -4,10 +4,8 @@ import { useAtom } from 'jotai';
 import { categoriesAtom, filterAtom } from '@lib/atoms';
 import { firestore } from '@lib/firebase';
 import Loader from './Loader';
+import { CardFieldProps } from '@lib/types';
 
-interface CardFieldProps {
-    arrData: any[]; // You should replace 'any' with the actual type of the data
-}
 
 const CardField: React.FC<CardFieldProps> = ({ arrData }) => {
     return arrData ? arrData.map((indiData) => <div className="eventCard"> <HackathonTile data={indiData} key={indiData.id} /></div>) : null;

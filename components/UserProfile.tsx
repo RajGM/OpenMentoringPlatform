@@ -1,10 +1,4 @@
-interface UserProfileProps {
-  user: {
-    photoURL?: string;
-    username: string;
-    displayName?: string;
-  };
-}
+import { UserProfileProps } from "@lib/types";
 
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   return (

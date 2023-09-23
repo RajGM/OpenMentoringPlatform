@@ -1,9 +1,6 @@
 import Head from 'next/head';
 
-interface MetatagsProps {
-  title?: string;
-  description?: string;
-}
+import { MetatagsProps } from '@lib/types';
 
 const Metatags: React.FC<MetatagsProps> = ({
   title = 'SOL Mentoring',

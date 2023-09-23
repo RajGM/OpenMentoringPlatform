@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "@components/Loader";
 import MentorTile from "@components/MentorTile";
+import { CardFieldProps,MentorFeedProps } from "@lib/types";
 
-//let dataToShow = [];
-
-function CardField({ arrData }) {
+const CardField: React.FC<CardFieldProps> = ({ arrData }) => {
   return arrData
     ? arrData.map((indiData) => (
         <div className="eventCard" key={indiData}>
@@ -12,27 +11,18 @@ function CardField({ arrData }) {
         </div>
       ))
     : null;
-}
+};
 
-//return arrData ? arrData.map((indiData) => <div className="eventCard"> <MentorTile data={indiData} key={indiData} /></div>) : null;
-
-export default function MentorFeed({ oppData }) {
+const MentorFeed: React.FC<MentorFeedProps> = ({ oppData }) => {
   const [loading, setLoading] = useState(true);
   console.log("oppData MENTORFEED:", oppData);
   useEffect(() => {
     console.log("oppData MENTORFEED LEN:", typeof oppData);
   }, [oppData]);
 
-  // if (loading == true) {
-  //     return (<div className='fullHeightMain'>
-  //         <Loader show={true} className="middle" />
-  //     </div>)
-  // } else {
-  if (oppData.length == 0) {
+  if (oppData.length === 0) {
     return (
-      <div
-        className="fullHeightMain middle"
-      >
+      <div className="fullHeightMain middle">
         <h1>Cleaning Data and testing multiple features integrations</h1>
         <h1>It will be completed, soon</h1>
         <h1>Sorry, no data found!</h1>
@@ -51,6 +41,6 @@ export default function MentorFeed({ oppData }) {
       </div>
     );
   }
-  //}
-}
+};
 
+export default MentorFeed;

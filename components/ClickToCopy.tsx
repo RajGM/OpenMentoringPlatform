@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FaCopy } from 'react-icons/fa';
-
-interface ClickToCopyProps {
-  text: string;
-}
+import { ClickToCopyProps } from '@lib/types';
 
 const ClickToCopy: React.FC<ClickToCopyProps> = ({ text }) => {
     const [copied, setCopied] = useState(false);

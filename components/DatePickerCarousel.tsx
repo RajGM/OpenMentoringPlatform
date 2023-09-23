@@ -1,38 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '@lib/firebase';
 
-interface DatePickerCarouselProps {
-  userID: {
-    uid: string;
-    displayName: string;
-    email: string;
-  };
-  gapAmount: number;
-}
+// someComponent.tsx or someOtherFile.ts
+import { 
+    DatePickerCarouselProps, 
+    Slot, 
+    FormData, 
+    SlotType, 
+    ICSData 
+} from '@lib/types';  // adjust the path as necessary
 
-interface Slot {
-  startTime: string;
-  endTime: string;
-}
+// Now you can use these types and interfaces in your component or any other logic
 
-interface FormData {
-  name: string;
-  email: string;
-  phoneNumber: string;
-}
-
-type SlotType = {
-    startTime: string;
-    endTime: string;
-};
-
-type ICSData = {
-    start: string;
-    end: string;
-    summary: string;
-    description: string;
-    location: string;
-};
 
 const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({ userID, gapAmount }) => {
     const [currentDate, setCurrentDate] = useState<Date>(new Date());

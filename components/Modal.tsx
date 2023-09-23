@@ -6,10 +6,7 @@ import { categoriesAtom } from '../lib/atoms';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
-
-interface ModalButtonProps {
-    eventData: any; // You should replace 'any' with the actual type of the eventData
-}
+import {ModalButtonProps} from '@lib/types';
 
 const ModalButton: React.FC<ModalButtonProps> = ({ eventData }) => {
 

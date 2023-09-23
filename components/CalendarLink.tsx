@@ -1,10 +1,6 @@
 import React from 'react';
 import ClickToCopy from '@components/ClickToCopy';
-
-interface CalendarLinkProps {
-  link: string;
-  text: string;
-}
+import { CalendarLinkProps } from '@lib/types';
 
 const CalendarLink: React.FC<CalendarLinkProps> = ({ link, text }) => {
     return (

@@ -2,22 +2,12 @@ import { useState, useContext, useEffect } from 'react';
 import { firestore } from '@lib/firebase';
 import { UserContext } from '@lib/context'
 
-interface TimeSlot {
-  startTime: string;
-  endTime: string;
-}
-
-interface Availability {
-  [key: string]: TimeSlot[];
-}
-
-interface TimeSlots {
-  [key: string]: TimeSlot;
-}
-
-interface Error {
-  [key: string]: string;
-}
+import { 
+  TimeSlot, 
+  Availability, 
+  TimeSlots, 
+  Error 
+} from '@lib/types';
 
 const DayAvailability = () => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
