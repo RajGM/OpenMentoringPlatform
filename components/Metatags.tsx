@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { MetatagsProps } from '@lib/types';
 
 const Metatags: React.FC<MetatagsProps> = ({
-  title = 'SOL Mentoring',
+  title = 'FOSS Mentoring',
   description = 'A Free and Open Mentoring Platform'
 }) => {
   return (

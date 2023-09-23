@@ -19,7 +19,7 @@
 
 html,
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: "Noto Sans", sans-serif;
   color: var(--color-text);
 }
 
@@ -40,3 +40,16 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/*main  body*/
+.middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 20px;
+}
+
+/* DELETE FROM BELOWWWWWWWWW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */

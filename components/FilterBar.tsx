@@ -1,29 +1,33 @@
-import React, { useContext } from 'react';
-import { UserContext } from '@lib/context';
+import React, { useContext } from "react";
+import { UserContext } from "@lib/context";
 import Loader from "@components/Loader";
 import FilterFeed from "@components/FilterFeed";
-import { FilterBarProps } from '@lib/types';
+import { FilterBarProps } from "@lib/types";
 
 const FilterBar: React.FC<FilterBarProps> = ({ selectedC }) => {
   const { username } = useContext(UserContext);
 
   return (
-    <nav className="categoryBar">
-      <ul>
-        <li>
-          <div className="btn-logo" style={{ width: '180px', textAlign: 'center' }}>Filters</div>
-        </li>
-
-        <li>
-          <div className='space'></div>
-        </li>
-
-        {/* categories are fetched */}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignSelf: "center",
+        alignItems: "center",
+        gap: "20px",
+        border: "2px solid black",
+        boxShadow: "5px 5px black",
+        padding: "10px",
+      }}
+    >
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Filter</h1>
+      </div>
+      <div>
         <FilterFeed selectedCategory={selectedC} />
-
-      </ul>
-    </nav>
+      </div>
+    </div>
   );
-}
+};
 
 export default FilterBar;

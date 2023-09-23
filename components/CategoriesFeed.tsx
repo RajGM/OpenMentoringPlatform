@@ -23,11 +23,15 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ category, cChanger }) => {
   }
 
   return (
-    <div>
-      <button className="categoryFilterButton" onClick={() => changeCat()}>
+    <button
+      className="group relative inline-block text-sm font-medium text-red-600 focus:outline-none focus:ring active:text-red-500" style={{margin:'10px'}}
+      onClick={() => changeCat()}
+    >
+      <span className="absolute inset-0 border border-current"></span>
+      <span className="block border border-current bg-white px-12 py-3 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1">
         {category}
-      </button>
-    </div>
+      </span>
+    </button>
   );
 };
 

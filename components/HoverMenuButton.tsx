@@ -10,10 +10,10 @@ import Image from "next/image";
 import { firestore } from "@lib/firebase";
 import { useAtom } from "jotai";
 import { categoriesAtom, filterAtom } from "@lib/atoms";
-import toast, { Toaster } from "react-hot-toast";
 import { UserContext } from "@lib/context";
 import { useContext } from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 
 interface HoverMenuButtonProps {
   data: any; // You should replace 'any' with the actual type of the data
@@ -89,7 +89,7 @@ const HoverMenuButton: React.FC<HoverMenuButtonProps> = ({ data }) => {
         onMouseLeave={(event) => {
           setIsOverList(false);
         }}
-        style={{ marginTop: "-100px" }}
+        className="mt-[-100px] bg-white shadow-lg rounded-lg"
       >
         <MenuItem
           onSelect={() => {
@@ -104,7 +104,7 @@ const HoverMenuButton: React.FC<HoverMenuButtonProps> = ({ data }) => {
               }
               post("vote", category, user, data.id, username);
             }}
-            className="smallButton"
+            className="btn btn-primary w-full"
           >
             UpVote
           </button>
@@ -122,13 +122,13 @@ const HoverMenuButton: React.FC<HoverMenuButtonProps> = ({ data }) => {
               }
               post("close", category, user, data.id, username);
             }}
-            className="smallButton"
+            className="btn btn-secondary w-full mt-2"
           >
             Mark Closed
           </button>
         </MenuItem>
       </MenuList>
-      <Toaster />
+
     </Menu>
   );
 };
