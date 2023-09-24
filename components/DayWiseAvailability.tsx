@@ -204,7 +204,7 @@ const DayWiseAvailability = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8" style={{width:'50%', margin:'auto auto'}}>
+    <div className="bg-gray-100 min-h-screen p-8 bg-white p-8 rounded-lg shadow-md" style={{width:'50%', margin:'auto auto'}}>
       <h2 className="text-2xl font-bold mb-6">Day-wise Availability</h2>
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-4">Select Days:</h3>
@@ -299,17 +299,15 @@ const DayWiseAvailability = () => {
         </div>
       )}
 
-      <button
-        onClick={() =>
-          saveAvailabilityToFirestore(
-            user?.uid,
-            availability
-          )
-        }
-        className="btn btn-success"
-      >
-        Save Availability
-      </button>
+<div className="flex justify-center mt-4">
+  <button
+    onClick={() => saveAvailabilityToFirestore(user?.uid, availability)}
+    className="btn btn-success"
+  >
+    Save Availability
+  </button>
+</div>
+
     </div>
   );
 };

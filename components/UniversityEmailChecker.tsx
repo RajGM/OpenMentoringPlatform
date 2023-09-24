@@ -71,7 +71,7 @@ const UniversityEmailChecker = () => {
           body: JSON.stringify({ email, website, websiteDomain, listMentor }),
           headers: {
             "Content-Type": "application/json",
-            authorization: user.accessToken,
+            authorization: user?.accessToken,
           },
         });
 
@@ -105,7 +105,7 @@ const UniversityEmailChecker = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-center p-4">
+    <div className="bg-gray-100 flex justify-center items-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4">University Email Checker</h1>
 
