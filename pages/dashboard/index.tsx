@@ -7,12 +7,18 @@ import { useState, useContext, useEffect } from "react";
 const UserProfilePage: React.FC = () => {
   const { user, username } = useContext(UserContext);
 
-  useEffect(() => {}, [username]);
+  useEffect(() => {}, [user, username]);
 
   return (
     <main>
       <div>
         <UniversityEmailChecker />
+      </div>
+      <div>
+        <DayWiseAvailability />
+      </div>
+      <div>
+        <Sessions />
       </div>
     </main>
   );
@@ -22,10 +28,12 @@ export default UserProfilePage;
 
 /*
 <div>
-        <DayWiseAvailability />
-      </div>
-      <div>
-       <Sessions/>
-      </div>
-
+<UniversityEmailChecker />
+</div>
+<div>
+<DayWiseAvailability />
+</div>
+<div>
+<Sessions />
+</div>
 */

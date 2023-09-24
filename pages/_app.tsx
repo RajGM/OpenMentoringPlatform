@@ -10,6 +10,9 @@ import { Toaster } from "react-hot-toast";
 export default function App({ Component, pageProps }: AppProps) {
   const userData = useUserData();
 
+  console.log("userData", userData);
+
+
   return (
     <UserContext.Provider value={userData}>
       <JotaiProvider>
