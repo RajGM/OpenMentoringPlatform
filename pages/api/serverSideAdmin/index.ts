@@ -1,5 +1,4 @@
-const token = "MTExOTY4NDM5OTIyMzU1NDA3OQ.GfXkGM.62X7MgR4JOrX-8Moy8ejeZCDSxSbg4hE04HQ0A";            
-const generalChannelID = '1096841097231208571';
+const token = process.env.DISCORDTOEKN;            
 const serverID = "1096841096367177779";
 const baseurl = 'https://discord.com/api';
 

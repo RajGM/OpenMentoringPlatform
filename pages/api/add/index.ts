@@ -1,6 +1,6 @@
 import { db, auth, writeToFirestore } from "../firebaseAdmin/index";
 
-import { addCalendarEvent } from "../calendar.js";
+import { addCalendarEvent } from "../calendar";
 import { findMemberId, sendMessage } from "../serverSideAdmin/index";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -33,13 +33,13 @@ export default async function handler(
       );
       logoUrl = fetchLogo(values.link);
 
-      if (userSocial.discordID) {
+      if (userSocial && userSocial.discordID) {
         newDiscordMessageID = sendMessage(
           values,
           userSocial.discordID,
           category
         );
-      } else if (userSocial.discord) {
+      } else if (userSocial && userSocial.discord) {
         const foundDiscordID = await findMemberId(userSocial.discord);
 
         if (foundDiscordID) {

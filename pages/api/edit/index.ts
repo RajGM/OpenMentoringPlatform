@@ -2,7 +2,7 @@ import { firestore } from '@lib/firebase';
 
 import { db, auth,updateToFirestore } from '../firebaseAdmin/index'
 
-import { addCalendarEvent, editCalendarEvent } from '../calendar.js';
+import { addCalendarEvent, editCalendarEvent } from '../calendar';
 import { findMemberId, sendMessage, editMessage } from '../serverSideAdmin/index';
 
 export default async function handler(req, res) {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
                 newCalID = editCalendarEvent(values.calID, values.eventN, values.link, values.appS, values.appE, category);
             }
 
-            if (userSocial.discordID) {
+            if (userSocial && userSocial.discordID) {
 
                 if (values.discordMessageID == 0) {
                     newDiscordMessageID = sendMessage(values, userSocial.discordID, category);
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
                     newDiscordMessageID = editMessage(values, userSocial.discordID, category,values.discordMessageID);
                 }
 
-            } else if (userSocial.discord) {
+            } else if (userSocial&& userSocial.discord) {
 
                 const foundDiscordID = await findMemberId(userSocial.discord);
                 
@@ -63,12 +63,7 @@ export default async function handler(req, res) {
             values.calID = allId[0];
             values.discordMessageID = allId[1];
 
-            console.log("VALUES:", values);
-            console.log("FIRESTOREID:", firestoreid);
-
             updateToFirestore(category,values,firestoreid)
-            // const ref = firestore.collection(category).doc(firestoreid);
-            // await ref.update(values);
 
             res.status(200).send({ success: 'Hack Updated' });
         })
@@ -79,7 +74,7 @@ export default async function handler(req, res) {
 
 }
 
-async function getSocial(username) {
+async function getSocial(username:string) {
     let document = undefined;
     await firestore.collection('usernames').doc(username).get().then((doc) => {
         if (doc.exists) {

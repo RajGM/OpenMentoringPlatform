@@ -50,8 +50,8 @@ const MainFeed: React.FC = () => {
 
   if (loading == true) {
     return (
-      <div className="fullHeightMain">
-        <Loader show={true} className="middle" />
+      <div style={{display:'flex', flexDirection:'row',justifyContent:'center'}}>
+        <Loader show={true} />
       </div>
     );
   } else {
@@ -60,7 +60,7 @@ const MainFeed: React.FC = () => {
         <div className="fullHeightMain middle">
           <h1>Sorry, no opportunities found!</h1>
           <h2>Please add some for the community</h2>
-          <Empty/>
+          <Empty />
         </div>
       );
     } else {
@@ -69,7 +69,7 @@ const MainFeed: React.FC = () => {
           {oppData.length >= 1 ? (
             <CardField arrData={oppData} />
           ) : (
-            <Loader show={true} className="middle" />
+            <Loader show={true}/>
           )}
         </div>
       );
