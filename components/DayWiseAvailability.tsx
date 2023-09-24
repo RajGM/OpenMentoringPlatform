@@ -4,6 +4,8 @@ import { UserContext } from "@lib/context";
 
 import { TimeSlot, Availability, TimeSlots, Error } from "@lib/types";
 
+import { toast } from 'react-hot-toast';
+
 const DayWiseAvailability = () => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [availability, setAvailability] = useState<Availability>({});
@@ -168,6 +170,10 @@ const DayWiseAvailability = () => {
     .sort((a, b) => days.indexOf(a) - days.indexOf(b));
 
   const saveAvailabilityToFirestore = (userUid, availabilityData) => {
+
+    // Start the loading toast
+    const toastId = toast.loading('Saving availability...');
+
     const availabilityRef = firestore
       .collection("users")
       .doc(userUid)
@@ -185,9 +191,15 @@ const DayWiseAvailability = () => {
       .commit()
       .then(() => {
         console.log("Batch write successful");
+
+        // Update the toast to show success
+        toast.success('Availability saved successfully!', { id: toastId });
       })
       .catch((error) => {
         console.error("Error performing batch write:", error);
+
+        // Update the toast to show error
+        toast.error('Failed to save availability.', { id: toastId });
       });
   };
 

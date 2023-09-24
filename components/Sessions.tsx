@@ -3,6 +3,7 @@ import { UserContext } from "@lib/context";
 import { firestore } from "@lib/firebase";
 
 import { Session } from "@lib/types";
+import { toast } from "react-hot-toast";
 
 const Sessions = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -58,8 +59,11 @@ const Sessions = () => {
 
       // Assuming you have a Firebase collection named 'users'
       // and each user document has a 'sessions' subcollection
-      const userDocRef = firestore.collection("users").doc(user.uid);
+      const userDocRef = firestore.collection("users").doc(user?.uid);
       const sessionsRef = userDocRef.collection("sessions");
+
+      // Start the loading toast
+      const toastId = toast.loading('Creating session...');
 
       try {
         // Add the new session to the user's sessions subcollection
@@ -71,8 +75,14 @@ const Sessions = () => {
         // Clear the input fields
         setSessionTitle("");
         setSessionDuration("");
+
+        // Update the toast to show success
+        toast.success('Session created successfully!', { id: toastId });
       } catch (error) {
         console.error("Error creating session:", error);
+
+        // Update the toast to show error
+        toast.error('Failed to create session.', { id: toastId });
       }
     }
   };
@@ -84,15 +94,24 @@ const Sessions = () => {
       .doc(user.uid)
       .collection("sessions");
 
+    // Start the loading toast
+    const toastId = toast.loading("Deleting session...");
+
     try {
       // Delete the session from Firestore using its ID
       await sessionsRef.doc(sessionId).delete();
 
       // Remove the session from the local state
       const updatedSessions = sessions.filter((_, i) => i !== index);
+
+      // Update the toast to show success
+      toast.success("Session deleted successfully!", { id: toastId });
       setSessions(updatedSessions);
     } catch (error) {
       console.error("Error deleting session:", error);
+
+      // Update the toast to show error
+      toast.error("Failed to delete session.", { id: toastId });
     }
   };
 
