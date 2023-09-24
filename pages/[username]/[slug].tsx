@@ -73,9 +73,7 @@ export default function Post() {
               </section>
 
               <aside className="card">
-                <p>
-                  <strong>{post.heartCount || 0} 🤍</strong>
-                </p>
+               {/*here for comments and up or down like */}
                 
                 {/*<HeartButton postRef={postRef} />  improve this according to vote in opp*/}
               </aside>
