@@ -140,114 +140,68 @@ export default function Chat() {
 
   return (
     <>
-      <div
-        className="join"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "95%",
-          minHeight: "90vh",
-          justifyContent: "space-around",
-          gap: "10px",
-          margin: "10px",
-          boxShadow: "5px 5px",
-        }}
-      >
-        <div
-          className="join join-vertical"
-          style={{
-            width: "18%",
-            boxShadow: "5px 5px",
-            border: "1px solid black",
-          }}
-        >
-          <div>
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
-                <div
-                  className="navbar text-primary-content"
-                  style={{
-                    marginTop: "10px",
-                    border: "1px solid black",
-                    boxShadow: "5px 5px",
-                    width: "95%",
-                  }}
-                >
-                  <div className="flex-none gap-2">
-                    <div className="form-control">
-                      <input
-                        type="text"
-                        placeholder="Search by username"
-                        className="input input-bordered w-32 md:w-full"
-                        value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                        style={{ width: "150px" }}
-                      />
-                    </div>
+      <div className="flex w-11/12 min-h-[90vh] mx-auto bg-gray-100 rounded-lg shadow-2xl p-8">
+        <div className="flex-none w-1/4 bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div className="flex items-center justify-between bg-green-600 text-white p-4 rounded-lg">
+            <div className="form-control">
+              <input
+                type="text"
+                placeholder="Search or start new chat"
+                className="input input-bordered w-full text-black"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-light"
+              onClick={() => {
+                queryTest(searchValue);
+              }}
+            >
+              <i className="fas fa-search"></i>
+            </button>
+          </div>
 
-                    <div>
-                      <button
-                        type="submit"
-                        className="btn"
-                        onClick={() => {
-                          queryTest(searchValue);
-                        }}
-                      >
-                        Search
-                      </button>
+          <div className="overflow-y-auto h-[70vh] space-y-4">
+            {oppData.length > 0 ? (
+              oppData.map((item) => (
+                <div
+                  key={item.chatId}
+                  className="flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 transition duration-300 ease-in-out rounded-lg cursor-pointer"
+                  onClick={() => handleSelect(item)}
+                >
+                  <Image
+                    src={item.photoURL}
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <div className="flex-grow ml-4">
+                    <div className="font-bold">{item.username}</div>
+                    <div className="text-sm text-gray-600">
+                      {item.displayName}
                     </div>
                   </div>
                 </div>
-
-                {oppData.length > 0
-                  ? oppData.map((item) => (
-                      <div
-                        key={item.chatId}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-evenly",
-                          alignItems: "center",
-                          width: "90%",
-                          gap: "10px",
-                          border: "1px solid black",
-                          boxShadow: "5px 5px",
-                        }}
-                        onClick={() => handleSelect(item)}
-                      >
-                        <div>
-                          <Image src={item.photoURL} width={40} height={40} />
-                        </div>
-                        <div className="">
-                          <div className="font-bold">{item.username}</div>
-                          <div className="text-sm opacity-50">
-                            {item.displayName}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  : "Not found"}
-              </div>
-            </>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">Not found</div>
+            )}
           </div>
         </div>
-        {user && chatdataId && (
-          <ChatWindow
-            dataId={chatdataId ? chatdataId : null}
-            currentUser={user}
-            selectedUser={selectedUser}
-          />
-        )}
 
-        {!chatdataId && <ChatWindowEmpty />}
+        <div className="flex-grow bg-gray-200 rounded-lg shadow-md p-6">
+          {user && chatdataId ? (
+            <ChatWindow
+              dataId={chatdataId ? chatdataId : null}
+              currentUser={user}
+              selectedUser={selectedUser}
+            />
+          ) : (
+            <ChatWindowEmpty />
+          )}
+        </div>
       </div>
     </>
   );
@@ -383,110 +337,73 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
   };
 
   return (
-    <div
-      className="overflow-x-auto"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "90%",
-        backgroundColor: "lightblue",
-        padding: "10px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          className="alert alert-info"
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            width: "400px",
-          }}
-        >
+    <div className="bg-white p-6 rounded-lg shadow-md w-4/5 mx-auto flex flex-col space-y-4 h-[80vh]">
+      <div className="flex items-center justify-between border-b pb-4">
+        <div className="flex items-center space-x-4">
           <div className="avatar">
-            <Image src={selectedUser.photoURL} width={30} height={30} />
+            <Image
+              src={selectedUser.photoURL}
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
           </div>
-          <div>{selectedUser.username}</div>
+          <span className="font-bold">{selectedUser.username}</span>
         </div>
       </div>
 
-      <div style={{ height: "90%", width: "100%" }}>
+      <div className="flex-grow overflow-y-auto space-y-4">
         {dataArr.map((item) => (
           <div
             key={item.id}
-            className={item.user !== user ? "chat chat-start" : "chat chat-end"}
+            className={
+              item.user !== user ? "flex justify-start" : "flex justify-end"
+            }
           >
             {item.mediaURL ? (
-              <div>
-                <img
-                  src={item.mediaURL}
-                  alt="Media"
-                  className="media-preview"
-                />
-              </div>
+              <img
+                src={item.mediaURL}
+                alt="Media"
+                className="media-preview max-w-xs rounded-lg"
+              />
             ) : (
-              <div className="chat-bubble">{item.text}</div>
+              <div
+                className={`chat-bubble p-3 rounded-lg max-w-xs ${
+                  item.user !== user
+                    ? "bg-gray-200 text-black"
+                    : "bg-green-500 text-white"
+                }`}
+              >
+                {item.text}
+              </div>
             )}
           </div>
         ))}
-
         <span ref={dummy}></span>
       </div>
 
-      <div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <input
-                type="text"
-                id="UserEmail"
-                placeholder="Amazing Chats ..."
-                className="w-full rounded-md border-gray-200 pe-10 shadow-sm sm:text-sm"
-                onKeyDown={handleKeyDown}
-                onChange={(e) => setInputText(e.target.value)}
-                value={inputText}
-                style={{
-                  width: "400px",
-                  minHeight: "40px",
-                  padding: "10px",
-                  border: "1px solid black",
-                  textAlign: "center",
-                }}
-              />
-            </div>
+      <div className="flex items-center space-x-4 border-t pt-4">
+        <label className="file-input-label">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="file-input hidden"
+          />
+          <span className="file-input-icon p-2 bg-gray-200 rounded-full cursor-pointer">
+            📷
+          </span>
+        </label>
 
-            <div>
-              <label className="file-input-label">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="file-input"
-                />
-                <span className="file-input-icon">📷</span>{" "}
-              </label>
-            </div>
-          </div>
-        </div>
+        <input
+          type="text"
+          id="UserEmail"
+          placeholder="Type a message"
+          className="flex-grow p-3 border rounded-lg shadow-sm"
+          onKeyDown={handleKeyDown}
+          onChange={(e) => setInputText(e.target.value)}
+          value={inputText}
+        />
       </div>
     </div>
   );
@@ -494,27 +411,27 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
 
 const ChatWindowEmpty = () => {
   return (
-    <div
-      className="overflow-x-auto"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "90%",
-        backgroundColor: "lightblue",
-        padding: "10px",
-      }}
-    >
-      <div style={{ height: "90%", width: "100%" }}></div>
+    <div className="bg-white p-6 rounded-lg shadow-md w-4/5 mx-auto flex flex-col h-[80vh]">
+      <div className="flex-grow flex items-center justify-center">
+        <span className="text-gray-500 text-center">
+          Select a chat to start messaging.
+        </span>
+      </div>
 
-      <div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        ></div>
+      <div className="flex items-center space-x-4 border-t pt-4">
+        <label className="file-input-label">
+          <input type="file" accept="image/*" className="file-input hidden" />
+          <span className="file-input-icon p-2 bg-gray-200 rounded-full cursor-pointer">
+            📷
+          </span>
+        </label>
+
+        <input
+          type="text"
+          placeholder="Type a message"
+          className="flex-grow p-3 border rounded-lg shadow-sm"
+          disabled
+        />
       </div>
     </div>
   );
