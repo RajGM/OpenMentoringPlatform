@@ -2,7 +2,11 @@
   "compilerOptions": {
     "baseUrl": "./",
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -15,11 +19,34 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
-      "@lib/*": ["lib/*"],
-    }
+      "@components/*": [
+        "components/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@lib/*": [
+        "lib/*"
+      ]
+    },
+    "types": ["jest"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/index.tsx", "lib/types.ts", "lib/atoms.js", "components/Form.tsx", "pages/[username]/[slug].tsx", "pages/[username]/index.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/index.tsx",
+    "lib/types.ts",
+    "lib/atoms.js",
+    "components/Form.tsx",
+    "pages/[username]/[slug].tsx",
+    "pages/[username]/index.tsx",
+    "__tests__/Loader.test.tsx"
+, "__tests__/UserProfile.test.tsx"  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }

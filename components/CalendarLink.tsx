@@ -4,7 +4,7 @@ import { CalendarLinkProps } from '@lib/types';
 
 const CalendarLink: React.FC<CalendarLinkProps> = ({ link, text }) => {
     return (
-        <div className='calendarDiv'>
+        <div className='calendarDiv' data-testid="calendar-link">
             <div className="container">
                 <div className="content">
                     {link}

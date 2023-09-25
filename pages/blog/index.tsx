@@ -55,7 +55,7 @@ function PostList() {
       // Fetch additional data from the "posts" collection
       const postDoc = await firestore
         .collection("posts")
-        .doc(postData.postRef.id)
+        .doc(postData.postRef?.id)
         .get();
       const post = postDoc.data();
 
@@ -72,7 +72,7 @@ function PostList() {
   }, [posts]);
 
   return (
-    <div className="bg-gray-100 p-6 rounded-lg shadow-lg flex flex-col items-center">
+    <div className="bg-gray-100 p-6 rounded-lg shadow-lg flex flex-col items-center min-h-screen">
       <h1 className="text-2xl font-semibold mb-4">Manage Your Posts</h1>
       <PostFeed posts={posts} admin />
     </div>

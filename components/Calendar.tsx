@@ -1,5 +1,4 @@
 import CalendarLink from "@components/CalendarLink";
-import { Autour_One } from "next/font/google";
 
 export default function Calendar() {
   return (
