@@ -12,7 +12,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
       : post.createdAt.toDate();
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto mt-8" style={{marginTop:'100px'}}>
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
       <h1 className="text-3xl font-semibold mb-2">{post.title}</h1>
       <div className="flex items-center space-x-2 text-gray-600">

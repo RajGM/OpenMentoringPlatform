@@ -9,6 +9,10 @@ import Metatags from "@components/Metatags";
 import PostFeed from "@components/PostFeed";
 import SessionModal from "@components/SessionModal";
 import { GetServerSideProps } from "next";
+import { query } from "firebase/firestore";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { set } from "react-hook-form";
 
 type Session = {
   id: string;
@@ -36,98 +40,95 @@ interface UserProfilePageProps {
   sessions: Session[];
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { username } = query;
+export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
+  const router = useRouter();
+  const { username } = router.query;
+  const [userID, setUser] = useState(null);
+  const [sessions, setSessions] = useState(null);
+  const [post, setPost] = useState(null);
 
-  const userDoc = await getUserWithUsername(username as string);
-  const userId = await getUserIdWithUsername(username as string);
-
-  // If no user, short circuit to 404 page
-  if (!userDoc && !userId) {
-    return {
-      notFound: true,
-    };
+  async function setUserId() {
+    const user = await getUserWithUsername(username as string);
+    setUser(user);
   }
 
-  // JSON serializable data
-  let user = null;
-  let posts = null;
-  let sessions = null;
+  async function getSessions(userId: string) {
+    console.log("userId insideSession: ", userId);
 
-  if (userDoc) {
-    user = userDoc.data();
+     
+    const sessionsQuery = firestore
+      .collection("users")
+      .doc(userID.id)
+      .collection("sessions");
+
+    const sessions = (await sessionsQuery.get()).docs.map((doc) => doc.data());
+    setSessions(sessions);
+    console.log("sessions: ", sessions);
+  }
+
+  async function getPosts(username: string) {
     const postsQuery = firestore
       .collection("posts")
       .where("published", "==", true)
       .where("username", "==", username)
       .orderBy("createdAt", "desc")
       .limit(5);
-    posts = (await postsQuery.get()).docs.map(postToJSON);
-
-    // Fetch sessions
-    const sessionsQuery = firestore
-      .collection("users")
-      .doc(userId)
-      .collection("sessions");
-
-    sessions = (await sessionsQuery.get()).docs.map((doc) => doc.data());
+    const posts = (await postsQuery.get()).docs.map(postToJSON);
+    setPost(posts);
   }
 
-  return {
-    props: { user, posts, sessions }, // will be passed to the page component as props
-  };
-};
+  useEffect(() => {
+    if (username && !userID) {
+      setUserId();
+    }
+  
+    if (userID) {
+      console.log("userID inside: ", userID.id);
+      getSessions(userID.id);
+    }
 
-export const UserProfilePage: React.FC<UserProfilePageProps> = ({
-  user,
-  posts,
-  sessions,
-}) => {
+    if (username) {
+      getPosts(username as string);
+    }
+  }, [username, userID]);
+
   return (
-    <main>
-      <Metatags
-        title={user.username}
-        description={`${user.username}'s public profile`}
-      />
-      <UserProfile user={user} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "10px",
-          justifyContent: "space-around",
-          backgroundColor: "pink",
-        }}
-      >
-        <div style={{ width: "20%", backgroundColor: "yellow" }}>
-          <h2>Sessions</h2>
+    <div className="bg-yellow-100 p-4">
+      <div className="flex flex-row space-x-4">
+        <div className="w-1/4">
+          <h2 className="text-lg font-semibold mb-4">Sessions</h2>
           <ul>
-            {sessions.map((session) => (
-              <li key={session.id}>
-                <SessionDiv session={session} />
-              </li>
-            ))}
+            {sessions &&
+              sessions.map((session) => (
+                <li key={session.id} className="mb-2">
+                  <SessionDiv session={session} />
+                </li>
+              ))}
           </ul>
         </div>
-        <div style={{ width: "50%", backgroundColor: "red" }}>
-          <PostFeed posts={posts} />
+        <div className="w-1/2 bg-red-100 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Posts</h2>
+          <div className="w-full">
+            <PostFeed posts={post} />
+          </div>
         </div>
-        <div style={{ width: "20%", backgroundColor: "yellow" }}>
-          IMPACT MADE HERE
+        <div className="w-1/2 bg-red-100 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Impact Made</h2>
+          <div className="w-full">
+            Feedback HERE
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
+  
 };
 
 export default UserProfilePage;
 
 function SessionDiv({ session: session }: any) {
-  console.log(session);
-  console.log(session.title);
-
   return (
-    <div className="group relative block h-64 sm:h-80 lg:h-96">
+    <div className="group relative block h-64">
       <span className="absolute inset-0 border-2 border-dashed border-black"></span>
 
       <div className="relative flex h-full transform items-end border-2 border-black bg-white transition-transform group-hover:-translate-x-2 group-hover:-translate-y-2">

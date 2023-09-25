@@ -1387,33 +1387,6 @@ async function post(type, category, values, user, firestoreid) {
   );
 }
 
-//Event DS
-/*
-    eventN: '',
-    link: '',
-    appS: '',
-    appE: '',
-    eventS: '',
-    eventE: '',
-    filters: '',
-    postedBy: '',
-*/
-
-//validation schema
-/*
-
-const hackathonValidationSchema = Yup.object({
-    eventN: Yup.string().min(4, 'Too short').max(30, 'Hackathon Name only').required('Event name is required'),
-    link: Yup.string().min(3, 'Shorten URLs not allowed').max(60, 'Hackathon HomePage Link only').url('Please only homepage link'),
-    appS: Yup.date().required('Application start date is required'),
-    appE: Yup.date(),
-    eventS: Yup.date(),
-    eventE: Yup.date(),
-    filters: Yup.string(),
-    postedBy: Yup.string().required('Posted by is required')
-});
-*/
-
 interface SessionFormProps {
   gapAmount: number;
 }

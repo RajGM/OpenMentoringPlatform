@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "@lib/firebase";
+import { useRouter } from "next/router";
 
 // someComponent.tsx or someOtherFile.ts
 import {
@@ -39,6 +40,10 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null); // Initialize with null or default value
 
   console.log("userID:", userID);
+
+  const router = useRouter();
+  const { username } = router.query;
+  console.log("username Calendar:", username);
 
   // Function to generate date items
   const generateDateItems = () => {
@@ -183,16 +188,36 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
 
     console.log("Form data with details:", formDataWithDetails);
 
-    return;
-    const event = {
-      start: "20230921T100000Z", // Start time in YYYYMMDDTHHmmssZ format
-      end: "20230921T110000Z", // End time in YYYYMMDDTHHmmssZ format
-      summary: "Meeting with John",
-      description: "Discuss project updates",
-      location: "Conference Room A",
+    const eventTest = {
+      start: `${formDataWithDetails.date}T${formDataWithDetails.startTime}:00+05:30`, // Start time in YYMMDDTHHmmssZ format
+      end: `${formDataWithDetails.date}T${formDataWithDetails.endTime}:00+05:30`, // End time in YYMMDDTHHmmssZ format
+      summary: "Meeting with " + formDataWithDetails.attendees.join(", "),
+      description: "Mentoring Session",
+      location: "Online Meeting", // You can set your own location
     };
 
-    const icsString = createICS(event);
+    const icsString = createICS(eventTest);
+    // console.log("icsString:", icsString);
+
+    // const event2 = {
+    //   start: "20230921T100000Z", // Start time in YYYYMMDDTHHmmssZ format
+    //   end: "20230921T110000Z", // End time in YYYYMMDDTHHmmssZ format
+    //   summary: "Meeting with John",
+    //   description: "Discuss project updates",
+    //   location: "Conference Room A",
+    // };
+
+    // console.log(createICS(event2))
+
+    // const event = {
+    //   start: "20230921T100000Z", // Start time in YYYYMMDDTHHmmssZ format
+    //   end: "20230921T110000Z", // End time in YYYYMMDDTHHmmssZ format
+    //   summary: "Meeting with John",
+    //   description: "Discuss project updates",
+    //   location: "Conference Room A",
+    // };
+
+    // const icsString = createICS(event);
 
     const recipientsArray = ["rajgmsocial19@gmail.com"];
     const htmlBody = "Code HTML body";
@@ -245,9 +270,11 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   }, [availableSlots]);
 
   return (
-    <div className="date-picker">
-      <div className="date-picker-inner">{generateDateItems()}</div>
-      <button onClick={handleNextClick}>Next</button>
+    <div className="date-picker space-y-4">
+      <div className="date-picker-inner space-y-4">{generateDateItems()}</div>
+      <button className="btn btn-primary" onClick={handleNextClick}>
+        Next
+      </button>
 
       {/* Display available slots */}
       <div className="available-slots">
@@ -255,50 +282,58 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
           <ul>
             {availableSlots.map((slot, index) => (
               <li key={index}>
-                <button onClick={() => handleButtonClick(index)}>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => handleButtonClick(index)}
+                >
                   {slot.startTime}
                 </button>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No available slots for this date.</p>
+          <p className="text-red-500">No available slots for this date.</p>
         )}
       </div>
 
       {/* Display the form when showForm is true */}
       {showForm && (
-        <form onSubmit={handleFormSubmit}>
-          <label>
-            Name:
+        <form onSubmit={handleFormSubmit} className="space-y-4">
+          <div className="flex flex-col space-y-2">
+            <label className="text-gray-700">Name:</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
+              className="input input-bordered"
               required
             />
-          </label>
-          <label>
-            Email:
+          </div>
+          <div className="flex flex-col space-y-2">
+            <label className="text-gray-700">Email:</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              className="input input-bordered"
               required
             />
-          </label>
-          <label>
-            Phone Number (optional):
+          </div>
+          <div className="flex flex-col space-y-2">
+            <label className="text-gray-700">Phone Number (optional):</label>
             <input
               type="tel"
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
+              className="input input-bordered"
             />
-          </label>
-          <button type="submit">Confirm Booking</button>
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Confirm Booking
+          </button>
         </form>
       )}
     </div>

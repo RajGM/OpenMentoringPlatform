@@ -64,4 +64,26 @@ body {
 
 }
 
+.calendarDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  width: 250px;
+  background-color: whitesmoke;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100px;
+}
+
+.content {
+  text-align: left;
+  width: 100%;
+}
+
 /* DELETE FROM BELOWWWWWWWWW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
