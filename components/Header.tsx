@@ -71,6 +71,11 @@ export default function Header() {
                   </a>
                 </li>
                 <li>
+                  <a href="/blog" className="justify-between">
+                    Blog
+                  </a>
+                </li>
+                <li>
                   <button onClick={signOut}>LogOut</button>
                 </li>
                 <li>

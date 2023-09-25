@@ -1,3 +1,4 @@
+import {db,firestore} from '../firebaseAdmin'
 
 const oppTypes: string[] = ["Hackathon", "Grants", "Conference", "Internships"];
 
