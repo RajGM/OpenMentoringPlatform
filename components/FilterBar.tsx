@@ -1,11 +1,8 @@
-import React, { useContext } from "react";
-import { UserContext } from "@lib/context";
-import Loader from "@components/Loader";
+import React from "react";
 import FilterFeed from "@components/FilterFeed";
 import { FilterBarProps } from "@lib/types";
 
 const FilterBar: React.FC<FilterBarProps> = ({ selectedC }) => {
-  const { username } = useContext(UserContext);
 
   return (
     <div
@@ -24,7 +21,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ selectedC }) => {
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Filter</h1>
       </div>
       <div>
-        <FilterFeed selectedCategory={selectedC} />
+        <FilterFeed selectedCategory={selectedC?selectedC:"Hackathon"} />
       </div>
     </div>
   );

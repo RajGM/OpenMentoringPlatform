@@ -2,7 +2,6 @@ import { useState, useContext, useEffect, use } from "react";
 import { UserContext } from "@lib/context";
 import toast from "react-hot-toast";
 import { firestore } from "@lib/firebase";
-import { Formik, Form, Field } from "formik";
 
 const UniversityEmailChecker = () => {
   const [email, setEmail] = useState<string>("");
@@ -14,8 +13,6 @@ const UniversityEmailChecker = () => {
   const [error, setError] = useState<string | null>(null);
   const [meetingLink, setMeetingLink] = useState<string>("");
   const [isMentor, setIsMentor] = useState<boolean>(false); // State to check if the user is a mentor
-
-  console.log("user", user);
 
   const fetchMentorStatus = async () => {
     try {
@@ -42,9 +39,8 @@ const UniversityEmailChecker = () => {
       const mentorData = await mentorRef.get();
 
       if (mentorData.exists) {
-        const mentorData = mentorData.data();
-        setMeetingLink(mentorData.meetingLink);
-        console.log("mentorData", mentorData);
+        const data = mentorData.data();
+        setMeetingLink(data?.meetingLink);
       }
     } catch (error) {
       // Handle Firestore error
@@ -62,13 +58,16 @@ const UniversityEmailChecker = () => {
     if (isMentor) {
       fetchMentorData();
     }
-  }, [isMentor, user,meetingLink]);
+  }, [isMentor, user]);
 
   async function saveMeetingLinkToFirebase() {
     try {
-      await firestore.collection("users").doc(user.uid).update({
-        meetingLink: meetingLink, // Use the correct variable name with capital 'L'
-      });
+      await firestore.collection("users").doc(user?.uid).set(
+        {
+          meetingLink: meetingLink, // Use the correct variable name with capital 'L'
+        },
+        { merge: true }
+      );
 
       // Optionally, show a success message or perform other actions
       toast.success("Meeting link saved successfully!");
@@ -114,7 +113,6 @@ const UniversityEmailChecker = () => {
       });
 
       if (response.status === 200) {
-        console.log("Email verified successfully and added to mentors list!");
         toast.dismiss();
         toast.success("Email verified successfully and added to mentors list!");
         setResult("Email verified successfully and added to mentors list!");
@@ -177,7 +175,9 @@ const UniversityEmailChecker = () => {
               <input
                 type="text"
                 value={meetingLink}
-                onChange={(e) => setMeetingLink(e.target.value)}
+                onChange={(e) => {
+                  setMeetingLink(e.target.value);
+                }}
                 className="input input-bordered w-full"
               />
             </div>
@@ -201,34 +201,3 @@ const UniversityEmailChecker = () => {
 };
 
 export default UniversityEmailChecker;
-
-/*
- try {
-      // Add your Firestore logic here to save the form fields
-      const userID = user.uid; // Replace with how you get the user's ID
-
-      // Create a Firestore document reference
-      const mentorRef = firestore.collection("mentors").doc(userID);
-
-      // Set the form fields to Firestore
-      await mentorRef.set(
-        {
-          name: values.name,
-          university: values.university,
-          degreeCourse: values.degreeCourse,
-          universityCountry: values.universityCountry,
-          homeCountry: values.homeCountry,
-          meetingLink: values.meetingLink,
-          isVisible: values.isVisible,
-        },
-        { merge: true } // Use merge: true to update the document if it exists
-      );
-
-      // Handle success or show a toast message
-      toast.success("Mentor information saved successfully!");
-    } catch (error) {
-      // Handle Firestore error
-      console.error("Error saving mentor information to Firestore:", error);
-      toast.error("Failed to save mentor information.");
-    }
-*/

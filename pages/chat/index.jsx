@@ -21,6 +21,7 @@ export default function Chat() {
   const [chatdataId, setChatDataId] = useState("");
   const [searchedUser, setSearchedUser] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
+  const [showChatWindow, setShowChatWindow] = useState(false);
 
   useEffect(() => {
     queryTest("");
@@ -32,9 +33,6 @@ export default function Chat() {
     if (!user) {
       return;
     }
-    console.log(user.uid);
-
-    console.log("searchValue:", searchValue);
 
     if (searchValue == "" || searchValue.length == 0) {
       query = firestore.collection("userchats").doc(user.uid);
@@ -44,7 +42,6 @@ export default function Chat() {
 
         if (docSnapshot.exists) {
           const userData = docSnapshot.data();
-          console.log("Retrieved User Data:", userData.friends);
 
           // Create an array of promises for fetching friend data
           const friendDataPromises = userData.friends.map((friend) => {
@@ -62,14 +59,11 @@ export default function Chat() {
 
           Promise.all(friendDataPromises)
             .then((friendData) => {
-              console.log("Friend data retrieved:", friendData);
               setOppData(friendData);
             })
             .catch((error) => {
               console.error("Error retrieving friend data:", error);
             });
-        } else {
-          console.log("Document does not exist.");
         }
       } catch (error) {
         console.error("Error retrieving user data:", error);
@@ -83,12 +77,9 @@ export default function Chat() {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log("queryData:", typeof queryData);
-      console.log("queryData Array[0]:", queryData[0]);
 
       setOppData(queryData);
       setSearchedUser[queryData[0]];
-      console.log("queryData UID:", queryData[0].id);
     }
   }
 
@@ -115,35 +106,26 @@ export default function Chat() {
             combinedId: combinedId,
             user2: clickedData.id,
           }),
-        })
-          .then((response) => {
-            if (response.ok) {
-              console.log("response ok");
-            } else {
-              console.log("response not ok");
-            }
-          })
-          .catch((error) => {
-            console.log("error in fetch:");
-          });
+        }).catch((error) => {
+          console.error("error in fetch:");
+        });
 
-        console.log("No such document!");
         setChatDataId(combinedId);
         setSelectedUser(clickedData);
       } catch (err) {
-        console.log("error in creating chat:", err);
+        console.error("error in creating chat:", err);
       }
-
-      console.log("create new one");
     }
+
+    setShowChatWindow(true);
   };
 
   return (
     <>
-      <div className="flex w-11/12 min-h-[90vh] mx-auto bg-gray-100 rounded-lg shadow-2xl p-8">
-        <div className="flex-none w-1/4 bg-white rounded-lg shadow-md p-6 space-y-6">
-          <div className="flex items-center justify-between bg-green-600 text-white p-4 rounded-lg">
-            <div className="form-control">
+      <div className="flex flex-col md:flex-row w-11/12 min-h-[90vh] mx-auto bg-gray-100 rounded-lg shadow-2xl p-8">
+        <div className="flex-none w-full md:w-1/4 bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div className="flex flex-col md:flex-row items-center justify-between bg-green-600 text-white p-4 rounded-lg">
+            <div className="form-control w-full md:w-auto mb-2 md:mb-0">
               <input
                 type="text"
                 placeholder="Search or start new chat"
@@ -154,12 +136,24 @@ export default function Chat() {
             </div>
             <button
               type="submit"
-              className="btn btn-light"
+              className="btn btn-light mt-2 md:mt-0"
               onClick={() => {
                 queryTest(searchValue);
               }}
             >
-              <i className="fas fa-search"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-6 h-6"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </button>
           </div>
 
@@ -207,41 +201,7 @@ export default function Chat() {
   );
 }
 
-const ChatInput = () => {
-  return (
-    <div className="relative">
-      <label htmlFor="UserEmail" className="sr-only">
-        Chat
-      </label>
-
-      <input
-        type="text"
-        id="UserEmail"
-        placeholder="Amazing Chats ..."
-        className="w-full rounded-md border-gray-200 pe-10 shadow-sm sm:text-sm"
-      />
-
-      <span className="pointer-events-none absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-500">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="h-4 w-4"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </span>
-    </div>
-  );
-};
-
 const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
-  console.log("CURRENT USER:", currentUser);
-  console.log("SELECTED USER:", selectedUser);
   const dummy = useRef();
   const user = currentUser.uid;
   const [inputText, setInputText] = useState(""); // State to store input text
@@ -254,7 +214,7 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
     .collection("chats")
     .doc(dataId)
     .collection("messages");
-  const query = messagesRef.orderBy("createdAt").limit(25);
+  const query = messagesRef.orderBy("createdAt");
   const [messages] = useCollectionData(query, { idField: "id" });
 
   const fetchMsgs = async () => {
@@ -281,6 +241,7 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
         ...doc,
       }));
       setDataArr(messagesData);
+      dummy.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
@@ -292,30 +253,33 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (inputText.trim() === "") return;
 
-    // Check if a file is attached
     if (selectedFile) {
       try {
         const downloadURL = await uploadMediaToStorage(selectedFile);
-        await messagesRef.add({
-          text: inputText,
-          mediaURL: downloadURL, // Save the media URL in the message
-          createdAt: serverTimestamp(),
-          user: user,
-        });
+        if (downloadURL) {
+          await messagesRef.add({
+            text: "Image",
+            mediaURL: downloadURL,
+            createdAt: serverTimestamp(),
+            user: user,
+          });
+          setSelectedFile(null); // Reset the selected file
+          setSelectedImage(null);
+        } else {
+          console.error("Failed to get download URL for the image.");
+        }
       } catch (error) {
         console.error("Error uploading media message:", error);
       }
-    } else {
+    } else if (inputText.trim() !== "") {
       await messagesRef.add({
         text: inputText,
         createdAt: serverTimestamp(),
         user: user,
       });
+      setInputText(""); // Reset the input text
     }
-
-    setInputText("");
   };
 
   async function uploadMediaToStorage(file) {
@@ -331,9 +295,31 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
     }
   }
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0]; // Get the first selected file
-    setSelectedFile(file);
+    if (file) {
+      setSelectedFile(file);
+      setSelectedImage(URL.createObjectURL(file));
+
+      // Initiate the upload immediately after file is selected
+      try {
+        const downloadURL = await uploadMediaToStorage(file);
+        if (downloadURL) {
+          await messagesRef.add({
+            text: "Image",
+            mediaURL: downloadURL,
+            createdAt: serverTimestamp(),
+            user: user,
+          });
+          setSelectedFile(null); // Reset the selected file after upload
+          setSelectedImage(null);
+        } else {
+          console.error("Failed to get download URL for the image.");
+        }
+      } catch (error) {
+        console.error("Error uploading media message:", error);
+      }
+    }
   };
 
   return (
@@ -379,6 +365,23 @@ const ChatWindow = ({ dataId, currentUser, selectedUser }) => {
             )}
           </div>
         ))}
+
+        {selectedImage && (
+          <div className="flex justify-end items-center space-x-4 bg-white p-4 rounded-lg shadow-md">
+            <div className="relative">
+              <img
+                src={selectedImage}
+                alt="Selected Media"
+                className="media-preview max-w-xs rounded-lg"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="spinner text-white"></div>
+              </div>
+            </div>
+            <span className="text-gray-600">Uploading...</span>
+          </div>
+        )}
+
         <span ref={dummy}></span>
       </div>
 

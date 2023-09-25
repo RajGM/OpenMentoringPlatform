@@ -1,27 +1,28 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { db, auth, arrayPush } from '../firebaseAdmin/index'
 
-export default async function handler(req, res) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
 
-    await auth.verifyIdToken(req.headers.authorization)
+    await auth.verifyIdToken(req.headers.authorization as string)
         .then(async (decodedToken) => {
 
-            const ref = db.collection('voting').doc(req.headers.firestoreid);
+            const ref = db.collection('voting').doc(req.headers.firestoreid as string);
             const dataT = (await ref.get()).data();
 
             if (req.body.type == "vote") {
 
-                console.log("VOTE:", dataT);
-                console.log("VOTE:", dataT.voters.includes(req.body.username));
-
-                if (!dataT.voters.includes(req.body.username)) {
-                    console.log("VOTED");
+             
+                if (!dataT?.voters.includes(req.body.username)) {
                     try {
                         const batch = db.batch();
                         batch.update(ref, {
                             voters: arrayPush(req.body.username)
                         });
                         batch.update(ref, {
-                            voteCount: dataT.voteCount + 1
+                            voteCount: dataT?.voteCount + 1
                         });
                         await batch.commit();
                     } catch (error) {
@@ -33,14 +34,14 @@ export default async function handler(req, res) {
             } else if (req.body.type == "close") {
 
 
-                if (!dataT.close.includes(req.body.username)) {
+                if (!dataT?.close.includes(req.body.username)) {
                     try {
                         const batch = db.batch();
                         batch.update(ref, {
                             close: arrayPush(req.body.username)
                         });
                         batch.update(ref, {
-                            closeCount: dataT.closeCount + 1
+                            closeCount: dataT?.closeCount + 1
                         });
                         await batch.commit();
                     } catch (error) {
@@ -49,15 +50,15 @@ export default async function handler(req, res) {
                 }
 
 
-                if (dataT.closeCount >= 9) {
-                    const oppDataRef = db.collection(req.headers.category).doc(req.headers.firestoreid);
+                if (dataT?.closeCount >= 9) {
+                    const oppDataRef = db.collection(req.headers.category as string).doc(req.headers.firestoreid as string);
                     const dataOpp = (await oppDataRef.get()).data();
 
-                    const closeCollectionPath = req.headers.category.concat("Closed");
-                    const closeCollectionRef = db.collection(closeCollectionPath);
+                    const closeCollectionPath = req.headers.category?.concat("Closed");
+                    const closeCollectionRef = db.collection(closeCollectionPath as string);
 
                     const batch = db.batch();
-                    batch.set(closeCollectionRef.doc(req.headers.firestoreid), dataOpp);
+                    batch.set(closeCollectionRef.doc(req.headers.firestoreid as string), dataOpp);
                     batch.delete(oppDataRef);
                     await batch.commit();
                 }

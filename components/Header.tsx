@@ -9,13 +9,15 @@ import { auth, googleAuthProvider } from "@lib/firebase";
 
 import ModalButton from "./Modal";
 import HoverModalButton from "./HoverModalButton";
+import Image from "next/image";
+
+import { toast } from "react-hot-toast";
 
 export default function Header() {
   const { user, username } = useContext(UserContext);
   const router = useRouter();
 
   useEffect(() => {
-    console.log("user", user);
   }, [user]);
 
   const signInWithGoogle = async () => {
@@ -23,8 +25,22 @@ export default function Header() {
   };
 
   const signOut = () => {
-    auth.signOut();
-    router.push("/");
+    // Show a loading toast
+    const toastId = toast.loading("Logging out...");
+
+    auth
+      .signOut()
+      .then(() => {
+        // Dismiss the loading toast and show a success toast
+        toast.dismiss(toastId);
+        toast.success("Logged out successfully!");
+        router.push("/");
+      })
+      .catch((error) => {
+        // Dismiss the loading toast and show an error toast
+        toast.dismiss(toastId);
+        toast.error("Error logging out: " + error.message);
+      });
   };
 
   return (
@@ -40,7 +56,13 @@ export default function Header() {
             {username && (
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
-                  <img src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80" />
+                  <Image
+                    src={user?.photoURL || "/default-avatar.png"}
+                    alt="DP"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
                 </div>
               </label>
             )}
@@ -76,13 +98,10 @@ export default function Header() {
                   </a>
                 </li>
                 <li>
-                  <button onClick={signOut}>LogOut</button>
-                </li>
-                <li>
                   <ModalButton eventData={null} />
                 </li>
                 <li>
-                  <HoverModalButton />
+                  <button onClick={signOut}>LogOut</button>
                 </li>
               </ul>
             )}

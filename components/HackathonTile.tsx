@@ -11,8 +11,6 @@ const HackathonTile: React.FC<HackathonTileProps> = ({ data }) => {
     setDataToshow(data.eventN);
   }, [data.eventN]);
 
-  console.log("data:", data);
-
   const absoluteLink =
     data.link.startsWith("http://") || data.link.startsWith("https://")
       ? data.link
@@ -90,20 +88,3 @@ const HackathonTile: React.FC<HackathonTileProps> = ({ data }) => {
 };
 
 export default HackathonTile;
-
-/*
-
-<div>
-                    Application Starts:{data.appS}
-                </div>
-                <div>
-                    {data.appE ? "Application Ends: " + data.appE : "Application Ends: Not Specified"}
-                </div>
-                <div>
-                    {data.eventS ? "Hacking Begins: " + data.eventS : "Hacking Starts: Not Specified"}
-                </div>
-                <div>
-                    {data.eventE ? "Hacking Ends: " + data.eventE : "Hacking Ends: Not Specified"}
-                </div>
-
-*/

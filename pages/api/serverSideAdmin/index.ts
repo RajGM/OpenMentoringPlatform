@@ -49,7 +49,7 @@ const allChannels = {
     }
 }
 
-export async function findMemberId(username) {
+export async function findMemberId(username:any) {
     let id = undefined;
     await fetch(`${baseurl}/v9/guilds/${serverID}/members/search?query=${username}&limit=1`, {
         method: 'GET',
@@ -75,7 +75,7 @@ export async function findMemberId(username) {
     return id;
 }
 
-export async function sendMessage(obj, discordUserID, category) {
+export async function sendMessage(obj:any, discordUserID:string, category:string) {
 
     const embed_message = {
         "embeds": [
@@ -165,8 +165,7 @@ export async function sendMessage(obj, discordUserID, category) {
     return messageID;
 }
 
-export async function editMessage(obj, discordUserID, category, messageID) {
-    console.log("obj:", obj);
+export async function editMessage(obj:any, discordUserID:string, category:string, messageID:string) {
     const embed_message = {
         "embeds": [
             {
@@ -230,8 +229,6 @@ export async function editMessage(obj, discordUserID, category, messageID) {
 
     const jsonData = JSON.stringify(embed_message);
 
-    console.log("jsonData:",jsonData)
-
     const channelID = allChannels[category][obj.filters];
 
     await fetch(`${baseurl}/v10/channels/${channelID}/messages/${messageID}`, {
@@ -244,11 +241,10 @@ export async function editMessage(obj, discordUserID, category, messageID) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log("data.id:", data.id);
         })
         .catch(error => {
             // Handle any errors
-            // console.error('Error:', error.message_id);
+            console.error('Error:', error);
         });
 
     return messageID;

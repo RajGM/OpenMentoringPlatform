@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {db,firestore} from '../firebaseAdmin'
 
 const oppTypes: string[] = ["Hackathon", "Grants", "Conference", "Internships"];
@@ -32,7 +33,6 @@ async function movePastEvents(opp: string): Promise<void> {
 
         await deleteBatch.commit();
 
-        console.log('Hackathons with past appE dates moved successfully');
     } catch (error) {
         console.error('Error removing documents:', error);
     }

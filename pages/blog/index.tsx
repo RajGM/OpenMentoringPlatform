@@ -1,4 +1,5 @@
-import styles from "@styles/Admin.module.css";
+// @ts-nocheck
+
 import AuthCheck from "@components/AuthCheck";
 import PostFeed from "@components/PostFeed";
 import { UserContext } from "@lib/context";
@@ -7,11 +8,10 @@ import { firestore, auth, serverTimestamp } from "@lib/firebase";
 import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
 
-export default function AdminPostsPage(props) {
+export default function AdminPostsPage(props:any) {
   return (
     <main>
       <AuthCheck>

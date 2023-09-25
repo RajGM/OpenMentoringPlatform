@@ -20,7 +20,6 @@
 html,
 body {
   font-family: "Noto Sans", sans-serif;
-  background-color: var(--color-bg);
 }
 
 .loader {
@@ -41,7 +40,6 @@ body {
   }
 }
 
-/*main  body*/
 .middle {
   display: flex;
   flex-direction: column;
@@ -61,7 +59,6 @@ body {
   margin-top: 10px;
   margin-left: 5px;
   margin-right: 5px;
-
 }
 
 .calendarDiv {
@@ -84,6 +81,24 @@ body {
 .content {
   text-align: left;
   width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 5px; /* Adjust width as needed */
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6; /* Light gray background */
+  border-radius: 5px; /* Optional: Rounded corners for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* Blue color for the scrollbar */
+  border-radius: 5px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-button {
+  display: none; /* This will hide the buttons. Remove if you want to style them */
 }
 
 /* DELETE FROM BELOWWWWWWWWW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */

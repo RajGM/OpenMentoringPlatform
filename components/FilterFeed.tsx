@@ -20,7 +20,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ filter }) => {
   const [, updateFilterAtom] = useAtom(filterAtom);
 
   function testFun() {
-    updateFilterAtom(filter.toLowerCase());
+    updateFilterAtom(filter?filter.toLowerCase():"all");
   }
 
   return (

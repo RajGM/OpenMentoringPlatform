@@ -1,15 +1,5 @@
 import Link from "next/link";
 import { PostFeedProps, PostItemProps } from "@lib/types";
-import { extractDDMMYYFromInput } from "@lib/utils";
-
-interface Post {
-  content: string;
-  username: string;
-  slug: string;
-  title: string;
-  heartCount?: number;
-  published?: boolean;
-}
 
 export default function PostFeed({ posts, admin }: PostFeedProps) {
   return posts
@@ -20,16 +10,18 @@ export default function PostFeed({ posts, admin }: PostFeedProps) {
 }
 
 function PostItem({ post, admin = false }: PostItemProps) {
-  console.log("POSTDATA:", post);
-
+  
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
 
   return (
-    <article className="flex bg-white transition hover:shadow-xl" style={{backgroundColor:'#eef0f1'}}>
+    <article
+      className="w-full max-w-screen-sm mx-auto flex bg-white transition hover:shadow-xl"
+      style={{ backgroundColor: "#eef0f1", margin:'10px' }}
+    >
       <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
         <time
-          datetime="2022-10-10"
+          dateTime="2022-10-10"
           className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
         >
           <span>By</span>
@@ -46,13 +38,15 @@ function PostItem({ post, admin = false }: PostItemProps) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col justify-between">
+      <div className="flex flex-1 flex-col justify-between w-full overflow-hidden">
         <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
           <a href="#">
-            <h3 className="font-bold uppercase text-gray-900">{post.title}</h3>
+            <h3 className="text-lg sm:text-xl font-bold uppercase text-gray-900">
+              {post.title}
+            </h3>
           </a>
 
-          <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-700">
+          <p className="mt-2 line-clamp-3 text-sm sm:text-base text-gray-700">
             {post.content}
           </p>
         </div>
@@ -60,7 +54,7 @@ function PostItem({ post, admin = false }: PostItemProps) {
         <div className="sm:flex sm:items-end sm:justify-end">
           <Link
             href={`/${post.username}/${post.slug}`}
-            className="block bg-yellow-300 px-5 py-3 text-center text-xs font-bold uppercase text-gray-900 transition hover:bg-yellow-400"
+            className="block bg-yellow-300 px-4 py-2 sm:px-5 sm:py-3 text-center text-xs sm:text-sm font-bold uppercase text-gray-900 transition hover:bg-yellow-400"
           >
             <h2>Read More</h2>
           </Link>
@@ -79,35 +73,7 @@ function PostItem({ post, admin = false }: PostItemProps) {
             )}
           </>
         )}
-
       </div>
     </article>
   );
 }
-
-/*
-
-<div className="card">
-     
-      <footer>
-        <span>
-          {wordCount} words. {minutesToRead} min read
-        </span>
-        <span className="push-left">💗 {post.heartCount || 0} Hearts</span>
-      </footer>
-
-     //{admin if }
-
-      {admin && (
-        <>
-          <Link href={`/blog/${post.slug}`}>
-            <button className="btn-blue">Edit</button>
-          </Link>
-
-          {post.published ? <p className="text-success">Live</p> : <p className="text-danger">Unpublished</p>}
-        </>
-      )}
-    </div>
-
-
-*/

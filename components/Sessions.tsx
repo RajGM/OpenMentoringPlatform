@@ -22,7 +22,7 @@ const Sessions = () => {
 
       // Use Firestore to fetch sessions for the current user
       sessionsRef.onSnapshot((snapshot) => {
-        const newSessions = [];
+        const newSessions:any = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
           newSessions.push({
@@ -36,17 +36,16 @@ const Sessions = () => {
     }
   }, [user, username]);
 
-  async function fetchSession(sessionsRef) {
-    const docSnapshot = await sessionsRef.doc(user.uid).get();
+  async function fetchSession(sessionsRef:any) {
+    const docSnapshot = await sessionsRef.doc(user?.uid).get();
     const data = docSnapshot.data();
-    console.log(data); // Log the data to see the result
   }
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e:any) => {
     setSessionTitle(e.target.value);
   };
 
-  const handleDurationChange = (e) => {
+  const handleDurationChange = (e:any) => {
     setSessionDuration(e.target.value);
   };
 
@@ -87,11 +86,11 @@ const Sessions = () => {
     }
   };
 
-  const handleDeleteSession = async (index, sessionId) => {
+  const handleDeleteSession = async (index:number, sessionId:string) => {
     // Assuming you have a Firebase collection named 'sessions'
     const sessionsRef = firestore
       .collection("users")
-      .doc(user.uid)
+      .doc(user?.uid)
       .collection("sessions");
 
     // Start the loading toast

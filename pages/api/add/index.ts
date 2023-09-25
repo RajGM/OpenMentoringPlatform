@@ -50,7 +50,7 @@ export default async function handler(
       } else {
         newDiscordMessageID = sendMessage(
           values,
-          userSocial.discordID,
+          userSocial?.discordID,
           category
         );
       }
@@ -96,11 +96,9 @@ async function getSocial(username: string): Promise<DocumentData | undefined> {
       if (doc.exists) {
           return doc.data() as DocumentData;
       } else {
-          console.log("No such document!");
           return undefined;
       }
   } catch (error) {
-      console.log("Error getting document:", error);
       return undefined;
   }
 }

@@ -29,7 +29,7 @@ const auth = new google.auth.GoogleAuth({
 
 const calendar = google.calendar({ version: 'v3', auth: auth });
 
-export async function addCalendarEvent(title, url, applicationStarts, applicationEnds,category) {
+export async function addCalendarEvent(title:string, url:string, applicationStarts:any, applicationEnds:any,category:string) {
 
     const calIDbyName = nameToCalID[category];
     
@@ -58,7 +58,7 @@ export async function addCalendarEvent(title, url, applicationStarts, applicatio
 
 }
 
-export async function editCalendarEvent(id, title, url, applicationStarts, applicationEnds,category) {
+export async function editCalendarEvent(id:any, title:string, url:string, applicationStarts:any, applicationEnds:any,category:string) {
     
     const calIDbyName = nameToCalID[category];
     

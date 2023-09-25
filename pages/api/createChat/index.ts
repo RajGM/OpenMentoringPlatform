@@ -1,12 +1,14 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { db, auth, arrayPush, serverTimestamp } from '../firebaseAdmin/index';
 
-export default async function handler(req, res) {
-    console.log("Getting REQUEST");
-
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+   
     try {
-        const decodedToken = await auth.verifyIdToken(req.headers.authorization);
-        console.log("INSIDE DECODED TOKEN");
-
+        const decodedToken = await auth.verifyIdToken(req.headers.authorization as string);
+   
         const docRef = db.collection('userchats').doc(req.body.user.uid);
         const docRefusr1 = db.collection('users').doc(req.body.user.uid);
         const docRef2 = db.collection('userchats').doc(req.body.user2);
@@ -29,12 +31,10 @@ export default async function handler(req, res) {
             batch.update(docRef, {
                 friends: arrayPush(newFriend1),
             });
-            console.log("Document data:", doc1.data());
         } else {
             batch.set(docRef, {
                 friends: arrayPush(newFriend1),
             });
-            console.log("No such document!");
         }
 
         const doc2 = await docRef2.get();
@@ -42,12 +42,10 @@ export default async function handler(req, res) {
             batch.update(docRef2, {
                 friends: arrayPush(newFriend2),
             });
-            console.log("Document data:", doc2.data());
         } else {
             batch.set(docRef2, {
                 friends: arrayPush(newFriend2),
             });
-            console.log("No such document!");
         }
 
         const ref = db.collection("chats").doc(req.body.combinedId);
@@ -63,19 +61,16 @@ export default async function handler(req, res) {
             batch.add(msgDoc.ref, {
                 newMessageData,
             });
-            console.log("Document data:", msgDoc.data());
         } else {
             batch.set(msgRef.doc(), {
                 newMessageData,
             });
-            console.log("No such document MSGREF!");
         }
 
         await batch.commit();
 
         res.status(200).send({ success: "Auth Done" });
     } catch (error) {
-        console.log(error);
         res.status(500).send({ error: 'Internal Server Error' });
     }
 }

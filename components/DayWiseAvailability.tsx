@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useContext, useEffect } from "react";
 import { firestore } from "@lib/firebase";
 import { UserContext } from "@lib/context";
@@ -52,7 +54,7 @@ const DayWiseAvailability = () => {
 
     // Check for overlapping slots and merge if needed
     const overlappingSlots = availability[day] || [];
-    let mergedSlots = [];
+    let mergedSlots:Availability = [];
     let addedNewSlot = false;
 
     const slotsToRemove = []; // Store slots to remove
@@ -107,13 +109,13 @@ const DayWiseAvailability = () => {
     setTimeSlots({ ...timeSlots, [day]: { startTime: "", endTime: "" } });
   };
 
-  const deleteSlot = (day, index) => {
+  const deleteSlot = (day:string, index:any) => {
     const updatedAvailability = { ...availability };
     updatedAvailability[day].splice(index, 1);
     setAvailability(updatedAvailability);
   };
 
-  const toggleDay = (day) => {
+  const toggleDay = (day:string) => {
     if (selectedDays.includes(day)) {
       setSelectedDays(
         selectedDays.filter((selectedDay) => selectedDay !== day)
@@ -131,21 +133,20 @@ const DayWiseAvailability = () => {
 
   const fetchAvailabilityFromFirestore = async () => {
     try {
-      const userUid = user.uid;
+      const userUid = user?.uid;
       const availabilityRef = firestore
         .collection("users")
         .doc(userUid)
         .collection("availability");
 
       const availabilityData = {};
-      const availableDays = [];
+      const availableDays : string[] = [];
 
       const querySnapshot = await availabilityRef.get();
 
       querySnapshot.forEach((doc) => {
         const day = doc.id;
         const slots = doc.data().slots;
-        console.log(doc.id, " => ", doc.data());
         availabilityData[day] = slots;
         if (slots.length > 0) {
           availableDays.push(day);
@@ -169,7 +170,7 @@ const DayWiseAvailability = () => {
     .slice()
     .sort((a, b) => days.indexOf(a) - days.indexOf(b));
 
-  const saveAvailabilityToFirestore = (userUid, availabilityData) => {
+  const saveAvailabilityToFirestore = (userUid:string, availabilityData) => {
 
     // Start the loading toast
     const toastId = toast.loading('Saving availability...');
@@ -190,8 +191,7 @@ const DayWiseAvailability = () => {
     return batch
       .commit()
       .then(() => {
-        console.log("Batch write successful");
-
+       
         // Update the toast to show success
         toast.success('Availability saved successfully!', { id: toastId });
       })
@@ -204,112 +204,114 @@ const DayWiseAvailability = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 bg-white p-8 rounded-lg shadow-md" style={{width:'50%', margin:'auto auto'}}>
-      <h2 className="text-2xl font-bold mb-6">Day-wise Availability</h2>
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-4">Select Days:</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {days.map((day) => (
-            <div key={day} className="flex items-center">
-              <input
-                type="checkbox"
-                id={day}
-                value={day}
-                className="mr-2"
-                checked={selectedDays.includes(day)}
-                onChange={() => toggleDay(day)}
-              />
-              <label htmlFor={day} className="cursor-pointer">
-                {day}
-              </label>
-            </div>
-          ))}
+    <div className="bg-gray-100 min-h-screen p-4 md:p-8">
+      <div className="bg-white p-4 md:p-8 rounded-lg shadow-md mx-auto w-full md:w-3/4 lg:w-1/2">
+        <h2 className="text-2xl font-bold mb-6">Day-wise Availability</h2>
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold mb-4">Select Days:</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {days.map((day) => (
+              <div key={day} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={day}
+                  value={day}
+                  className="mr-2"
+                  checked={selectedDays.includes(day)}
+                  onChange={() => toggleDay(day)}
+                />
+                <label htmlFor={day} className="cursor-pointer">
+                  {day}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+  
+        {sortedSelectedDays.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4">
+              Create Slots for Selected Days:
+            </h3>
+            {sortedSelectedDays.map((day) => (
+              <div key={day} className="mb-6">
+                <h4 className="text-lg font-medium mb-2">{day}:</h4>
+                {error[day] && <p className="text-red-500 mb-2">{error[day]}</p>}
+                <div className="flex space-x-4 mb-4">
+                  <input
+                    type="time"
+                    value={timeSlots[day]?.startTime || ""}
+                    onChange={(e) =>
+                      setTimeSlots((prevTimeSlots) => ({
+                        ...prevTimeSlots,
+                        [day]: {
+                          ...prevTimeSlots[day],
+                          startTime: e.target.value,
+                        },
+                      }))
+                    }
+                    className="border rounded-md p-2"
+                  />
+                  <input
+                    type="time"
+                    value={timeSlots[day]?.endTime || ""}
+                    onChange={(e) =>
+                      setTimeSlots((prevTimeSlots) => ({
+                        ...prevTimeSlots,
+                        [day]: {
+                          ...prevTimeSlots[day],
+                          endTime: e.target.value,
+                        },
+                      }))
+                    }
+                    className="border rounded-md p-2"
+                  />
+                  <button
+                    onClick={() => addSlot(day)}
+                    className="btn btn-primary"
+                  >
+                    Add Slot
+                  </button>
+                </div>
+                <div>
+                  <h5 className="text-lg font-medium mb-2">
+                    Availability Slots:
+                  </h5>
+                  <ul className="list-disc pl-5">
+                    {availability[day] &&
+                      availability[day].map((slot, index) => (
+                        <li
+                          key={index}
+                          className="flex justify-between items-center mb-2"
+                        >
+                          <span>{`${slot.startTime} to ${slot.endTime}`}</span>
+                          <button
+                            onClick={() => deleteSlot(day, index)}
+                            className="btn btn-error btn-sm"
+                          >
+                            X
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+  
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => saveAvailabilityToFirestore(user?.uid, availability)}
+            className="btn btn-success"
+          >
+            Save Availability
+          </button>
         </div>
       </div>
-
-      {sortedSelectedDays.length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">
-            Create Slots for Selected Days:
-          </h3>
-          {sortedSelectedDays.map((day) => (
-            <div key={day} className="mb-6">
-              <h4 className="text-lg font-medium mb-2">{day}:</h4>
-              {error[day] && <p className="text-red-500 mb-2">{error[day]}</p>}
-              <div className="flex space-x-4 mb-4">
-                <input
-                  type="time"
-                  value={timeSlots[day]?.startTime || ""}
-                  onChange={(e) =>
-                    setTimeSlots((prevTimeSlots) => ({
-                      ...prevTimeSlots,
-                      [day]: {
-                        ...prevTimeSlots[day],
-                        startTime: e.target.value,
-                      },
-                    }))
-                  }
-                  className="border rounded-md p-2"
-                />
-                <input
-                  type="time"
-                  value={timeSlots[day]?.endTime || ""}
-                  onChange={(e) =>
-                    setTimeSlots((prevTimeSlots) => ({
-                      ...prevTimeSlots,
-                      [day]: {
-                        ...prevTimeSlots[day],
-                        endTime: e.target.value,
-                      },
-                    }))
-                  }
-                  className="border rounded-md p-2"
-                />
-                <button
-                  onClick={() => addSlot(day)}
-                  className="btn btn-primary"
-                >
-                  Add Slot
-                </button>
-              </div>
-              <div>
-                <h5 className="text-lg font-medium mb-2">
-                  Availability Slots:
-                </h5>
-                <ul className="list-disc pl-5">
-                  {availability[day] &&
-                    availability[day].map((slot, index) => (
-                      <li
-                        key={index}
-                        className="flex justify-between items-center mb-2"
-                      >
-                        <span>{`${slot.startTime} to ${slot.endTime}`}</span>
-                        <button
-                          onClick={() => deleteSlot(day, index)}
-                          className="btn btn-error btn-sm"
-                        >
-                          X
-                        </button>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-<div className="flex justify-center mt-4">
-  <button
-    onClick={() => saveAvailabilityToFirestore(user?.uid, availability)}
-    className="btn btn-success"
-  >
-    Save Availability
-  </button>
-</div>
-
     </div>
   );
+  ;
 };
 
 export default DayWiseAvailability;

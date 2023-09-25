@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import styles from "@styles/Admin.module.css";
 import AuthCheck from "@components/AuthCheck";
 import { firestore, auth, serverTimestamp } from "@lib/firebase";
@@ -6,7 +8,6 @@ import ImageUploader from "@components/ImageUploader";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { useForm } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
@@ -31,6 +32,7 @@ export default function AdminPostEdit() {
 }
 
 function PostManager() {
+  
   const [preview, setPreview] = useState(false);
   const [post, setPost] = useState<{ id: string; data: PostData } | null>(null);
 
@@ -235,7 +237,6 @@ interface DeletePostButtonProps {
 }
 
 const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id }) => {
-  const router = useRouter();
 
   const postRef = firestore.collection("posts").doc(id);
   const userPostRef = firestore
@@ -249,8 +250,6 @@ const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id }) => {
     if (doIt) {
       await postRef.delete();
       await userPostRef.delete();
-      console.log("POST DELETED");
-      //router.push('/blog');
       toast("post annihilated ", { icon: "🗑️" });
     }
   };
@@ -278,8 +277,6 @@ const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id }) => {
     </button>
   );
 };
-
-//delete post not working check
 
 function EditButton() {
   return (

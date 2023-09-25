@@ -21,22 +21,16 @@ if (!admin.apps.length) {
 }
 
 export const db = admin.firestore();
+export const firestore = admin.firestore();
 export const auth = admin.auth();
 export const arrayPush = admin.firestore.FieldValue.arrayUnion;
 export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
 
-export async function generateFirebaseID(collection) {
-    const newRef = push(ref(db, collection));
-    console.log("New ID generated:", newRef.key);
-    return newRef.key;
-}
-
-export async function writeToFirestore(category,data) {
+export async function writeToFirestore(category:string,data:any) {
     const collectionRef = db.collection(category,data); // Use the name of your collection
 
     try {
         const docRef = await collectionRef.add(data);
-        console.log('Document written with ID:', docRef.id);
         return docRef.id;
     } catch (error) {
         console.error('Error writing document:', error);
@@ -45,13 +39,12 @@ export async function writeToFirestore(category,data) {
     
 }
 
-export async function updateToFirestore(category,data,docID) {
+export async function updateToFirestore(category:any,data:any,docID:any) {
     const collectionRef = db.collection(category); 
 
     try {
         const documentRef = collectionRef.doc(docID);
         await documentRef.update(data);
-        console.log('Document updated successfully');
     } catch (error) {
         console.error('Error updating document:', error);
     }

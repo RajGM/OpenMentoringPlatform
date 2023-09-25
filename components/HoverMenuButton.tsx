@@ -142,10 +142,8 @@ async function post(
 ) {
   //redirect if not loggedIN
 
-  console.log("POST WORKING");
   category = category.charAt(0).toUpperCase() + category.slice(1);
-  console.log(type, category, user, firestoreid);
-
+  
   toast.loading(getMessage(type));
 
   fetch("/api/update", {

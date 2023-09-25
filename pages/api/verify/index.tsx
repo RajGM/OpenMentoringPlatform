@@ -19,7 +19,7 @@ export default async function handler(
     const userEmail = decodedToken.email;
 
     // Extract the domain from the email
-    const emailDomain = userEmail.split("@")[1];
+    const emailDomain = userEmail?.split("@")[1];
 
     // Check if a document exists in Firestore with a matching "domain"
     const querySnapshot = await db

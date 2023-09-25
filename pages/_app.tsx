@@ -6,12 +6,10 @@ import Header from "@components/Header";
 import { Provider as JotaiProvider } from "jotai";
 import Metatags from "@components/Metatags";
 import { Toaster } from "react-hot-toast";
+import Footer from "@components/Footer";
 
 export default function App({ Component, pageProps }: AppProps) {
   const userData = useUserData();
-
-  console.log("userData", userData);
-
 
   return (
     <UserContext.Provider value={userData}>
@@ -20,6 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Metatags title="InfiOpp" description="Sign up for InfiOpp!" />
         <Header />
         <Component {...pageProps} />
+        <Footer />
       </JotaiProvider>
     </UserContext.Provider>
   );

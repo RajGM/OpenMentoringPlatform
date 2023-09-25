@@ -20,7 +20,7 @@ export default function Enter(props: any) {
   const { user, username } = useContext(UserContext);
 
   return (
-    <main className="min-h-screen flex justify-center items-center bg-gray-100">
+    <main className="min-h-screen flex justify-center items-center">
       <div
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
         style={{

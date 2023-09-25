@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CategoriesFeed from "@components/CategoriesFeed";
 import { CategoriesType } from "@lib/types";
 
@@ -9,15 +9,6 @@ let categories: CategoriesType = [
   "Internship",
 ];
 import FilterBar from "@components/FilterBar";
-
-interface CategoriesFeedProps {
-  categories: string[];
-  cChanger: (category: string) => void;
-}
-
-interface FilterBarProps {
-  selectedC: string;
-}
 
 //CategoryBar
 const CategoryBar: React.FC = () => {

@@ -78,7 +78,6 @@ export function extractDDMMYYFromInput(input: FirebaseTimestamp | number): Forma
   };
 }
 
-
 import { ICSData, Slot } from "@lib/types";
 
 export function overlap(slot1: Slot, slot2: Slot): boolean {
@@ -169,7 +168,7 @@ export function to24HourFormat(time: string): string {
 export const breakDownSlots = (slots: [Slot], gap: Number) => {
   const brokenSlots = [];
   for (const slot of slots) {
-    const parseTime = (time) => {
+    const parseTime = (time:any) => {
       const [hours, minutes] = time.split(":");
       return new Date(0, 0, 0, hours, minutes);
     };
