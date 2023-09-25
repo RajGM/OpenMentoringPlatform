@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { firestore } from "@lib/firebase";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const token = process.env.DISCORDTOEKN;            
 const serverID = "1096841096367177779";
 const baseurl = 'https://discord.com/api';

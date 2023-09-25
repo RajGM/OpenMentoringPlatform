@@ -43,9 +43,9 @@ interface UserProfilePageProps {
 export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
   const router = useRouter();
   const { username } = router.query;
-  const [userID, setUser] = useState(null);
-  const [sessions, setSessions] = useState(null);
-  const [post, setPost] = useState(null);
+  const [userID, setUser] = useState<any>(null);
+  const [sessions, setSessions] = useState<any>(null);
+  const [post, setPost] = useState<any>(null);
 
   async function setUserId() {
     const user = await getUserWithUsername(username as string);
@@ -95,7 +95,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
           <h2 className="text-lg font-semibold mb-4">Sessions</h2>
           <ul className="space-y-2">
             {sessions &&
-              sessions.map((session) => (
+              sessions.map((session:any) => (
                 <li key={session.id}>
                   <div className="p-2 bg-white rounded shadow">
                     <SessionDiv session={session} />
@@ -109,7 +109,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
         <div className="flex-1 md:w-1/2 p-4 bg-white rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4">Posts</h2>
           <div className="w-full">
-            <PostFeed posts={post} />
+            <PostFeed posts={post?post:[]} />
           </div>
         </div>
       </div>

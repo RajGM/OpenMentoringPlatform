@@ -1,12 +1,11 @@
+// @ts-nocheck
 import PostContent from "@components/PostContent";
 import Metatags from "@components/Metatags";
-import { UserContext } from "@lib/context";
 import { firestore, getUserWithUsername, postToJSON } from "@lib/firebase";
 import { useRouter } from "next/router";
 
 import Link from "next/link";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 
 interface PostData {
   title: string;

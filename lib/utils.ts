@@ -165,7 +165,7 @@ export function to24HourFormat(time: string): string {
   return `${hour.toString().padStart(2, "0")}:${minutes}`;
 }
 
-export const breakDownSlots = (slots: [Slot], gap: Number) => {
+export const breakDownSlots = (slots: [Slot], gap: any) => {
   const brokenSlots = [];
   for (const slot of slots) {
     const parseTime = (time:any) => {

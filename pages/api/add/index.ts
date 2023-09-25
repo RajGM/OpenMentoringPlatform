@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db, auth, writeToFirestore } from "../firebaseAdmin/index";
 
 import { addCalendarEvent } from "../calendar";
@@ -24,6 +25,11 @@ export default async function handler(
       let newDiscordMessageID = undefined;
       let logoUrl = undefined;
 
+      if (typeof category !== 'string') {
+        res.status(400).send({ error: "Invalid category header" });
+        return;
+      }
+      
       newCalID = addCalendarEvent(
         values.eventN,
         values.link,

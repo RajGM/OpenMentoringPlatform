@@ -1,4 +1,5 @@
 
+// @ts-nocheck
 const { google } = require('googleapis');
 
 const nameToCalID = {

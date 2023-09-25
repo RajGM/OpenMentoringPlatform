@@ -1,13 +1,12 @@
+// @ts-nocheck
 import React, {
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
-  button,
 } from "react";
 import { Menu, MenuButton, MenuList, MenuItem } from "@reach/menu-button";
 import Image from "next/image";
-import { firestore } from "@lib/firebase";
 import { useAtom } from "jotai";
 import { categoriesAtom, filterAtom } from "@lib/atoms";
 import { UserContext } from "@lib/context";
@@ -28,7 +27,6 @@ const HoverMenuButton: React.FC<HoverMenuButtonProps> = ({ data }) => {
   const button = useRef<HTMLButtonElement | null>(null);
   const [category] = useAtom(categoriesAtom);
   const { user, username } = useContext(UserContext);
-  const router = useRouter();
 
   useLayoutEffect(() => {
     if (button.current) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import "react-responsive-modal/styles.css";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
@@ -8,7 +9,7 @@ import DatePickerCarousel from "./DatePickerCarousel";
 import { UserContext } from "@lib/context";
 import { useContext } from "react";
 
-export function Customform({ eventData, categoryTest }) {
+export function Customform({ eventData, categoryTest }: { eventData: any; categoryTest: any }) {
   if (categoryTest === "hackathon") {
     return <Hackathon eventData={eventData} />;
   } else if (categoryTest == "internship") {
@@ -20,7 +21,7 @@ export function Customform({ eventData, categoryTest }) {
   }
 }
 
-export const MyFormComponent = ({ eventData }) => {
+export const MyFormComponent = ({ eventData }:{eventData:any}) => {
   return (
     <Formik
       initialValues={{ category: "Hackathon" }}

@@ -31,6 +31,7 @@ export type User = {
   lastLoginAt: string;
   apiKey: string;
   appName: string;
+  accessToken:string;
 };
 
 export type UserContextType = {
@@ -189,7 +190,8 @@ export interface PostItemProps {
 }
 
 export interface SessionModalProps {
-  gapAmount: number;
+  session?: any;
+  gapAmount?: number;
 }
 
 export interface Session {

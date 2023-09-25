@@ -30,7 +30,7 @@ export const Social: React.FC<SocialProps> = () => {
             }}
 
             onSubmit={async (values) => {
-                toast.promise(firestore.collection('usernames').doc(username).update({
+                toast.promise(firestore.collection('usernames').doc(username?username:"").update({
                     discord: values.discord,
                     telegram: values.telegram,
                     twitter: values.twitter,
@@ -49,7 +49,7 @@ export const Social: React.FC<SocialProps> = () => {
                         <div>
                             Discord:
                         </div>
-                        <Field name="discord" placeholder={eventData ? eventData.discord : 'username'} style={{ fontSize: '20px', padding: '0px' }} validate={(value) => {
+                        <Field name="discord" placeholder={eventData ? eventData.discord : 'username'} style={{ fontSize: '20px', padding: '0px' }} validate={(value:any) => {
                         }} />
                     </div>
 
@@ -57,7 +57,7 @@ export const Social: React.FC<SocialProps> = () => {
                         <div>
                             Telegram:
                         </div>
-                        <Field name="telegram" placeholder={eventData? eventData.telegram?eventData.telegram:'id' : 'id'} style={{ fontSize: '20px', padding: '0px' }} validate={(value) => {
+                        <Field name="telegram" placeholder={eventData? eventData.telegram?eventData.telegram:'id' : 'id'} style={{ fontSize: '20px', padding: '0px' }} validate={(value:any) => {
                         }} />
                     </div>
 
@@ -65,7 +65,7 @@ export const Social: React.FC<SocialProps> = () => {
                         <div>
                             Twitter.com/
                         </div>
-                        <Field name="twitter" placeholder={eventData? eventData.twitter?eventData.twitter:'handle' : 'handle'} style={{ fontSize: '20px', padding: '0px' }} validate={(value) => {
+                        <Field name="twitter" placeholder={eventData? eventData.twitter?eventData.twitter:'handle' : 'handle'} style={{ fontSize: '20px', padding: '0px' }} validate={(value:any) => {
                         }} />
                     </div>
 
@@ -73,7 +73,7 @@ export const Social: React.FC<SocialProps> = () => {
                         <div>
                             Instagram.com/
                         </div>
-                        <Field name="instagram" placeholder={eventData ? eventData.instagram?eventData.instagram:'handle' : 'handle'} style={{ fontSize: '20px', padding: '0px' }} validate={(value) => {
+                        <Field name="instagram" placeholder={eventData ? eventData.instagram?eventData.instagram:'handle' : 'handle'} style={{ fontSize: '20px', padding: '0px' }} validate={(value:any) => {
                         }} />
                     </div>
 

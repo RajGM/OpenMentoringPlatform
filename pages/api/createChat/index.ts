@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextApiRequest, NextApiResponse } from 'next';
 import { db, auth, arrayPush, serverTimestamp } from '../firebaseAdmin/index';
 

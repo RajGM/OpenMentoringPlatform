@@ -16,7 +16,7 @@ const UniversityEmailChecker = () => {
 
   const fetchMentorStatus = async () => {
     try {
-      const userDoc = await firestore.collection("users").doc(user.uid).get();
+      const userDoc = await firestore.collection("users").doc(user?.uid).get();
       if (userDoc.exists) {
         const userData = userDoc.data();
         if (userData && userData.mentor === true) {

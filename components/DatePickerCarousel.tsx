@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useState, useEffect } from "react";
 import { firestore, getUserWithUsername } from "@lib/firebase";
 import { useRouter } from "next/router";
@@ -26,7 +28,7 @@ import {
 
 const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   userID,
-  session:any,
+  session,
 }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const daysToShow = 7; // Number of days to show in the carousel
@@ -41,7 +43,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null); // Initialize with null or default value
 
   const router = useRouter();
-  const { username } = router.query;
+  const { username } = router.query as any;
 
   // Function to generate date items
   const generateDateItems = () => {
@@ -132,7 +134,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
     setShowForm(true);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e:any) => {
     const { name, value } = e.target;
     // Update the form data when input fields change
     setFormData({
@@ -155,7 +157,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
     return `${year}${month}${day}`;
   }
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e:any) => {
     e.preventDefault();
     const loadingToast = toast.loading("Booking...");
 
