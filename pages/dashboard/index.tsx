@@ -1,6 +1,8 @@
 import UniversityEmailChecker from "@components/UniversityEmailChecker";
 import DayWiseAvailability from "@components/DayWiseAvailability";
 import Sessions from "@components/Sessions";
+import { Social } from "@components/Social";
+import Calendar from "@components/Calendar";
 import { UserContext } from "@lib/context";
 import { useState, useContext, useEffect } from "react";
 
@@ -33,12 +35,28 @@ const UserProfilePage: React.FC = () => {
         >
           Sessions
         </button>
+
+        <button
+          className={`inline-block px-4 py-2 text-sm font-medium ${activeComponent === "Social" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-50"} focus:relative`}
+          onClick={() => setActiveComponent("Social")}
+        >
+          Social
+        </button>
+
+        <button
+          className={`inline-block px-4 py-2 text-sm font-medium ${activeComponent === "Calendar" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-50"} focus:relative`}
+          onClick={() => setActiveComponent("Calendar")}
+        >
+          Calendar
+        </button>
       </span>
     </div>
 
     {activeComponent === "UniversityEmailChecker" && <UniversityEmailChecker />}
     {activeComponent === "DayWiseAvailability" && <DayWiseAvailability />}
     {activeComponent === "Sessions" && <Sessions />}
+    {activeComponent === "Social" && <Social />}
+    {activeComponent === "Calendar" && <Calendar />}
   </div>
   );
 };
