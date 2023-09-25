@@ -10,36 +10,29 @@ export default function Mentors() {
   const [filterValue, setFilterValue] = useState(false);
 
   useEffect(() => {
-    queryTest("Hackathon", "all");
+    queryTest("");
   }, []);
 
-  async function queryTest(category:any, searchValue:any) {
+  async function queryTest(searchValue: any) {
     console.log("Grabbing data from firestore");
     console.log("searchValue:", searchValue);
 
-    let query;
-    if (searchValue == "all" || searchValue == "All") {
-      query = firestore.collection(
-        category.charAt(0).toUpperCase() + category.slice(1)
-      );
-    } else {
-      query = firestore
-        .collection(category.charAt(0).toUpperCase() + category.slice(1))
-        .where("filters", "==", searchValue.toLowerCase()); //.where('Type', '==', filter.toLowerCase());
+    let query =null;
+    if(searchValue == ""){
+      query = firestore.collection("users").where("mentor", "==", true);
+    }else{
+      query = firestore.collection("users").where("mentor", "==", true).where("displayName", "<=", searchValue);
     }
+    
     setLoading(true);
     const queryData = (await query.get()).docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
+
     setOppData(queryData);
     console.log("queryData:", queryData);
     setLoading(false);
-  }
-
-  function setFilter() {
-    console.log("filterValue:", filterValue);
-    setFilterValue(!filterValue);
   }
 
   return (
@@ -73,7 +66,30 @@ export default function Mentors() {
                 style={{ minWidth: "320px" }}
               />
             </div>
-            <div style={{display:'flex',flexDirection:'row', gap:'10px', justifyContent:'center', alignContent:'center', alignItems:'center'}}>
+
+            <div>
+              <button
+                type="submit"
+                className="btn"
+                onClick={() => {
+                  queryTest(searchValue);
+                }}
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style={{width:'100%'}}>
+          <MentorFeed oppData={oppData} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+/*
+  <div style={{display:'flex',flexDirection:'row', gap:'10px', justifyContent:'center', alignContent:'center', alignItems:'center'}}>
               <div>University</div>
               <div>
                 <input
@@ -86,23 +102,10 @@ export default function Mentors() {
               </div>
               <div>Mentor</div>
             </div>
-            <div>
-              <button
-                type="submit"
-                className="btn"
-                onClick={() => {
-                  queryTest("Hackathon", searchValue);
-                }}
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-        <div>
-          <MentorFeed oppData={oppData} />
-        </div>
-      </div>
-    </>
-  );
-}
+
+             function setFilter() {
+    console.log("filterValue:", filterValue);
+    setFilterValue(!filterValue);
+  }
+
+*/

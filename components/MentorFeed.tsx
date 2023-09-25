@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Loader from "@components/Loader";
 import MentorTile from "@components/MentorTile";
-import { CardFieldProps,MentorFeedProps } from "@lib/types";
+import { CardFieldProps, MentorFeedProps } from "@lib/types";
 
 const CardField: React.FC<CardFieldProps> = ({ arrData }) => {
-  return arrData
-    ? arrData.map((indiData) => (
-        <div className="eventCard" key={indiData}>
-          <MentorTile data={indiData} key={indiData} />
-        </div>
-      ))
-    : null;
+  return (
+    <div style={{ display:'block' }}>
+      {arrData
+        ? arrData.map((indiData) => (
+            <MentorTile data={indiData} key={indiData} />
+          ))
+        : null}
+    </div>
+  );
 };
 
 const MentorFeed: React.FC<MentorFeedProps> = ({ oppData }) => {
@@ -30,14 +32,12 @@ const MentorFeed: React.FC<MentorFeedProps> = ({ oppData }) => {
     );
   } else {
     return (
-      <div className="mainFeed fullHeightMain middle">
-        <div>
-          {oppData.length >= 1 ? (
-            <CardField arrData={oppData} />
-          ) : (
-            <Loader show={true} className="middle" />
-          )}
-        </div>
+      <div style={{ backgroundColor: "pink" }}>
+        {oppData.length >= 1 ? (
+          <CardField arrData={oppData} />
+        ) : (
+          <Loader show={true} className="middle" />
+        )}
       </div>
     );
   }

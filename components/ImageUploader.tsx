@@ -37,21 +37,38 @@ const ImageUploader: React.FC = () => {
   };
 
   return (
-    <div className="box">
-      <Loader show={uploading} />
-      {uploading && <h3>{progress}%</h3>}
+    <div className="bg-gray-100 p-8 rounded-lg shadow-lg">
+  <Loader show={uploading} />
 
-      {!uploading && (
-        <>
-          <label className="btn">
-            📸 Upload Img
-            <input type="file" onChange={uploadFile} accept="image/x-png,image/gif,image/jpeg" />
-          </label>
-        </>
-      )}
-
-      {downloadURL && <code className="upload-snippet">{`![alt](${downloadURL})`}</code>}
+  {uploading && (
+    <div className="mt-4 text-center">
+      <h3 className="text-2xl">{progress}%</h3>
     </div>
+  )}
+
+  {!uploading && (
+    <div className="mt-4">
+      <label className="btn bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg cursor-pointer">
+        📸 Upload Img
+        <input
+          type="file"
+          onChange={uploadFile}
+          accept="image/x-png,image/gif,image/jpeg"
+          className="hidden"
+        />
+      </label>
+    </div>
+  )}
+
+  {downloadURL && (
+    <div className="mt-4">
+      <code className="upload-snippet bg-gray-200 text-gray-800 p-2 rounded-lg">
+        ![alt]({downloadURL})
+      </code>
+    </div>
+  )}
+</div>
+
   );
 }
 

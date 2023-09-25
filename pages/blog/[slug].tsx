@@ -61,7 +61,7 @@ function PostManager() {
     <main className={styles.container}>
       {post && (
         <>
-          <section>
+          <section >
             <h1>{post.data.title}</h1>
             <p>ID: {post.data.slug}</p>
 
@@ -145,58 +145,82 @@ function PostForm({ defaultValues, preview, postId }: PostFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(updatePost)}>
+    <form
+      onSubmit={handleSubmit(updatePost)}
+      className="bg-white p-4 rounded-lg shadow-lg"
+    >
       {preview && (
         <div className="card">
           <ReactMarkdown>{watch("content")}</ReactMarkdown>
         </div>
       )}
 
-      {/* ... rest of the form ... */}
-      <select
-        name="tag"
-        {...register("tag", {
-          required: { value: true, message: "Tag is required" },
-        })}
-        className="w-full h-10 px-4 py-2 bg-white border rounded-lg shadow appearance-none focus:outline-none focus:ring focus:border-blue-500"
-      >
-        <option value="" disabled selected>
-          Select a tag
-        </option>
-        {tagOptions.map((tag, index) => (
-          <option key={index} value={tag}>
-            {tag}
+      <div className="mb-4">
+        <label htmlFor="tag" className="block text-gray-700 font-semibold mb-2">
+          Select a Tag
+        </label>
+        <select
+          id="tag"
+          name="tag"
+          {...register("tag", {
+            required: { value: true, message: "Tag is required" },
+          })}
+          className="w-full h-10 px-4 py-2 bg-white border rounded-lg shadow appearance-none focus:outline-none focus:ring focus:border-blue-500"
+        >
+          <option value="" disabled>
+            Select a tag
           </option>
-        ))}
-      </select>
+          {tagOptions.map((tag, index) => (
+            <option key={index} value={tag}>
+              {tag}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <div className={preview ? styles.hidden : styles.controls}>
+      <div className={preview ? "hidden" : "block"}>
         <ImageUploader />
 
-        <textarea
-          name="content"
-          {...register("content", {
-            maxLength: { value: 20000, message: "Content is too long" },
-            minLength: { value: 10, message: "Content is too short" },
-            required: { value: true, message: "Content is required" },
-          })}
-        ></textarea>
+        <div className="mb-4">
+          <label
+            htmlFor="content"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Content
+          </label>
+          <textarea
+            id="content"
+            name="content"
+            {...register("content", {
+              maxLength: { value: 20000, message: "Content is too long" },
+              minLength: { value: 10, message: "Content is too short" },
+              required: { value: true, message: "Content is required" },
+            })}
+            className="w-full h-40 px-4 py-2 bg-white border rounded-lg shadow focus:outline-none focus:ring focus:border-blue-500"
+          ></textarea>
+        </div>
 
-        {errors && <p className="text-danger">{errors}</p>}
+        {errors && (
+          <p className="text-red-500">
+            {errors.content && errors.content.message}
+          </p>
+        )}
 
-        <fieldset>
-          <input
-            className={styles.checkbox}
-            name="published"
-            type="checkbox"
-            {...register("published")} // Provide the field name as an argument to register
-          />
-          <label>Published</label>
-        </fieldset>
+        <div className="mb-4">
+          <fieldset className="flex items-center">
+            <input
+              className={`${styles.checkbox} h-4 w-4 mr-2 text-green-500`}
+              name="published"
+              type="checkbox"
+              {...register("published")}
+            />
+            <label className="text-gray-700">Published</label>
+          </fieldset>
+        </div>
 
         <button
           type="submit"
-          className="btn-green"
+          className="btn btn-green"
           disabled={!isDirty || !isValid}
         >
           Save Changes
@@ -261,20 +285,20 @@ function EditButton() {
   return (
     <div className="inline-flex rounded-lg border border-gray-100 p-1">
       <button className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm text-blue-500 hover:text-gray-700 focus:relative">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth="1.5"
-        stroke="currentColor"
-        className="h-4 w-4"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-        />
-      </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="h-4 w-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+          />
+        </svg>
         Edit
       </button>
     </div>
