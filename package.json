@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preinstall": "npm config set legacy-peer-deps true"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
@@ -63,8 +64,5 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     }
-  },
-  "scripts": {
-    "test": "jest"
   }
 }
