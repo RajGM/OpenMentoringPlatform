@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { UserContext } from '@lib/context';
 import { SessionModalProps } from '@lib/types';
 
-const SessionModal: React.FC<SessionModalProps> = ({ session }) => {
+const SessionModal: React.FC<SessionModalProps> = ({ session, mentorData }) => {
   const { user, username } = useContext(UserContext);
   const router = useRouter();
   const [category] = useAtom(categoriesAtom);
@@ -31,7 +31,7 @@ const SessionModal: React.FC<SessionModalProps> = ({ session }) => {
     <div>
       <button onClick={onOpenModal}>Opp</button>
       <Modal open={open} onClose={onCloseModal} center>
-        <SessionForm session={session} />
+        <SessionForm session={session} mentorData={mentorData} />
       </Modal>
     </div>
   );

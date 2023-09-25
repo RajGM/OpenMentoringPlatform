@@ -1392,8 +1392,8 @@ interface SessionFormProps {
   gapAmount: number;
 }
 
-export const SessionForm: React.FC<SessionFormProps> = ({ session }) => {
-  const { user, username } = useContext(UserContext);
+export const SessionForm: React.FC<SessionFormProps> = ({ session,mentorData }) => {
+  // const { user, username } = useContext(UserContext);
 
-  return <DatePickerCarousel userID={user} session={session} />;
+  return <DatePickerCarousel userID={mentorData} session={session} />;
 };

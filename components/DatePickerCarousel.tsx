@@ -1,9 +1,11 @@
 // @ts-nocheck
 
 import React, { useState, useEffect } from "react";
-import { firestore, getUserWithUsername } from "@lib/firebase";
+import { firestore, getUserWithUsername, getUserWithId } from "@lib/firebase";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
+import { UserContext } from "@lib/context";
+import { useContext } from "react";
 
 // someComponent.tsx or someOtherFile.ts
 import {
@@ -30,6 +32,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   userID,
   session,
 }) => {
+  console.log("userID from DAte pick:", userID);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const daysToShow = 7; // Number of days to show in the carousel
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
@@ -42,8 +45,8 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null); // Initialize with null or default value
 
+  const { user, username } = useContext(UserContext);
   const router = useRouter();
-  const { username } = router.query as any;
 
   // Function to generate date items
   const generateDateItems = () => {
@@ -80,22 +83,24 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
   };
 
   // Function to fetch available slots from Firestore
-  const fetchDataFromFirestore = async (dayOfWeek:any, formattedDate:any, date:any) => {
-    // Replace 'userID' with the actual user ID
+  const fetchDataFromFirestore = async (
+    dayOfWeek: any,
+    formattedDate: any,
+    date: any
+  ) => {
     setSelectedDate(formattedDate);
 
     try {
-      
       const fullDate = getYearMonthDate(date);
 
       const docRef1 = firestore
         .collection("users")
-        .doc(userID.uid)
+        .doc(userID.id)
         .collection("availability")
         .doc(dayOfWeek);
       const docRef2 = firestore
         .collection("users")
-        .doc(userID.uid)
+        .doc(userID.id)
         .collection("booking")
         .doc(String(fullDate));
 
@@ -105,7 +110,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
       if (doc.exists) {
         const data = doc.data();
         const data2 = doc2.data();
-      
+
         let freeSlots = data?.slots;
 
         if (data2) {
@@ -134,7 +139,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
     setShowForm(true);
   };
 
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     // Update the form data when input fields change
     setFormData({
@@ -157,7 +162,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
     return `${year}${month}${day}`;
   }
 
-  const handleFormSubmit = async (e:any) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
     const loadingToast = toast.loading("Booking...");
 
@@ -165,10 +170,8 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
       selectedDate,
       getYearMonthDate(currentDate)
     );
-    const userDoc = await getUserWithUsername(username);
-    const userMeetingLink = userDoc
-      ? userDoc.data().meetingLink
-      : "Online Meeting"; // Default to "Online Meeting" if no meetingLink is found
+    const userDoc = await getUserWithId(userID.id);
+    const userMeetingLink = userDoc ? userDoc.meetingLink : "Online Meeting"; // Default to "Online Meeting" if no meetingLink is found
 
     // Create a new object with formData, selectedDate, and selectedSlot
     const eventForICS = {
@@ -178,7 +181,7 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
       end: `${formattedSelectedDate}T${to24HourFormat(
         selectedSlot.endTime
       )}:00+05:30`,
-      summary: "Meeting with " + [userID.displayName, username].join(", "),
+      summary: "Meeting with " + [userDoc.displayName, username].join(", "),
       description: session.title,
       location: userMeetingLink,
       date: formattedSelectedDate,
@@ -193,12 +196,13 @@ const DatePickerCarousel: React.FC<DatePickerCarouselProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: userID?.accessToken,
+          authorization: user?.accessToken,
         },
         body: JSON.stringify({ ...eventForICS, mentor: username }),
       });
 
       toast.dismiss(loadingToast);
+      router.push('/');
 
       if (response.ok) {
         // Handle successful booking, e.g., show a confirmation message

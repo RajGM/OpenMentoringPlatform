@@ -13,6 +13,9 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
+import { UserContext } from "@lib/context";
+import { useContext } from "react";
+
 interface PostData {
   title: string;
   slug: string;
@@ -32,7 +35,6 @@ export default function AdminPostEdit() {
 }
 
 function PostManager() {
-  
   const [preview, setPreview] = useState(false);
   const [post, setPost] = useState<{ id: string; data: PostData } | null>(null);
 
@@ -63,7 +65,7 @@ function PostManager() {
     <main className={styles.container}>
       {post && (
         <>
-          <section >
+          <section>
             <h1>{post.data.title}</h1>
             <p>ID: {post.data.slug}</p>
 
@@ -109,7 +111,7 @@ function PostManager() {
                 </Link>
               </>
 
-              <DeletePostButton postRef={post.id} />
+              <DeletePostButton id={post.id} router={router} />
             </div>
           </aside>
         </>
@@ -234,9 +236,11 @@ function PostForm({ defaultValues, preview, postId }: PostFormProps) {
 
 interface DeletePostButtonProps {
   id: string;
+  router: any;
 }
 
-const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id }) => {
+const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id, router }) => {
+  const { user, username } = useContext(UserContext);
 
   const postRef = firestore.collection("posts").doc(id);
   const userPostRef = firestore
@@ -245,14 +249,50 @@ const DeletePostButton: React.FC<DeletePostButtonProps> = ({ id }) => {
     .collection("posts")
     .doc(id);
 
-  const deletePost = async () => {
-    const doIt = confirm("are you sure!");
-    if (doIt) {
-      await postRef.delete();
-      await userPostRef.delete();
-      toast("post annihilated ", { icon: "🗑️" });
-    }
-  };
+    const deletePost = async () => {
+      const doIt = confirm("Are you sure?");
+      if (doIt) {
+        // Show a loading toast while the request is being processed
+        const loadingToast = toast.loading("Deleting post...");
+    
+        try {
+          // Construct the request headers with the accessToken.
+          const headers = new Headers({
+            authorization: `${user?.accessToken}`,
+            "Content-Type": "application/json",
+          });
+    
+          // Construct the request body with additional user information.
+          const requestBody = JSON.stringify({
+            postId: id,
+            username,
+            uid: auth.currentUser?.uid,
+          });
+    
+          // Make a DELETE request to your backend API route with headers and the request body.
+          const response = await fetch(`/api/delete`, {
+            method: "DELETE",
+            headers,
+            body: requestBody,
+          });
+    
+          if (response.ok) {
+            // Post deleted successfully.
+            toast.success("Post deleted successfully");
+            // You can add a router navigation here if needed.
+            router.push(`/blog`);
+          } else {
+            const errorData = await response.json();
+            toast.error(`Error deleting post: ${errorData.error}`);
+          }
+        } catch (error) {
+          toast.error("An error occurred while deleting the post");
+        } finally {
+          // Close the loading toast when the operation is done
+          toast.dismiss(loadingToast);
+        }
+      }
+    };
 
   return (
     <button

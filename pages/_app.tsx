@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <UserContext.Provider value={userData}>
       <JotaiProvider>
         <Toaster />
-        <Metatags title="InfiOpp" description="Sign up for InfiOpp!" />
+        <Metatags title="FOSS Mentoring" description="Sign up for FOSS Mentoring!" />
         <Header />
         <Component {...pageProps} />
         <Footer />

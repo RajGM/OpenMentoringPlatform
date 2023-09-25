@@ -55,7 +55,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
   async function getSessions(userId: string) {
     const sessionsQuery = firestore
       .collection("users")
-      .doc(userID.id)
+      .doc(userId)
       .collection("sessions");
 
     const sessions = (await sessionsQuery.get()).docs.map((doc) => doc.data());
@@ -80,6 +80,8 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
 
     if (userID) {
       getSessions(userID.id);
+    }else{
+      //console.log("No USER DI")
     }
 
     if (username) {
@@ -98,7 +100,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
               sessions.map((session:any) => (
                 <li key={session.id}>
                   <div className="p-2 bg-white rounded shadow">
-                    <SessionDiv session={session} />
+                    <SessionDiv session={session} mentorData={userID} />
                   </div>
                 </li>
               ))}
@@ -119,7 +121,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({}) => {
 
 export default UserProfilePage;
 
-function SessionDiv({ session: session }: any) {
+function SessionDiv({ session: session, mentorData }: any) {
   return (
     <div className="group relative block h-64 hover:shadow-lg transition-transform duration-300 ease-in-out transform hover:-translate-y-1">
       <span className="absolute inset-0 border-2 border-dashed border-black"></span>
@@ -147,7 +149,7 @@ function SessionDiv({ session: session }: any) {
           </h3>
 
           <div className="mt-8">
-            <SessionModal session={session} />
+            <SessionModal session={session} mentorData={mentorData}  />
           </div>
         </div>
       </div>

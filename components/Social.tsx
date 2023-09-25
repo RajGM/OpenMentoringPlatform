@@ -79,7 +79,7 @@ export const Social: React.FC<SocialProps> = () => {
               <Field
                 name="discord"
                 placeholder={eventData ? eventData.discord : "username"}
-                style={{ fontSize: "20px", padding: "0px" }}
+                style={{ fontSize: "20px", padding: "0px", maxWidth:'200px' }}
                 validate={(value: any) => {}}
               />
             </div>
@@ -103,7 +103,7 @@ export const Social: React.FC<SocialProps> = () => {
                       : "id"
                     : "id"
                 }
-                style={{ fontSize: "20px", padding: "0px" }}
+                style={{ fontSize: "20px", padding: "0px", maxWidth:'170px' }}
                 validate={(value: any) => {}}
               />
             </div>
@@ -127,7 +127,7 @@ export const Social: React.FC<SocialProps> = () => {
                       : "handle"
                     : "handle"
                 }
-                style={{ fontSize: "20px", padding: "0px" }}
+                style={{ fontSize: "20px", padding: "0px", maxWidth:'150px' }}
                 validate={(value: any) => {}}
               />
             </div>
@@ -151,12 +151,12 @@ export const Social: React.FC<SocialProps> = () => {
                       : "handle"
                     : "handle"
                 }
-                style={{ fontSize: "20px", padding: "0px" }}
+                style={{ fontSize: "20px", padding: "0px", maxWidth:'120px' }}
                 validate={(value: any) => {}}
               />
             </div>
 
-            <div style={{ margin: "auto auto", alignSelf: "center" }}>
+            <div style={{ margin: "auto auto", alignSelf: "center",  }}>
               <button
                 type="submit"
                 disabled={isSubmitting}

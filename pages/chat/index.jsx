@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useContext } from "react";
 import { UserContext } from "@lib/context";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { toast } from "react-hot-toast";
 
 export default function Chat() {
   const [oppData, setOppData] = useState([]);
@@ -28,25 +29,25 @@ export default function Chat() {
   }, [chatdataId, user]);
 
   async function queryTest(searchValue) {
-    //if all then query all users in the userbase
-    let query = "";
+    // Show a loading toast while searching
+  
     if (!user) {
       return;
     }
 
+    const loadingToastId = toast.loading('Searching...');
+
+
     if (searchValue == "" || searchValue.length == 0) {
-      query = firestore.collection("userchats").doc(user.uid);
-
       try {
-        const docSnapshot = await query.get();
-
+        const docSnapshot = await firestore.collection("userchats").doc(user.uid).get();
+  
         if (docSnapshot.exists) {
           const userData = docSnapshot.data();
-
-          // Create an array of promises for fetching friend data
+  
           const friendDataPromises = userData.friends.map((friend) => {
             const docRef = friend.reference;
-
+  
             return docRef.get().then((docSnapshot) => {
               if (docSnapshot.exists) {
                 const friendData = docSnapshot.data();
@@ -56,30 +57,43 @@ export default function Chat() {
               }
             });
           });
-
-          Promise.all(friendDataPromises)
-            .then((friendData) => {
-              setOppData(friendData);
-            })
-            .catch((error) => {
-              console.error("Error retrieving friend data:", error);
-            });
+  
+          try {
+            const friendData = await Promise.all(friendDataPromises);
+            setOppData(friendData);
+          } catch (error) {
+            console.error("Error retrieving friend data:", error);
+            toast.error("Error retrieving friend data");
+          }
         }
       } catch (error) {
         console.error("Error retrieving user data:", error);
+        toast.error("Error retrieving user data");
+      } finally {
+        // Remove the loading toast when the query is completed
+        toast.dismiss(loadingToastId);
       }
     } else {
-      query = firestore
-        .collection("users")
-        .where("username", "==", searchValue);
-
-      const queryData = (await query.get()).docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setOppData(queryData);
-      setSearchedUser[queryData[0]];
+      try {
+        const querySnapshot = await firestore
+          .collection("users")
+          .where("username", "==", searchValue)
+          .get();
+  
+        const queryData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+  
+        setOppData(queryData);
+        setSearchedUser(queryData[0]);
+      } catch (error) {
+        console.error("Error querying user data:", error);
+        toast.error("Error querying user data");
+      } finally {
+        // Remove the loading toast when the query is completed
+        toast.dismiss(loadingToastId);
+      }
     }
   }
 
