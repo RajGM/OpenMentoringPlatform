@@ -32,7 +32,7 @@ export default function Header() {
       <div className="navbar bg-info text-primary-content">
         <div className="flex-1">
           <a className="btn btn-ghost normal-case text-xl" href="/">
-            SOLMentor
+            FOSS Mentoring
           </a>
         </div>
         <div className="flex-none gap-2">
@@ -61,7 +61,7 @@ export default function Header() {
                   </a>
                 </li>
                 <li>
-                  <a href="/mentors" className="justify-between">
+                  <a href="/mentor" className="justify-between">
                     Mentors
                   </a>
                 </li>

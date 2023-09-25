@@ -1,192 +1,11 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
-
-import PostFeed from "@components/PostFeed.tsx";
-import Metatags from "@components/Metatags";
-import Loader from "@components/Loader";
-import { firestore, fromMillis, postToJSON } from "@lib/firebase";
-
-import { use, useState, useEffect } from "react";
-import styles from "@styles/postfeed.module.css";
-
-// Max post to query per page
-const LIMIT = 1;
-
-export async function getServerSideProps(context) {
-  const tagTest = "VISA";
-
-  const postsQuery = firestore
-    .collection("posts")
-    .where("published", "==", true)
-    .where("tag", "==", tagTest)
-    .orderBy("createdAt", "desc")
-    .limit(LIMIT);
-
-  const posts = (await postsQuery.get()).docs.map(postToJSON);
-
-  return {
-    props: { posts }, // will be passed to the page component as props
-  };
+import Link from "next/link";
+{
+  /*
+    Graphic from https://www.opendoodles.com/
+*/
 }
 
-export default function Home(props) {
-  const [posts, setPosts] = useState(props.posts);
-  const [loading, setLoading] = useState(false);
-  const [postsEnd, setPostsEnd] = useState(false);
-  const [tag, setTag] = useState("VISA");
-  const tagList = ["VISA", "SOP", "Blog", "Essay"];
-  const [lastCursor, setLastCursor] = useState(null); // Initialize lastCursor state
-
-  // Get next page in pagination query
-  // Fetch posts when the tag changes
-  useEffect(() => {
-    async function fetchPosts() {
-      setLoading(true);
-      setPosts([]); // Clear the existing posts
-      setPostsEnd(false); // Reset postsEnd flag
-      setLastCursor(null); // Reset the cursor to null
-
-      const postsQuery = firestore
-        .collection("posts")
-        .where("published", "==", true)
-        .where("tag", "==", tag)
-        .orderBy("createdAt", "desc")
-        .limit(LIMIT);
-
-      const newPosts = (await postsQuery.get()).docs.map(postToJSON);
-
-      setPosts(newPosts);
-      setLoading(false);
-
-      if (newPosts.length < LIMIT) {
-        setPostsEnd(true);
-      }
-
-      // Update the lastCursor with the last post's createdAt timestamp
-      if (newPosts.length > 0) {
-        const lastPost = newPosts[newPosts.length - 1];
-        setLastCursor(lastPost.createdAt);
-      }
-    }
-
-    fetchPosts();
-  }, [tag]); // Fetch posts when the tag changes
-
-  const getMorePosts = async () => {
-    setLoading(true);
-    const last = posts[posts.length - 1];
-
-    const cursor =
-      typeof last.createdAt === "number"
-        ? fromMillis(last.createdAt)
-        : last.createdAt;
-
-    const query = firestore
-      .collectionGroup("posts")
-      .where("published", "==", true)
-      .where("tag", "==", tag)
-      .orderBy("createdAt", "desc")
-      .startAfter(cursor)
-      .limit(LIMIT);
-
-    const newPosts = (await query.get()).docs.map((doc) => doc.data());
-
-    setPosts(posts.concat(newPosts));
-    setLoading(false);
-
-    if (newPosts.length < LIMIT) {
-      setPostsEnd(true);
-    }
-  };
-
-  function selectTag(tag) {
-    setTag(tag);
-    console.log(tag);
-  }
-
-  return (
-    <main
-      style={{
-        marginTop: "15px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignSelf: "center",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Tags</h1>
-        </div>
-        {tagList.map((tag) => (
-          <div class="group relative inline-block text-sm font-medium text-red-600 focus:outline-none focus:ring active:text-red-500">
-            <span class="absolute inset-0 border border-current"></span>
-            <span class="block border border-current bg-white px-12 py-3 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1">
-              <button key={tag} onClick={() => selectTag(tag)}>
-                {tag}
-              </button>
-            </span>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "10px",
-          justifyItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "70%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
-          <PostFeed posts={posts} />
-        </div>
-      </div>
-      <div></div>
-      <div style={{ alignSelf: "center" }}>
-        <div style={{ alignSelf: "center" }}>
-          {!loading && !postsEnd && (
-            <button
-              className="group relative inline-block focus:outline-none focus:ring"
-              href="/download"
-              onClick={getMorePosts}
-            >
-              <span className="absolute inset-0 translate-x-0 translate-y-0 bg-yellow-300 transition-transform group-hover:translate-y-1.5 group-hover:translate-x-1.5"></span>
-
-              <span className="relative inline-block border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
-                Load more
-              </span>
-            </button>
-          )}
-        </div>
-        <div style={{ alignSelf: "center" }}>
-          {posts.length === 0 && !loading && <Empty />}
-        </div>
-        <div style={{ alignSelf: "center" }}>
-          <Loader show={loading} />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function Empty() {
+const Custom404: React.FC = () => {
   return (
     <div className="grid h-screen px-4 bg-white place-content-center">
       <div className="text-center">
@@ -213,8 +32,10 @@ function Empty() {
           Uh-oh!
         </h1>
 
-        <p className="mt-4 text-gray-500">No content found!!!!</p>
+        <p className="mt-4 text-gray-500">We can't find that page.</p>
       </div>
     </div>
   );
-}
+};
+
+export default Custom404;
