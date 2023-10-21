@@ -192,6 +192,7 @@ export interface PostItemProps {
 export interface SessionModalProps {
   session?: any;
   gapAmount?: number;
+  mentorData?:any;
 }
 
 export interface Session {
