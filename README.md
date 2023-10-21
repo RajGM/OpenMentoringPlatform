@@ -6,7 +6,7 @@
 The project focus on mentoring and opportunities.
 
 <a href="https://youtu.be/VgD0BMNHuRk">
-  <img src="./public/thumbnail.jpg" alt="Product Demo on Youtube">
+  <img src="thumbnail.jpg" alt="Product Demo on Youtube">
 </a>
 
 ## Table of Contents
