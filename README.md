@@ -5,7 +5,7 @@
 "FOSSMentoring" is a web application built using [Next.js](https://nextjs.org/). 
 The project focus on mentoring and opportunities.
 
-[![Product Demo on Youtube](./public/thumbnail.png)](https://youtu.be/VgD0BMNHuRk)
+[![Product Demo on Youtube](./public/thumbnail.jpg)](https://youtu.be/VgD0BMNHuRk)
 
 ## Table of Contents
 
