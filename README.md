@@ -7,6 +7,8 @@ The project focus on mentoring and opportunities.
 
 # [Youtube Product Demo](https://youtu.be/VgD0BMNHuRk)
 
+Packed with features like markdown blogging, blog feed, mentor feed, scheduling features, availability setup, real-time chat and media share, opportunity board and multiple chaining for API integration, and a lot more.
+
 ## Table of Contents
 
 - [FOSSMentoring Documentation](#fossmentoring-documentation)
