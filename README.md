@@ -9,6 +9,10 @@ The project focus on mentoring and opportunities.
 
 Packed with features like markdown blogging, blog feed, mentor feed, scheduling features, availability setup, real-time chat and media share, opportunity board and multiple chaining for API integration, and a lot more.
 
+V1: Instead of building a mentoring platform from scratch, clone and deploy to get a lot of features out of the box, and add additional features as required. (Completed)
+
+V2: Enter certain parameters and get the platform deployed within minutes, all automated. (In progress)
+
 ## Table of Contents
 
 - [FOSSMentoring Documentation](#fossmentoring-documentation)
